@@ -19,6 +19,8 @@ import { getProducts, getCategories, getOffers, deleteProduct, deleteCategory, d
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ProductForm } from "@/components/ui/product-form";
+import { CategoryForm } from "@/components/ui/category-form";
+import * as LucideIcons from "lucide-react";
 
 export function AdminDashboard() {
   const [search, setSearch] = useState("");
@@ -328,9 +330,13 @@ export function AdminDashboard() {
                 <h2 className="text-2xl font-bold">Categories</h2>
                 <p className="text-muted-foreground">Manage product categories and icons.</p>
               </div>
-              <Button className="bg-primary text-white">
-                <Plus className="w-4 h-4 mr-2" /> Add Category
-              </Button>
+              <CategoryForm 
+                trigger={
+                  <Button className="bg-primary text-white">
+                    <Plus className="w-4 h-4 mr-2" /> Add Category
+                  </Button>
+                }
+              />
             </div>
 
             {categoriesLoading ? (
@@ -339,36 +345,38 @@ export function AdminDashboard() {
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.map((cat) => (
-                  <Card key={cat.id} className="group hover:border-primary/50 transition-all">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{cat.name}</CardTitle>
-                      <div className="p-2 bg-secondary rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                        <Package className="w-4 h-4" /> 
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
-                      <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Pencil className="w-3 h-3" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 text-destructive"
-                          onClick={() => {
-                            if (confirm(`Are you sure you want to delete "${cat.name}"?`)) {
-                              deleteCategoryMutation.mutate(cat.id);
-                            }
-                          }}
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {categories.map((cat) => {
+                  const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                  return (
+                    <Card key={cat.id} className="group hover:border-primary/50 transition-all">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">{cat.name}</CardTitle>
+                        <div className="p-2 bg-secondary rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          <IconComponent className="w-4 h-4" /> 
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
+                        <div className="text-xs text-muted-foreground">Icon: {cat.icon}</div>
+                        <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <CategoryForm category={cat} />
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-destructive"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete "${cat.name}"?`)) {
+                                deleteCategoryMutation.mutate(cat.id);
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </TabsContent>
