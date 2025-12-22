@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Pencil, Plus, X, Upload, Image as ImageIcon } from "lucide-react";
+import { Pencil, Plus, X, Upload, GripVertical } from "lucide-react";
 import type { Product, Category, InsertProduct } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct } from "@/lib/api";
@@ -29,6 +29,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     category: product?.category || "",
     condition: product?.condition || "new",
     image: product?.image || "",
+    images: product?.images || [],
     description: product?.description || "",
     dimensions: product?.dimensions || "",
     weight: product?.weight || "",
@@ -39,7 +40,9 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
   
   const [newItem, setNewItem] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string>(product?.image || "");
+  const [uploadedImages, setUploadedImages] = useState<string[]>(
+    product?.images?.length ? product.images : (product?.image ? [product.image] : [])
+  );
 
   const createMutation = useMutation({
     mutationFn: (data: InsertProduct) => createProduct(data),
@@ -72,6 +75,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       category: "",
       condition: "new",
       image: "",
+      images: [],
       description: "",
       dimensions: "",
       weight: "",
@@ -79,68 +83,87 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       isNew: false,
       includedItems: [],
     });
-    setPreviewUrl("");
+    setUploadedImages([]);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
-      toast({ title: "File too large. Maximum size is 10MB.", variant: "destructive" });
-      return;
-    }
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Upload file
     setIsUploading(true);
+    
     try {
-      const formDataUpload = new FormData();
-      formDataUpload.append("image", file);
+      for (const file of Array.from(files)) {
+        // Validate file size (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+          toast({ title: `${file.name} is too large. Maximum size is 10MB.`, variant: "destructive" });
+          continue;
+        }
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formDataUpload,
-      });
+        // Upload file
+        const formDataUpload = new FormData();
+        formDataUpload.append("image", file);
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Upload failed");
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formDataUpload,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Upload failed");
+        }
+
+        const result = await response.json();
+        setUploadedImages(prev => [...prev, result.url]);
       }
-
-      const result = await response.json();
-      setFormData(prev => ({ ...prev, image: result.url }));
-      toast({ title: "Image uploaded successfully" });
+      
+      toast({ title: `${files.length} image(s) uploaded successfully` });
     } catch (error) {
       toast({ 
         title: error instanceof Error ? error.message : "Failed to upload image", 
         variant: "destructive" 
       });
-      setPreviewUrl("");
     } finally {
       setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    setUploadedImages(prev => {
+      const newImages = [...prev];
+      const [removed] = newImages.splice(fromIndex, 1);
+      newImages.splice(toIndex, 0, removed);
+      return newImages;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.category || !formData.image) {
-      toast({ title: "Please fill in required fields", variant: "destructive" });
+    if (!formData.title || !formData.category || uploadedImages.length === 0) {
+      toast({ title: "Please fill in required fields and upload at least one image", variant: "destructive" });
       return;
     }
 
+    const submitData = {
+      ...formData,
+      image: uploadedImages[0], // First image is the main image
+      images: uploadedImages,
+    };
+
     if (product) {
-      updateMutation.mutate(formData);
+      updateMutation.mutate(submitData);
     } else {
-      createMutation.mutate(formData as InsertProduct);
+      createMutation.mutate(submitData as InsertProduct);
     }
   };
 
@@ -208,81 +231,101 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="condition">Condition *</Label>
-              <Select 
-                value={formData.condition} 
-                onValueChange={(value: "new" | "used") => setFormData(prev => ({ ...prev, condition: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select condition" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="new">New</SelectItem>
-                  <SelectItem value="used">Used</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="condition">Condition *</Label>
+            <Select 
+              value={formData.condition} 
+              onValueChange={(value: "new" | "used") => setFormData(prev => ({ ...prev, condition: value }))}
+            >
+              <SelectTrigger className="w-full md:w-1/2">
+                <SelectValue placeholder="Select condition" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="used">Used</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Product Images * <span className="text-muted-foreground text-xs">(First image will be the main image)</span></Label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.tiff,.tif,.bmp,image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+              multiple
+              data-testid="input-image-upload"
+            />
             
-            <div className="space-y-2">
-              <Label>Product Image *</Label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.tiff,.tif,.bmp,image/*"
-                onChange={handleFileUpload}
-                className="hidden"
-                data-testid="input-image-upload"
-              />
-              <div 
-                className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {previewUrl ? (
-                  <div className="relative">
+            {/* Uploaded Images Grid */}
+            {uploadedImages.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                {uploadedImages.map((img, index) => (
+                  <div 
+                    key={index} 
+                    className={`relative group rounded-lg overflow-hidden border-2 ${index === 0 ? 'border-primary' : 'border-transparent'}`}
+                  >
                     <img 
-                      src={previewUrl} 
-                      alt="Preview" 
-                      className="w-full h-32 object-cover rounded-lg"
+                      src={img} 
+                      alt={`Product ${index + 1}`} 
+                      className="w-full h-24 object-cover"
                     />
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      className="absolute top-2 right-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPreviewUrl("");
-                        setFormData(prev => ({ ...prev, image: "" }));
-                      }}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="py-4">
-                    {isUploading ? (
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                        <span className="text-sm text-muted-foreground">Uploading...</span>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
-                          <Upload className="w-6 h-6 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Click to upload image</p>
-                          <p className="text-xs text-muted-foreground">
-                            JPEG, PNG, WebP, HEIC, GIF (max 10MB)
-                          </p>
-                        </div>
-                      </div>
+                    {index === 0 && (
+                      <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                        Main
+                      </span>
                     )}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => moveImage(index, 0)}
+                          title="Set as main image"
+                        >
+                          <GripVertical className="w-4 h-4" />
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
+            )}
+            
+            {/* Upload Area */}
+            <div 
+              className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {isUploading ? (
+                <div className="flex flex-col items-center gap-2 py-4">
+                  <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <span className="text-sm text-muted-foreground">Uploading...</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2 py-4">
+                  <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Click to upload images</p>
+                    <p className="text-xs text-muted-foreground">
+                      JPEG, PNG, WebP, HEIC, GIF (max 10MB each) - Multiple selection allowed
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

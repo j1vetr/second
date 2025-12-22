@@ -79,7 +79,10 @@ export function ProductDetail() {
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
-  const mockImages = [product.image, product.image, product.image, product.image];
+  // Use images array if available, otherwise fall back to single image
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image];
 
   const specs = [
     { icon: Ruler, label: "Dimensions", value: product.dimensions },
@@ -125,7 +128,7 @@ export function ProductDetail() {
               onMouseLeave={() => isZoomed && setIsZoomed(false)}
             >
               <motion.img 
-                src={mockImages[selectedImage]} 
+                src={productImages[selectedImage]} 
                 alt={product.title}
                 className="w-full h-full object-cover transition-transform duration-500"
                 style={isZoomed ? {
@@ -176,13 +179,13 @@ export function ProductDetail() {
 
               {/* Image Nav Arrows */}
               <button 
-                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => prev === 0 ? mockImages.length - 1 : prev - 1); }}
+                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => prev === 0 ? productImages.length - 1 : prev - 1); }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button 
-                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => (prev + 1) % mockImages.length); }}
+                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => (prev + 1) % productImages.length); }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
               >
                 <ChevronRight className="w-6 h-6" />
@@ -190,13 +193,13 @@ export function ProductDetail() {
 
               {/* Image Counter */}
               <div className="absolute bottom-4 left-4 bg-black/60 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm">
-                {selectedImage + 1} / {mockImages.length}
+                {selectedImage + 1} / {productImages.length}
               </div>
             </div>
 
             {/* Thumbnail Strip */}
             <div className="flex gap-3 justify-center">
-              {mockImages.map((img, i) => (
+              {productImages.map((img, i) => (
                 <motion.button
                   key={i}
                   whileHover={{ scale: 1.05, y: -2 }}
