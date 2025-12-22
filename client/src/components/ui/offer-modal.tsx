@@ -58,7 +58,7 @@ export function OfferModal({ product }: { product: Product }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="flex-1 bg-primary hover:bg-primary/90 text-lg py-6 shadow-lg shadow-primary/25">
+        <Button className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30">
           Get Offer Now
         </Button>
       </DialogTrigger>

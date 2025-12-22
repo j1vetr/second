@@ -10,14 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, Search, Package, Users, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Pencil, Trash2, Search, Package, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
+import { ProductForm } from "@/components/ui/product-form";
 
 export function AdminDashboard() {
   const [search, setSearch] = useState("");
@@ -121,9 +122,14 @@ export function AdminDashboard() {
                 <h2 className="text-2xl font-bold">Product Management</h2>
                 <p className="text-muted-foreground">Manage your inventory, prices and details.</p>
               </div>
-              <Button className="bg-primary text-white">
-                <Plus className="w-4 h-4 mr-2" /> Add New Product
-              </Button>
+              <ProductForm 
+                categories={categories} 
+                trigger={
+                  <Button className="bg-primary text-white">
+                    <Plus className="w-4 h-4 mr-2" /> Add New Product
+                  </Button>
+                }
+              />
             </div>
 
             <Card>
@@ -184,9 +190,7 @@ export function AdminDashboard() {
                                   <Eye className="w-4 h-4 text-muted-foreground" />
                                 </Button>
                               </Link>
-                              <Button variant="ghost" size="icon" title="Edit">
-                                <Pencil className="w-4 h-4 text-primary" />
-                              </Button>
+                              <ProductForm product={product} categories={categories} />
                               <Button 
                                 variant="ghost" 
                                 size="icon" 

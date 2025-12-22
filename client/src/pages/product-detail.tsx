@@ -5,7 +5,7 @@ import { OfferModal } from "@/components/ui/offer-modal";
 import { 
   MessageCircle, Share2, CheckCircle2, ShieldCheck, Box, Truck, 
   Ruler, Scale, Package, Sparkles, Star, ChevronRight, 
-  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Zap, Info
+  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info
 } from "lucide-react";
 import { ProductCard } from "@/components/ui/product-card";
 import { motion } from "framer-motion";
@@ -14,7 +14,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getProduct, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
+import DOMPurify from "dompurify";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -212,6 +213,25 @@ export function ProductDetail() {
                 </motion.button>
               ))}
             </div>
+
+            {/* Description Section Below Image */}
+            {product.description && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-card rounded-2xl border p-6 mt-6"
+              >
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Info className="w-5 h-5 text-primary" />
+                  Product Description
+                </h3>
+                <div 
+                  className="prose prose-sm max-w-none text-muted-foreground leading-relaxed dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
+                />
+              </motion.div>
+            )}
           </motion.div>
 
           {/* Product Info - 2 cols */}
@@ -249,15 +269,6 @@ export function ProductDetail() {
                 In Stock
               </span>
             </motion.div>
-
-            {/* Description */}
-            {product.description && (
-              <motion.div variants={itemVariants} className="p-5 bg-secondary/30 rounded-2xl border border-border/50">
-                <p className="text-muted-foreground leading-relaxed">
-                  {product.description}
-                </p>
-              </motion.div>
-            )}
 
             {/* Specifications Card */}
             {specs.length > 0 && (
