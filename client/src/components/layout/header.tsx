@@ -18,6 +18,33 @@ import { CATEGORIES, MOCK_PRODUCTS, Product } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect, useRef } from "react";
 
+// Custom Link component compatible with Radix UI NavigationMenu
+const HeaderLink = React.forwardRef<
+  HTMLAnchorElement, 
+  { href: string } & React.AnchorHTMLAttributes<HTMLAnchorElement>
+>(({ href, onClick, className, children, ...props }, ref) => {
+  const [_, setLocation] = useLocation();
+  return (
+    <a
+      ref={ref}
+      href={href}
+      className={className}
+      onClick={(e) => {
+        // Allow default behavior for ctrl/cmd/shift clicks (open in new tab)
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+        
+        e.preventDefault();
+        setLocation(href);
+        onClick?.(e);
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+});
+HeaderLink.displayName = "HeaderLink";
+
 export function Header() {
   const { setTheme } = useTheme();
   const [location] = useLocation();
@@ -94,11 +121,9 @@ export function Header() {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/">
-                    <a className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-                      Home
-                    </a>
-                  </Link>
+                  <HeaderLink href="/" className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
+                    Home
+                  </HeaderLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -120,11 +145,9 @@ export function Header() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/products">
-                    <a className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-                      All Products
-                    </a>
-                  </Link>
+                  <HeaderLink href="/products" className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
+                    All Products
+                  </HeaderLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -203,24 +226,23 @@ const ListItem = React.forwardRef<
   return (
     <li>
       <NavigationMenuLink asChild>
-        <Link href={href!}>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="flex items-center gap-2 text-sm font-medium leading-none">
-              <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
-              {title}
-            </div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
-              {children}
-            </p>
-          </a>
-        </Link>
+        <HeaderLink
+          ref={ref}
+          href={href!}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="flex items-center gap-2 text-sm font-medium leading-none">
+            <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
+            {title}
+          </div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+            {children}
+          </p>
+        </HeaderLink>
       </NavigationMenuLink>
     </li>
   );
