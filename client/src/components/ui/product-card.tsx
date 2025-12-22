@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Sparkles, Box } from "lucide-react";
+import { ArrowRight, Sparkles, Star, Eye } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import type { Product } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
@@ -16,55 +15,88 @@ export function ProductCard({ product }: ProductCardProps) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group relative bg-card rounded-xl border overflow-hidden hover:shadow-xl transition-all duration-300"
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
+      className="group relative bg-card rounded-2xl border overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
+      data-testid={`card-product-${product.id}`}
     >
-      {/* Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
         <img
           src={product.image}
           alt={product.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          <Badge 
-            variant={product.condition === 'new' ? 'default' : 'secondary'}
-            className={`${product.condition === 'new' ? 'bg-primary text-primary-foreground' : 'bg-white/90 text-black backdrop-blur-sm'} border-0 px-3 py-1 font-medium shadow-sm`}
-          >
-            {product.condition === 'new' ? 'Brand New' : 'Used'}
-          </Badge>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+          <span className={cn(
+            "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg",
+            product.condition === 'new' 
+              ? "bg-gradient-to-r from-primary to-primary/80 text-white" 
+              : "bg-white/95 text-gray-700 backdrop-blur-sm"
+          )}>
+            {product.condition === 'new' ? '✨ New' : '♻️ Used'}
+          </span>
           
           {product.featured && (
-            <Badge className="bg-yellow-400/90 text-black border-0 backdrop-blur-sm gap-1">
-              <Sparkles className="w-3 h-3" /> Featured
-            </Badge>
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg flex items-center gap-1">
+              <Star className="w-3 h-3 fill-current" /> Featured
+            </span>
+          )}
+          
+          {product.isNew && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-lg flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> Just In
+            </span>
           )}
         </div>
 
-        {/* Overlay Action */}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-          <Link href={`/product/${product.id}`} className={cn(buttonVariants({ variant: "secondary" }), "rounded-full gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300")}>
-            View <ArrowRight className="w-4 h-4" />
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+          <Link href={`/product/${product.id}`}>
+            <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-white hover:scale-110 transition-all">
+              <Eye className="w-5 h-5 text-gray-700" />
+            </button>
+          </Link>
+        </div>
+
+        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+          <Link href={`/product/${product.id}`}>
+            <Button className="w-full bg-white/95 backdrop-blur-sm text-gray-900 hover:bg-white shadow-lg font-semibold">
+              View Details <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </Link>
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-4 space-y-3">
-        <div className="space-y-1">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{product.category}</p>
-          <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">
+              {product.category}
+            </span>
+          </div>
+          <h3 className="font-bold text-base leading-tight group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
             {product.title}
           </h3>
         </div>
 
-        <div className="pt-2 flex items-center justify-between gap-3 border-t border-border/50">
-           <Link href={`/product/${product.id}`} className={cn(buttonVariants({ variant: "default" }), "w-full shadow-lg shadow-primary/20")}>
-             Get Offer
-          </Link>
+        <div className="pt-3 border-t border-border/50">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-[10px] text-muted-foreground uppercase">Price</span>
+              <span className="text-sm font-bold text-primary">Make Offer</span>
+            </div>
+            <Link href={`/product/${product.id}`}>
+              <Button size="sm" className="rounded-full px-4 shadow-lg shadow-primary/25 bg-primary hover:bg-primary/90">
+                Get Offer
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
+
+      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/5 pointer-events-none" />
     </motion.div>
   );
 }

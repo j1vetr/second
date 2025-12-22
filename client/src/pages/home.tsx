@@ -40,20 +40,22 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
   const currentProduct = dealProducts[currentIndex];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Zap className="w-5 h-5 text-primary" />
+    <div className="h-full flex flex-col">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <Zap className="w-4 h-4 text-primary" />
+        </div>
         <h3 className="font-bold text-lg">Today's Deals</h3>
       </div>
       
-      <div className="relative h-48 overflow-hidden rounded-xl">
+      <div className="relative flex-1 min-h-[280px] overflow-hidden rounded-xl">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentProduct.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
             <Link href={`/product/${currentProduct.id}`}>
@@ -61,37 +63,51 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
                 <img 
                   src={currentProduct.image} 
                   alt={currentProduct.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                  <p className="font-semibold text-sm line-clamp-2">{currentProduct.title}</p>
-                  <p className="text-xs text-white/80 mt-1">{currentProduct.category}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                
+                <div className="absolute top-3 left-3">
+                  <span className={cn(
+                    "px-2.5 py-1 rounded-full text-xs font-semibold",
+                    currentProduct.condition === 'new' 
+                      ? "bg-primary text-white" 
+                      : "bg-white/90 text-gray-800 backdrop-blur-sm"
+                  )}>
+                    {currentProduct.condition === 'new' ? 'NEW' : 'USED'}
+                  </span>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <p className="text-xs text-white/70 uppercase tracking-wider mb-1">{currentProduct.category}</p>
+                  <p className="font-bold text-base line-clamp-2 leading-tight">{currentProduct.title}</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                      Make an Offer
+                    </span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </div>
             </Link>
           </motion.div>
         </AnimatePresence>
+        
+        <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-1.5 z-10">
+          {dealProducts.map((_, i) => (
+            <button
+              key={i}
+              onClick={(e) => { e.preventDefault(); setCurrentIndex(i); }}
+              className={cn(
+                "h-1.5 rounded-full transition-all",
+                i === currentIndex
+                  ? "bg-white w-6" 
+                  : "bg-white/40 hover:bg-white/60 w-1.5"
+              )}
+            />
+          ))}
+        </div>
       </div>
-
-      <div className="flex justify-center gap-1.5">
-        {dealProducts.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIndex(i)}
-            className={cn(
-              "w-2 h-2 rounded-full transition-all",
-              i === currentIndex
-                ? "bg-primary w-4" 
-                : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-            )}
-          />
-        ))}
-      </div>
-
-      <Link href="/products" className={cn(buttonVariants({ size: "sm" }), "w-full bg-primary text-white")}>
-        View All Deals
-      </Link>
     </div>
   );
 }
