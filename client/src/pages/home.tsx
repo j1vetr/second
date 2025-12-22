@@ -1,15 +1,17 @@
-import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight, Zap } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight, Zap, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
 import { CategoryCard } from "@/components/ui/category-card";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
+import { FloatingParticles, GradientOrb } from "@/components/ui/floating-particles";
+import { ProductCardSkeleton, CategoryCardSkeleton } from "@/components/ui/shimmer";
 import * as Icons from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import type { Product } from "@shared/schema";
 
 function TodaysDealsSlider({ products }: { products: Product[] }) {
@@ -129,12 +131,26 @@ export function Home() {
   });
 
   const newProducts = allProducts.filter(p => p.isNew).slice(0, 4);
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]);
+
+  const quickTags = ["Trending", "New Arrivals", "Best Sellers", "Top Rated", "Budget Friendly"];
 
   return (
     <div className="space-y-16 pb-16">
       {/* Hero Section with Category Sidebar */}
-      <section className="relative overflow-hidden bg-secondary/30">
-        <div className="container mx-auto px-4 py-8 lg:py-12">
+      <section ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-primary/5">
+        <FloatingParticles count={25} />
+        <GradientOrb className="w-[600px] h-[600px] bg-primary/10 top-0 -right-64" />
+        <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
+        
+        <motion.div 
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="container mx-auto px-4 py-8 lg:py-12 relative z-10"
+        >
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Category Sidebar */}
             <motion.div 
@@ -143,13 +159,16 @@ export function Home() {
               transition={{ duration: 0.5 }}
               className="lg:w-64 flex-shrink-0"
             >
-              <div className="bg-card border rounded-xl overflow-hidden shadow-sm">
-                <div className="bg-primary text-primary-foreground px-4 py-3 font-semibold">
+              <div className="bg-card/80 backdrop-blur-sm border rounded-xl overflow-hidden shadow-lg">
+                <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
                   Categories
                 </div>
                 {categoriesLoading ? (
-                  <div className="p-4 flex justify-center">
-                    <Spinner />
+                  <div className="p-4 space-y-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div key={i} className="h-10 bg-secondary/50 rounded-lg animate-pulse" />
+                    ))}
                   </div>
                 ) : (
                   <nav className="py-2">
@@ -161,12 +180,18 @@ export function Home() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.05 }}
-                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-secondary/50 transition-colors cursor-pointer group"
+                            whileHover={{ x: 5, backgroundColor: "hsl(var(--secondary))" }}
+                            className="flex items-center gap-3 px-4 py-2.5 transition-colors cursor-pointer group"
                             data-testid={`hero-category-${cat.id}`}
                           >
-                            <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <motion.div 
+                              whileHover={{ scale: 1.2, rotate: 10 }}
+                              className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"
+                            >
+                              <Icon className="w-4 h-4 text-primary" />
+                            </motion.div>
                             <span className="text-sm group-hover:text-primary transition-colors">{cat.name}</span>
-                            <ChevronRight className="w-4 h-4 ml-auto text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                            <ChevronRight className="w-4 h-4 ml-auto text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                           </motion.div>
                         </Link>
                       );
@@ -185,9 +210,18 @@ export function Home() {
                   transition={{ duration: 0.5 }}
                   className="inline-block mb-3"
                 >
-                  <span className="px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full border border-primary/20">
+                  <motion.span 
+                    whileHover={{ scale: 1.05 }}
+                    className="px-4 py-1.5 bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary text-sm font-medium rounded-full border border-primary/20 inline-flex items-center gap-2 cursor-default"
+                  >
+                    <motion.span
+                      animate={{ rotate: [0, 15, -15, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      👋
+                    </motion.span>
                     Welcome to SecondStore
-                  </span>
+                  </motion.span>
                 </motion.div>
                 
                 <div className="overflow-hidden mb-2">
@@ -217,10 +251,38 @@ export function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  className="text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed"
+                  className="text-lg text-muted-foreground max-w-xl mx-auto mb-6 leading-relaxed"
                 >
                   Browse, like it, make an offer. No fixed prices, just great deals on quality products.
                 </motion.p>
+
+                {/* Quick Discovery Tags */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.45 }}
+                  className="flex flex-wrap justify-center gap-2 mb-8"
+                >
+                  {quickTags.map((tag, i) => (
+                    <motion.button
+                      key={tag}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + i * 0.05 }}
+                      whileHover={{ scale: 1.1, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                      className={cn(
+                        "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                        activeTag === tag
+                          ? "bg-primary text-white shadow-lg shadow-primary/30"
+                          : "bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {tag}
+                    </motion.button>
+                  ))}
+                </motion.div>
                 
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -228,11 +290,17 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.5 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
-                  <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-14 px-10 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto group")}>
-                    Discover Products
-                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <Link href="/products">
+                    <motion.button
+                      whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
+                      whileTap={{ scale: 0.98 }}
+                      className="h-14 px-10 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto rounded-xl font-semibold inline-flex items-center justify-center group"
+                    >
+                      Discover Products
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
                   </Link>
-                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-14 px-10 text-base w-full sm:w-auto")}>
+                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-14 px-10 text-base w-full sm:w-auto rounded-xl")}>
                     How it Works?
                   </Link>
                 </motion.div>
@@ -246,7 +314,7 @@ export function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="hidden xl:block w-72 flex-shrink-0"
             >
-              <div className="bg-card rounded-2xl p-4 border shadow-sm h-full">
+              <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border shadow-lg h-full animate-tilt-3d">
                 {productsLoading ? (
                   <div className="h-full flex items-center justify-center">
                     <Spinner />
@@ -257,10 +325,7 @@ export function Home() {
               </div>
             </motion.div>
           </div>
-        </div>
-        
-        {/* Abstract Background Decoration */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10" />
+        </motion.div>
       </section>
 
       {/* Stats Section */}
@@ -438,16 +503,48 @@ function Feature({ icon, title, desc }: { icon: React.ReactNode, title: string, 
 }
 
 function StatCard({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) {
+  const [count, setCount] = useState(0);
+  const numericValue = parseInt(value.replace(/[^0-9]/g, '')) || 0;
+  const suffix = value.replace(/[0-9]/g, '');
+  
+  useEffect(() => {
+    const duration = 2000;
+    const steps = 60;
+    const increment = numericValue / steps;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= numericValue) {
+        setCount(numericValue);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+    
+    return () => clearInterval(timer);
+  }, [numericValue]);
+
   return (
     <motion.div 
-      whileHover={{ scale: 1.02 }}
-      className="bg-card border rounded-xl p-6 text-center"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.05, y: -5 }}
+      className="bg-card/80 backdrop-blur-sm border rounded-xl p-6 text-center relative overflow-hidden group"
     >
-      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3 text-primary">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <motion.div 
+        whileHover={{ rotate: 10, scale: 1.1 }}
+        className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-orange-500/10 flex items-center justify-center mx-auto mb-3 text-primary relative z-10"
+      >
         {icon}
+      </motion.div>
+      <div className="text-2xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent relative z-10">
+        {count.toLocaleString()}{suffix}
       </div>
-      <div className="text-2xl font-bold text-primary">{value}</div>
-      <div className="text-sm text-muted-foreground">{label}</div>
+      <div className="text-sm text-muted-foreground relative z-10">{label}</div>
     </motion.div>
   );
 }
