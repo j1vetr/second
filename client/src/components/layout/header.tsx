@@ -113,16 +113,12 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
+          <Link href="/" className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
+            Home
+          </Link>
+
           <NavigationMenu>
             <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <HeaderLink href="/" className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-                    Home
-                  </HeaderLink>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -138,16 +134,12 @@ export function Header() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <HeaderLink href="/products" className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-                    All Products
-                  </HeaderLink>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+
+          <Link href="/products" className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
+            All Products
+          </Link>
         </div>
 
         {/* Search & Actions */}
