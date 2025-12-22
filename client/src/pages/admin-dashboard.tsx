@@ -26,7 +26,7 @@ export function AdminDashboard() {
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["products"],
-    queryFn: getProducts,
+    queryFn: () => getProducts(),
   });
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
