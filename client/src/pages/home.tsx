@@ -149,10 +149,8 @@ export function Home() {
           <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
         </div>
         
-        <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="container mx-auto px-4 py-8 pb-12 lg:py-12 relative z-10"
-        >
+        <div className="container mx-auto px-4 py-8 pb-12 lg:py-12 relative z-10">
+        
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Category Sidebar */}
             <motion.div 
@@ -327,7 +325,7 @@ export function Home() {
               </div>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Stats Section */}
