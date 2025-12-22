@@ -11,7 +11,10 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { SlidersHorizontal, ArrowUpDown, LayoutGrid } from "lucide-react";
+import { Link } from "wouter";
+import { cn } from "@/lib/utils";
+import * as LucideIcons from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { 
   Accordion,
@@ -129,8 +132,48 @@ export function ProductList() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-72 shrink-0">
-            <div className="sticky top-24 bg-card rounded-xl border p-6 shadow-sm">
+          <aside className="hidden lg:block w-72 shrink-0 space-y-4">
+            {/* Categories Section */}
+            <div className="bg-card rounded-xl border p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg">Categories</h3>
+                <LayoutGrid className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <Separator className="mb-4" />
+              <div className="space-y-1">
+                <Link href="/products">
+                  <div className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                    !categoryId 
+                      ? "bg-primary/10 text-primary font-medium" 
+                      : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                  )}>
+                    <LayoutGrid className="w-4 h-4" />
+                    All Products
+                  </div>
+                </Link>
+                {categories.map(cat => {
+                  const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                  const isActive = categoryId === cat.id;
+                  return (
+                    <Link key={cat.id} href={`/category/${cat.id}`}>
+                      <div className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                        isActive 
+                          ? "bg-primary/10 text-primary font-medium" 
+                          : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                      )}>
+                        <IconComponent className="w-4 h-4" />
+                        {cat.name}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Filters Section */}
+            <div className="bg-card rounded-xl border p-6 shadow-sm">
                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-lg">Filters</h3>
                   <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
@@ -153,9 +196,45 @@ export function ProductList() {
                   </SheetTrigger>
                   <SheetContent side="left">
                     <SheetHeader>
-                      <SheetTitle>Filters</SheetTitle>
+                      <SheetTitle>Browse & Filter</SheetTitle>
                     </SheetHeader>
-                    <div className="mt-8">
+                    <div className="mt-6 space-y-6">
+                      {/* Mobile Categories */}
+                      <div>
+                        <h4 className="font-semibold text-sm mb-3">Categories</h4>
+                        <div className="space-y-1">
+                          <Link href="/products">
+                            <div className={cn(
+                              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                              !categoryId 
+                                ? "bg-primary/10 text-primary font-medium" 
+                                : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                            )}>
+                              <LayoutGrid className="w-4 h-4" />
+                              All Products
+                            </div>
+                          </Link>
+                          {categories.map(cat => {
+                            const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                            const isActive = categoryId === cat.id;
+                            return (
+                              <Link key={cat.id} href={`/category/${cat.id}`}>
+                                <div className={cn(
+                                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                                  isActive 
+                                    ? "bg-primary/10 text-primary font-medium" 
+                                    : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                )}>
+                                  <IconComponent className="w-4 h-4" />
+                                  {cat.name}
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <Separator />
+                      {/* Mobile Filters */}
                       <FilterContent />
                     </div>
                   </SheetContent>
