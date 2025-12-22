@@ -4,11 +4,91 @@ import { storage } from "./storage";
 import { insertProductSchema, insertCategorySchema, insertOfferSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(process.cwd(), "public", "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename with original extension
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `product-${uniqueSuffix}${ext}`);
+  },
+});
+
+// File filter for supported image types (iPhone & Android compatible)
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Supported formats:
+  // iPhone: HEIC, HEIF, JPEG, PNG, GIF, TIFF, BMP
+  // Android: JPEG, PNG, WebP, GIF, BMP
+  const allowedMimes = [
+    "image/jpeg",
+    "image/jpg", 
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/heic",
+    "image/heif",
+    "image/tiff",
+    "image/bmp",
+  ];
+  
+  const allowedExtensions = [
+    ".jpg", ".jpeg", ".png", ".gif", ".webp", 
+    ".heic", ".heif", ".tiff", ".tif", ".bmp"
+  ];
+  
+  const ext = path.extname(file.originalname).toLowerCase();
+  
+  if (allowedMimes.includes(file.mimetype) || allowedExtensions.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Supported formats: JPEG, PNG, GIF, WebP, HEIC, HEIF, TIFF, BMP"));
+  }
+};
+
+const upload = multer({
+  storage: storage_multer,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Serve uploaded files
+  app.use("/uploads", (await import("express")).default.static(uploadsDir));
+
+  // File Upload Route
+  app.post("/api/upload", upload.single("image"), (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      
+      // Return the URL path to the uploaded file
+      const imageUrl = `/uploads/${req.file.filename}`;
+      res.json({ url: imageUrl, filename: req.file.filename });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
   // Categories Routes
   app.get("/api/categories", async (req, res) => {
     try {

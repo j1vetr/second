@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Pencil, Plus, X } from "lucide-react";
+import { Pencil, Plus, X, Upload, Image as ImageIcon } from "lucide-react";
 import type { Product, Category, InsertProduct } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct } from "@/lib/api";
@@ -22,6 +22,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState<Partial<InsertProduct>>({
     title: product?.title || "",
@@ -37,6 +38,8 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
   });
   
   const [newItem, setNewItem] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string>(product?.image || "");
 
   const createMutation = useMutation({
     mutationFn: (data: InsertProduct) => createProduct(data),
@@ -76,6 +79,54 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       isNew: false,
       includedItems: [],
     });
+    setPreviewUrl("");
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "File too large. Maximum size is 10MB.", variant: "destructive" });
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload file
+    setIsUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("image", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Upload failed");
+      }
+
+      const result = await response.json();
+      setFormData(prev => ({ ...prev, image: result.url }));
+      toast({ title: "Image uploaded successfully" });
+    } catch (error) {
+      toast({ 
+        title: error instanceof Error ? error.message : "Failed to upload image", 
+        variant: "destructive" 
+      });
+      setPreviewUrl("");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -175,14 +226,63 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="image">Image URL *</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                placeholder="https://..."
-                required
+              <Label>Product Image *</Label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.tiff,.tif,.bmp,image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+                data-testid="input-image-upload"
               />
+              <div 
+                className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {previewUrl ? (
+                  <div className="relative">
+                    <img 
+                      src={previewUrl} 
+                      alt="Preview" 
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewUrl("");
+                        setFormData(prev => ({ ...prev, image: "" }));
+                      }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="py-4">
+                    {isUploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm text-muted-foreground">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
+                          <Upload className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Click to upload image</p>
+                          <p className="text-xs text-muted-foreground">
+                            JPEG, PNG, WebP, HEIC, GIF (max 10MB)
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -273,7 +373,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || isUploading}>
               {isLoading ? "Saving..." : (product ? "Update Product" : "Create Product")}
             </Button>
           </div>
