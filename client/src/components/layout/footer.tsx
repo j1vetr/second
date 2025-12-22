@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="space-y-4">
-            <img src="/assets/logo.png" alt="SecondStore" className="h-8 object-contain" />
+            <img src="/assets/logo.png" alt="SecondStore" className="h-12 object-contain" />
             <p className="text-sm text-muted-foreground leading-relaxed">
               Meeting point for premium second-hand and new products. Reach your dream products with secure shopping and fast communication.
             </p>
