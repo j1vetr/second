@@ -65,12 +65,16 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="left">
             <nav className="flex flex-col gap-4 mt-8">
-              <Link href="/" className="text-lg font-medium">Home</Link>
+              <Link href="/">
+                <a className="text-lg font-medium">Home</a>
+              </Link>
               <div className="text-sm font-semibold text-muted-foreground mt-4">Categories</div>
               {CATEGORIES.map(cat => (
-                <Link key={cat.id} href={`/category/${cat.id}`} className="text-sm hover:text-primary transition-colors flex items-center gap-2">
-                  <DynamicIcon name={cat.icon} className="h-4 w-4" />
-                  {cat.name}
+                <Link key={cat.id} href={`/category/${cat.id}`}>
+                  <a className="text-sm hover:text-primary transition-colors flex items-center gap-2">
+                    <DynamicIcon name={cat.icon} className="h-4 w-4" />
+                    {cat.name}
+                  </a>
                 </Link>
               ))}
             </nav>
@@ -89,11 +93,13 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/">
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-                    Home
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild>
+                  <Link href="/">
+                    <a className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
+                      Home
+                    </a>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -113,11 +119,13 @@ export function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/products">
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-                    All Products
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild>
+                  <Link href="/products">
+                    <a className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
+                      All Products
+                    </a>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -194,24 +202,26 @@ const ListItem = React.forwardRef<
 >(({ className, title, children, iconName, href, ...props }, ref) => {
   return (
     <li>
-      <Link href={href!}>
-        <NavigationMenuLink
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="flex items-center gap-2 text-sm font-medium leading-none">
-            <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
-            {title}
-          </div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
-            {children}
-          </p>
-        </NavigationMenuLink>
-      </Link>
+      <NavigationMenuLink asChild>
+        <Link href={href!}>
+          <a
+            ref={ref}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              className
+            )}
+            {...props}
+          >
+            <div className="flex items-center gap-2 text-sm font-medium leading-none">
+              <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
+              {title}
+            </div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+              {children}
+            </p>
+          </a>
+        </Link>
+      </NavigationMenuLink>
     </li>
   );
 });
