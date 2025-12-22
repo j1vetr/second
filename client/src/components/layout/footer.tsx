@@ -34,20 +34,20 @@ export function Footer() {
               <h3 className="text-xl font-bold mb-2">Stay Updated!</h3>
               <p className="text-muted-foreground text-sm">Subscribe to get notified about new products and special offers.</p>
             </div>
-            <form onSubmit={handleSubscribe} className="flex gap-2 w-full md:w-auto">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 md:w-64 px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="flex-1 min-w-0 md:w-64 px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 required
                 data-testid="input-newsletter-email"
               />
               <button
                 type="submit"
                 disabled={isSubscribing}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
                 data-testid="button-newsletter-subscribe"
               >
                 {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -59,7 +59,7 @@ export function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="space-y-4">
-            <img src="/assets/logo.png" alt="SecondStore" className="h-12 object-contain" />
+            <img src="/assets/logo.png" alt="SecondStore" className="h-20 object-contain" />
             <p className="text-sm text-muted-foreground leading-relaxed">
               Meeting point for premium second-hand and new products. Reach your dream products with secure shopping and fast communication.
             </p>
