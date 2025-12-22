@@ -400,27 +400,6 @@ export function Home() {
         )}
       </section>
 
-      {/* Newsletter Section */}
-      <section className="container mx-auto px-4">
-        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-3xl p-8 md:p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-6">
-            Subscribe to our newsletter and be the first to know about new arrivals and special offers.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              data-testid="input-newsletter-email"
-            />
-            <Button className="bg-primary hover:bg-primary/90 text-white px-6" data-testid="button-subscribe">
-              Subscribe
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials */}
       <section className="container mx-auto px-4">
         <div className="text-center mb-10">
