@@ -92,16 +92,14 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="left">
             <nav className="flex flex-col gap-4 mt-8">
-              <Link href="/">
-                <a className="text-lg font-medium">Home</a>
+              <Link href="/" className="text-lg font-medium">
+                Home
               </Link>
               <div className="text-sm font-semibold text-muted-foreground mt-4">Categories</div>
               {CATEGORIES.map(cat => (
-                <Link key={cat.id} href={`/category/${cat.id}`}>
-                  <a className="text-sm hover:text-primary transition-colors flex items-center gap-2">
+                <Link key={cat.id} href={`/category/${cat.id}`} className="text-sm hover:text-primary transition-colors flex items-center gap-2">
                     <DynamicIcon name={cat.icon} className="h-4 w-4" />
                     {cat.name}
-                  </a>
                 </Link>
               ))}
             </nav>
@@ -109,10 +107,8 @@ export function Header() {
         </Sheet>
 
         {/* Logo */}
-        <Link href="/">
-          <a className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
             <img src="/assets/logo.png" alt="SecondStore" className="h-12 md:h-16 object-contain" />
-          </a>
         </Link>
 
         {/* Desktop Navigation */}
@@ -175,17 +171,15 @@ export function Header() {
                   <ul className="max-h-[300px] overflow-y-auto py-2">
                     {searchResults.map(product => (
                       <li key={product.id}>
-                        <Link href={`/product/${product.id}`}>
-                          <a 
+                        <Link href={`/product/${product.id}`}
                             className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors"
                             onClick={() => setShowResults(false)}
-                          >
+                        >
                             <img src={product.image} alt={product.title} className="w-10 h-10 rounded-md object-cover" />
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{product.title}</p>
                               <p className="text-xs text-muted-foreground truncate capitalize">{product.category}</p>
                             </div>
-                          </a>
                         </Link>
                       </li>
                     ))}
