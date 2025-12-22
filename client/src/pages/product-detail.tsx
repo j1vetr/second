@@ -1,9 +1,8 @@
 import { useParams, Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { OfferModal } from "@/components/ui/offer-modal";
 import { 
-  MessageCircle, Share2, CheckCircle2, ShieldCheck, Box, Truck, 
+  Share2, CheckCircle2, ShieldCheck, Box, Truck, 
   Ruler, Scale, Package, Sparkles, Star, ChevronRight, 
   ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info, Tag
 } from "lucide-react";
@@ -361,17 +360,15 @@ export function ProductDetail() {
               </motion.div>
             )}
 
-            {/* CTA Buttons - Side by Side */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 pt-2">
-              <OfferModal product={product} />
-              
+            {/* CTA Button - WhatsApp Order */}
+            <motion.div variants={itemVariants} className="pt-2">
               <a 
-                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I'm interested in ${product.title}. Is it still available?`)}`}
+                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I want to order: ${product.title}${product.price ? ` - Price: CHF ${product.discountPrice || product.price}` : ''}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-base font-semibold shadow-lg shadow-[#25D366]/20 transition-all hover:shadow-xl hover:shadow-[#25D366]/30" data-testid="button-whatsapp">
-                  <WhatsAppIcon className="w-5 h-5 mr-2" /> WhatsApp
+                <Button className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-base font-semibold shadow-lg shadow-[#25D366]/20 transition-all hover:shadow-xl hover:shadow-[#25D366]/30" data-testid="button-whatsapp-order">
+                  <WhatsAppIcon className="w-5 h-5 mr-2" /> Order via WhatsApp
                 </Button>
               </a>
             </motion.div>
