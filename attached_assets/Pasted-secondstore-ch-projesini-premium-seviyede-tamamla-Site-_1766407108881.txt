@@ -1,0 +1,181 @@
+secondstore.ch projesini premium seviyede tamamla. Site 2.el + sıfır ürün vitrini olacak ama ürünlerde fiyat asla görünmeyecek. Her ürün için ana aksiyon “Teklif Al” olacak.
+
+1) Logo + Favicon (ÖNEMLİ)
+
+Aşağıdaki görselleri bu linklerden indir, sonra projede kendi alanımızda barındır (dış linkten çekme):
+
+Logo: https://i.hizliresim.com/ntx8yue.png
+
+Favicon: https://i.hizliresim.com/eeuaup8.png
+
+Logo; header’da, footer’da ve gerekiyorsa login/admin ekranında kullanılacak. Favicon tarayıcı sekmesinde görünecek.
+
+2) Tema / Renk / Font
+
+İki mod: White / Dark (kullanıcı tek tıkla değiştirsin, tercihi hatırlansın)
+
+Renkler:
+
+White: beyaz + turuncu + siyah
+
+Dark: siyah + turuncu + beyaz
+
+Font: Poppins (tüm site genelinde)
+
+3) Kategoriler (10 adet)
+
+Mobilya
+
+Ev & Yaşam
+
+Elektronik
+
+Beyaz Eşya
+
+Ofis & İş
+
+Bahçe & Outdoor
+
+Aydınlatma
+
+Dekorasyon
+
+Bebek & Çocuk
+
+Hobi & Koleksiyon
+
+4) Ürün Kartları (Card) ve Etiketler
+
+Her ürün kartının üstünde net bir rozet/etiket olsun:
+
+“Sıfır” veya “2. El”
+
+Opsiyonel ek rozetler: “Yeni”, “Öne Çıkan”, “Hızlı Teslim”, “Sınırlı” (admin seçebilsin)
+
+Kartlar çok şık ve modern dursun:
+
+Hover animasyonları, yumuşak geçişler, mikro etkileşimler
+
+Fotoğrafta hafif zoom / parallax hissi olabilir
+
+Kart üzerinde kesinlikle fiyat yok. Onun yerine:
+
+Ana buton: Teklif Al
+
+İkincil: “Mesaj Gönder / İletişim”
+
+5) Animasyon & Premium UI Dokunuşları
+
+Tasarım “muazzam” olmalı; abartmadan premium animasyonlar ekle:
+
+Sayfa geçişlerinde yumuşak animasyon
+
+Kategori kartlarında hover efekti
+
+Ürün detayda görsel galeri geçişleri
+
+“Teklif Al” butonunda premium buton hissi (hover/press)
+
+Skeleton loading (yükleniyor animasyonu) gibi profesyonel detaylar
+
+Boş sonuç ekranları şık olsun
+
+6) Sayfalar
+
+Ana Sayfa:
+
+Hero alanı: güçlü başlık + arama + kategoriye hızlı geçiş
+
+Kategori grid
+
+Öne Çıkanlar / Yeni Eklenenler
+
+“Nasıl Çalışır?” (3 adım)
+
+Güven alanı: “2.el & sıfır ürünler / Teklif usulü / Hızlı iletişim” gibi
+
+Kategori Listeleme:
+
+Filtreler: kategori, “2.el/sıfır”, öne çıkan, yeni
+
+Sıralama: “En yeni”, “Öne çıkan”
+
+Ürün Detay:
+
+Çoklu foto galeri
+
+Durum rozeti (Sıfır/2.el)
+
+Açıklama + özellikler
+
+Teklif Al alanı
+
+İletişim alternatifleri (WhatsApp / e-posta gibi)
+
+Teklif Al Formu:
+
+İsim, telefon, e-posta
+
+Teklif notu
+
+Tercih edilen iletişim yöntemi
+
+Onay kutusu (KVKK/şartlar)
+
+Hakkımızda, İletişim, SSS, Gizlilik & Şartlar
+
+7) Admin Panel (Tam Kontrol)
+
+Admin panelden yönetim:
+
+Kategori: ekle / düzenle / sil
+
+Ürün: ekle / düzenle / sil
+
+Ürün alanları:
+
+Başlık, kategori, durum (2.el/sıfır)
+
+Açıklama, özellikler
+
+Fotoğraflar (çoklu)
+
+Rozetler (Yeni / Öne Çıkan vs.)
+
+Yayında / taslak
+
+Teklif talepleri:
+
+Listele
+
+Ürün bazlı filtre
+
+Okundu/okunmadı işareti
+
+Not ekleme (admin iç notu)
+
+8) Ekstra “Aklına Gelen Her Şeyi” Ekleyerek Proje Kalitesini Yükselt
+
+Aşağıdaki premium özellikleri de uygunsa ekle:
+
+Ürünlerde “Favorilere ekle” (kullanıcı için)
+
+“Benzer ürünler” alanı (ürün detay altında)
+
+SEO için sayfa başlıkları ve açıklamaları mantıklı, kategori bazlı düzenli olsun
+
+Footer’da güven ve iletişim alanı (çalışma mantığı, e-posta, sosyal ikonlar)
+
+Mobilde:
+
+Sticky “Teklif Al” butonu (ürün detay)
+
+Kolay arama
+
+Görsel kalite:
+
+Demo ürün görselleri kaliteli ve modern olsun
+
+Her kategoriye demo ürün girilmiş olsun ki site boş görünmesin
+
+Sonuç: secondstore.ch; fiyat göstermeyen, “Teklif Al” odaklı, White/Dark temalı, Poppins fontlu, aşırı şık tasarımlı, animasyonlu ve admin panelden tamamen yönetilen bir 2.el + sıfır satış vitrini olarak tamamlanmış olsun.
