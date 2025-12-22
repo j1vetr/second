@@ -5,8 +5,18 @@ import { OfferModal } from "@/components/ui/offer-modal";
 import { 
   MessageCircle, Share2, CheckCircle2, ShieldCheck, Box, Truck, 
   Ruler, Scale, Package, Sparkles, Star, ChevronRight, 
-  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info
+  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info, Tag
 } from "lucide-react";
+
+function formatPrice(price: string | null | undefined): string {
+  if (!price) return "";
+  return `CHF ${parseFloat(price).toFixed(2)}`;
+}
+
+function getDiscountPercent(price: string | null, discountPrice: string | null): number {
+  if (!price || !discountPrice) return 0;
+  return Math.round((1 - parseFloat(discountPrice) / parseFloat(price)) * 100);
+}
 import { ProductCard } from "@/components/ui/product-card";
 import { motion } from "framer-motion";
 import NotFound from "@/pages/not-found";
@@ -272,6 +282,31 @@ export function ProductDetail() {
                 In Stock
               </span>
             </motion.div>
+
+            {/* Price Display */}
+            {product.price && (
+              <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary/5 to-orange-500/5 rounded-2xl border border-primary/20 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Price</p>
+                    {product.discountPrice ? (
+                      <div className="flex items-baseline gap-3">
+                        <span className="text-3xl font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
+                        <span className="text-lg text-muted-foreground line-through">{formatPrice(product.price)}</span>
+                      </div>
+                    ) : (
+                      <span className="text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
+                    )}
+                  </div>
+                  {product.discountPrice && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-full text-sm font-bold">
+                      <Tag className="w-4 h-4" />
+                      -{getDiscountPercent(product.price, product.discountPrice)}% OFF
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {/* Specifications Card */}
             {specs.length > 0 && (

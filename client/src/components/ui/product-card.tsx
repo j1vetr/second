@@ -1,10 +1,20 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Sparkles, Star, Eye } from "lucide-react";
+import { ArrowRight, Sparkles, Star, Eye, Tag, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Product } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
+
+function formatPrice(price: string | null | undefined): string {
+  if (!price) return "";
+  return `CHF ${parseFloat(price).toFixed(2)}`;
+}
+
+function getDiscountPercent(price: string | null, discountPrice: string | null): number {
+  if (!price || !discountPrice) return 0;
+  return Math.round((1 - parseFloat(discountPrice) / parseFloat(price)) * 100);
+}
 
 interface ProductCardProps {
   product: Product;
@@ -88,7 +98,18 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        {product.discountPrice && (
+          <div className="absolute top-3 right-3">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg flex items-center gap-1">
+              <Tag className="w-3 h-3" /> -{getDiscountPercent(product.price, product.discountPrice)}%
+            </span>
+          </div>
+        )}
+
+        <div className={cn(
+          "absolute top-3 right-3 transition-all duration-300 translate-y-2 group-hover:translate-y-0",
+          product.discountPrice ? "opacity-0 group-hover:opacity-100" : "opacity-0 group-hover:opacity-100"
+        )}>
           <Link href={`/product/${product.id}`}>
             <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-white hover:scale-110 transition-all">
               <Eye className="w-5 h-5 text-gray-700" />
@@ -121,11 +142,24 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-[10px] text-muted-foreground uppercase">Price</span>
-              <span className="text-sm font-bold text-primary">Make Offer</span>
+              {product.price ? (
+                <div className="flex items-center gap-2">
+                  {product.discountPrice ? (
+                    <>
+                      <span className="text-sm font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
+                      <span className="text-xs text-muted-foreground line-through">{formatPrice(product.price)}</span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-bold text-primary">{formatPrice(product.price)}</span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-sm font-bold text-primary">Contact Us</span>
+              )}
             </div>
             <Link href={`/product/${product.id}`}>
               <Button size="sm" className="rounded-full px-4 shadow-lg shadow-primary/25 bg-primary hover:bg-primary/90">
-                Get Offer
+                <ShoppingCart className="w-4 h-4 mr-1" /> Buy
               </Button>
             </Link>
           </div>

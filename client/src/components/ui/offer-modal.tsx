@@ -19,7 +19,7 @@ import { createOffer } from "@/lib/api"
 import { motion } from "framer-motion"
 import { Confetti } from "@/components/ui/confetti"
 import { RippleButton } from "@/components/ui/ripple-button"
-import { Sparkles, CheckCircle2 } from "lucide-react"
+import { ShoppingCart, CheckCircle2 } from "lucide-react"
 
 export function OfferModal({ product }: { product: Product }) {
   const { toast } = useToast();
@@ -37,7 +37,7 @@ export function OfferModal({ product }: { product: Product }) {
         setShowSuccess(false);
         setOpen(false);
         toast({
-          title: "🎉 Offer Received!",
+          title: "🎉 Request Received!",
           description: "We will contact you as soon as possible.",
           duration: 5000,
         });
@@ -46,7 +46,7 @@ export function OfferModal({ product }: { product: Product }) {
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to submit offer. Please try again.",
+        description: "Failed to submit request. Please try again.",
         variant: "destructive",
         duration: 5000,
       });
@@ -62,7 +62,7 @@ export function OfferModal({ product }: { product: Product }) {
       customerName: formData.get("name") as string,
       customerEmail: formData.get("email") as string,
       customerPhone: formData.get("phone") as string,
-      offerAmount: formData.get("amount") as string,
+      offerAmount: "Purchase Request",
       message: formData.get("note") as string || undefined,
     });
   };
@@ -73,8 +73,8 @@ export function OfferModal({ product }: { product: Product }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <RippleButton className="w-full h-14 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 inline-flex items-center justify-center gap-2 group">
-            <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
-            Get Offer Now
+            <ShoppingCart className="w-5 h-5 group-hover:animate-pulse" />
+            Buy Now
           </RippleButton>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
@@ -113,11 +113,11 @@ export function OfferModal({ product }: { product: Product }) {
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  Request Offer
+                  <ShoppingCart className="w-5 h-5 text-primary" />
+                  Purchase Request
                 </DialogTitle>
                 <DialogDescription>
-                  Fill out the form to get an offer for <strong>{product.title}</strong>.
+                  Fill out the form to purchase <strong>{product.title}</strong>. We will contact you shortly.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="grid gap-4 py-4">
@@ -127,19 +127,15 @@ export function OfferModal({ product }: { product: Product }) {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" name="phone" type="tel" required placeholder="+90 5XX XXX XX XX" className="transition-all focus:ring-2 focus:ring-primary/20" />
+                  <Input id="phone" name="phone" type="tel" required placeholder="+41 XX XXX XX XX" className="transition-all focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" name="email" type="email" required placeholder="example@email.com" className="transition-all focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="amount">Offer Amount</Label>
-                  <Input id="amount" name="amount" type="text" required placeholder="e.g., 500 CHF" className="transition-all focus:ring-2 focus:ring-primary/20" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="note">Note (Optional)</Label>
-                  <Textarea id="note" name="note" placeholder="Any questions about the product..." className="transition-all focus:ring-2 focus:ring-primary/20" />
+                  <Label htmlFor="note">Message (Optional)</Label>
+                  <Textarea id="note" name="note" placeholder="Any questions about the product, delivery, or payment..." className="transition-all focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox id="terms" required />
@@ -160,9 +156,9 @@ export function OfferModal({ product }: { product: Product }) {
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                           className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                         />
-                        Submitting...
+                        Sending...
                       </span>
-                    ) : "Submit Offer"}
+                    ) : "Send Purchase Request"}
                   </Button>
                 </motion.div>
               </form>

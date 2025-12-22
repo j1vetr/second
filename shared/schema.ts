@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, boolean, timestamp, numeric } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -40,6 +40,8 @@ export const products = pgTable("products", {
   dimensions: text("dimensions"),
   weight: text("weight"),
   includedItems: text("included_items").array().default(sql`ARRAY[]::text[]`),
+  price: numeric("price", { precision: 10, scale: 2 }),
+  discountPrice: numeric("discount_price", { precision: 10, scale: 2 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

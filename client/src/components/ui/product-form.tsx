@@ -36,7 +36,10 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     featured: product?.featured || false,
     isNew: product?.isNew || false,
     includedItems: product?.includedItems || [],
+    price: product?.price || null,
+    discountPrice: product?.discountPrice || null,
   });
+  const [hasDiscount, setHasDiscount] = useState(!!product?.discountPrice);
   
   const [newItem, setNewItem] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -82,8 +85,11 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       featured: false,
       isNew: false,
       includedItems: [],
+      price: null,
+      discountPrice: null,
     });
     setUploadedImages([]);
+    setHasDiscount(false);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,6 +251,59 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 <SelectItem value="used">Used</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-4 p-4 bg-secondary/30 rounded-lg border">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="price">Price (CHF) *</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.price || ""}
+                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value || null }))}
+                  placeholder="e.g., 299.00"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="discountPrice">Discount Price (CHF)</Label>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="hasDiscount"
+                      checked={hasDiscount}
+                      onCheckedChange={(checked) => {
+                        setHasDiscount(checked);
+                        if (!checked) {
+                          setFormData(prev => ({ ...prev, discountPrice: null }));
+                        }
+                      }}
+                    />
+                    <Label htmlFor="hasDiscount" className="text-xs text-muted-foreground">On Sale</Label>
+                  </div>
+                </div>
+                <Input
+                  id="discountPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.discountPrice || ""}
+                  onChange={(e) => setFormData(prev => ({ ...prev, discountPrice: e.target.value || null }))}
+                  placeholder="e.g., 199.00"
+                  disabled={!hasDiscount}
+                  className={!hasDiscount ? "opacity-50" : ""}
+                />
+                {hasDiscount && formData.price && formData.discountPrice && (
+                  <p className="text-xs text-green-600">
+                    {Math.round((1 - parseFloat(formData.discountPrice as string) / parseFloat(formData.price as string)) * 100)}% discount
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
