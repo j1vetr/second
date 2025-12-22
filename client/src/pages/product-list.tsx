@@ -12,8 +12,15 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { MOCK_PRODUCTS, CATEGORIES } from "@/lib/mockData";
-import { SlidersHorizontal } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
 
 export function ProductList() {
   const { categoryId } = useParams();
@@ -43,94 +50,143 @@ export function ProductList() {
     : "All Products";
 
   const FilterContent = () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-semibold mb-4 text-lg">Condition</h3>
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="new" 
-              checked={filterCondition.includes('new')}
-              onCheckedChange={(checked) => {
-                if(checked) setFilterCondition([...filterCondition, 'new'])
-                else setFilterCondition(filterCondition.filter(c => c !== 'new'))
-              }}
-            />
-            <Label htmlFor="new">New</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="used" 
-              checked={filterCondition.includes('used')}
-              onCheckedChange={(checked) => {
-                if(checked) setFilterCondition([...filterCondition, 'used'])
-                else setFilterCondition(filterCondition.filter(c => c !== 'used'))
-              }}
-            />
-            <Label htmlFor="used">Used</Label>
-          </div>
-        </div>
+    <div className="space-y-6">
+      <Accordion type="single" collapsible defaultValue="condition" className="w-full">
+        <AccordionItem value="condition" className="border-none">
+          <AccordionTrigger className="text-base font-semibold py-2 hover:no-underline">Condition</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center space-x-3">
+                <Checkbox 
+                  id="new" 
+                  checked={filterCondition.includes('new')}
+                  onCheckedChange={(checked) => {
+                    if(checked) setFilterCondition([...filterCondition, 'new'])
+                    else setFilterCondition(filterCondition.filter(c => c !== 'new'))
+                  }}
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <Label htmlFor="new" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Brand New</Label>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Checkbox 
+                  id="used" 
+                  checked={filterCondition.includes('used')}
+                  onCheckedChange={(checked) => {
+                    if(checked) setFilterCondition([...filterCondition, 'used'])
+                    else setFilterCondition(filterCondition.filter(c => c !== 'used'))
+                  }}
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <Label htmlFor="used" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Used</Label>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      
+      <Separator />
+      
+      <div className="space-y-4">
+        <h4 className="font-semibold text-sm">Price Range</h4>
+         <p className="text-xs text-muted-foreground italic">Prices are negotiable via offer.</p>
+         {/* Placeholder for future price slider */}
       </div>
+
+      {filterCondition.length > 0 && (
+         <Button 
+           variant="outline" 
+           className="w-full mt-4" 
+           onClick={() => setFilterCondition([])}
+         >
+           Clear Filters
+         </Button>
+      )}
     </div>
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{categoryName}</h1>
-          <p className="text-muted-foreground">{products.length} products listed</p>
-        </div>
-        
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          {/* Mobile Filter */}
-          <Sheet>
-            <SheetTrigger asChild>
-               <Button variant="outline" className="md:hidden flex-1">
-                <SlidersHorizontal className="w-4 h-4 mr-2" /> Filter
-               </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <div className="mt-8">
-                <FilterContent />
-              </div>
-            </SheetContent>
-          </Sheet>
-
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="featured">Featured</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className="min-h-screen bg-secondary/10">
+      {/* Page Header */}
+      <div className="bg-background border-b">
+        <div className="container mx-auto px-4 py-8 md:py-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">{categoryName}</h1>
+          <p className="text-muted-foreground text-lg">
+            Discover {products.length} premium products listed for you.
+          </p>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:block w-64 shrink-0">
-          <div className="sticky top-24">
-             <FilterContent />
-          </div>
-        </aside>
-
-        {/* Product Grid */}
-        <div className="flex-1">
-          {products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-72 shrink-0">
+            <div className="sticky top-24 bg-card rounded-xl border p-6 shadow-sm">
+               <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-lg">Filters</h3>
+                  <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
+               </div>
+               <Separator className="mb-4" />
+               <FilterContent />
             </div>
-          ) : (
-             <div className="text-center py-20 bg-secondary/20 rounded-xl">
-               <p className="text-lg text-muted-foreground">No products found for these criteria.</p>
-               <Button variant="link" onClick={() => setFilterCondition([])}>Clear Filters</Button>
-             </div>
-          )}
+          </aside>
+
+          {/* Product Grid & Controls */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-6 bg-card p-4 rounded-xl border shadow-sm">
+              <div className="flex items-center gap-2">
+                 {/* Mobile Filter */}
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="sm" className="lg:hidden">
+                      <SlidersHorizontal className="w-4 h-4 mr-2" /> Filters
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left">
+                    <SheetHeader>
+                      <SheetTitle>Filters</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-8">
+                      <FilterContent />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+                <span className="text-sm text-muted-foreground hidden sm:inline-block">
+                  Showing <strong>{products.length}</strong> results
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                 <span className="text-sm text-muted-foreground hidden sm:inline-block">Sort by:</span>
+                 <Select value={sort} onValueChange={setSort}>
+                  <SelectTrigger className="w-[140px] md:w-[180px] h-9">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest Listed</SelectItem>
+                    <SelectItem value="featured">Featured</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {products.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {products.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+               <div className="flex flex-col items-center justify-center py-24 bg-card rounded-xl border border-dashed">
+                 <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
+                   <SlidersHorizontal className="w-8 h-8 text-muted-foreground/50" />
+                 </div>
+                 <h3 className="text-xl font-semibold mb-2">No products found</h3>
+                 <p className="text-muted-foreground mb-6">Try adjusting your filters or search criteria.</p>
+                 <Button onClick={() => setFilterCondition([])}>Clear All Filters</Button>
+               </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
