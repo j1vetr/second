@@ -328,7 +328,7 @@ export function ProductDetail() {
               <OfferModal product={product} />
               
               <a 
-                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I'm interested in ${product.title} (ID: ${product.id}). Is it still available?`)}`}
+                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I'm interested in ${product.title}. Is it still available?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
