@@ -58,7 +58,14 @@ export function Footer() {
         </div>
 
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© 2024 SecondStore.ch. All rights reserved.</p>
+          <p>© 2025 SecondStore.ch. All rights reserved.</p>
+          <p>
+            Developed by{" "}
+            <a href="https://toov.com.tr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
+              TOOV
+            </a>{" "}
+            &lt;3
+          </p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground">Privacy Policy</a>
             <a href="#" className="hover:text-foreground">Terms of Use</a>
