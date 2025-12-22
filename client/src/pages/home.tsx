@@ -142,14 +142,16 @@ export function Home() {
   return (
     <div className="space-y-16 pb-16">
       {/* Hero Section with Category Sidebar */}
-      <section ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-primary/5">
-        <FloatingParticles count={25} />
-        <GradientOrb className="w-[600px] h-[600px] bg-primary/10 top-0 -right-64" />
-        <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
+      <section ref={heroRef} className="relative bg-gradient-to-br from-secondary/30 via-background to-primary/5">
+        <div className="hidden lg:block">
+          <FloatingParticles count={25} />
+          <GradientOrb className="w-[600px] h-[600px] bg-primary/10 top-0 -right-64" />
+          <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
+        </div>
         
         <motion.div 
           style={{ y: heroY, opacity: heroOpacity }}
-          className="container mx-auto px-4 py-8 lg:py-12 relative z-10"
+          className="container mx-auto px-4 py-8 pb-12 lg:py-12 relative z-10"
         >
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Category Sidebar */}
@@ -159,7 +161,7 @@ export function Home() {
               transition={{ duration: 0.5 }}
               className="lg:w-64 flex-shrink-0"
             >
-              <div className="bg-card/80 backdrop-blur-sm border rounded-xl overflow-hidden shadow-lg">
+              <div className="bg-card border rounded-xl overflow-hidden shadow-lg lg:bg-card/80 lg:backdrop-blur-sm">
                 <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
                   Categories
