@@ -89,13 +89,11 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/">
-                    <a className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-                      Home
-                    </a>
-                  </Link>
-                </NavigationMenuLink>
+                <Link href="/">
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
+                    Home
+                  </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -115,13 +113,11 @@ export function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/products">
-                    <a className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-                      All Products
-                    </a>
-                  </Link>
-                </NavigationMenuLink>
+                <Link href="/products">
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
+                    All Products
+                  </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -198,26 +194,24 @@ const ListItem = React.forwardRef<
 >(({ className, title, children, iconName, href, ...props }, ref) => {
   return (
     <li>
-      <NavigationMenuLink asChild>
-        <Link href={href!}>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="flex items-center gap-2 text-sm font-medium leading-none">
-              <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
-              {title}
-            </div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
-              {children}
-            </p>
-          </a>
-        </Link>
-      </NavigationMenuLink>
+      <Link href={href!}>
+        <NavigationMenuLink
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="flex items-center gap-2 text-sm font-medium leading-none">
+            <DynamicIcon name={iconName} className="h-4 w-4 text-primary" />
+            {title}
+          </div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+            {children}
+          </p>
+        </NavigationMenuLink>
+      </Link>
     </li>
   );
 });
