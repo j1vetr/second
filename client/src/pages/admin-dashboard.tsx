@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, Search, Package, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle, Mail } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, CheckCircle2, XCircle, Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAdminProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus, getNewsletterSubscribers, deleteNewsletterSubscriber, updateNewsletterSubscriber } from "@/lib/api";
+import { getAdminProducts, getCategories, deleteProduct, deleteCategory, getNewsletterSubscribers, deleteNewsletterSubscriber, updateNewsletterSubscriber } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ProductForm } from "@/components/ui/product-form";
@@ -35,11 +35,6 @@ export function AdminDashboard() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
-  });
-
-  const { data: offers = [], isLoading: offersLoading } = useQuery({
-    queryKey: ["offers"],
-    queryFn: () => getOffers(),
   });
 
   const { data: subscribers = [], isLoading: subscribersLoading } = useQuery({
@@ -67,29 +62,6 @@ export function AdminDashboard() {
     },
     onError: () => {
       toast({ title: "Failed to delete category", variant: "destructive" });
-    },
-  });
-
-  const deleteOfferMutation = useMutation({
-    mutationFn: deleteOffer,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["offers"] });
-      toast({ title: "Offer deleted successfully" });
-    },
-    onError: () => {
-      toast({ title: "Failed to delete offer", variant: "destructive" });
-    },
-  });
-
-  const updateOfferStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: "pending" | "accepted" | "rejected" }) =>
-      updateOfferStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["offers"] });
-      toast({ title: "Offer status updated" });
-    },
-    onError: () => {
-      toast({ title: "Failed to update offer status", variant: "destructive" });
     },
   });
 
@@ -140,9 +112,8 @@ export function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
             <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="offers">Offers</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
           </TabsList>
@@ -251,112 +222,6 @@ export function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Offers Management */}
-          <TabsContent value="offers" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-2xl font-bold">Offer Requests</h2>
-                <p className="text-muted-foreground">Review and manage price offers from customers.</p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Requests</CardTitle>
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">+2 from yesterday</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">4</div>
-                  <p className="text-xs text-muted-foreground">Action required</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card>
-              <CardContent className="pt-6">
-                {offersLoading ? (
-                  <div className="flex justify-center py-12">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Product</TableHead>
-                        <TableHead>Offer Amount</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {offers.map((offer) => {
-                        const product = products.find(p => p.id === offer.productId);
-                        return (
-                          <TableRow key={offer.id}>
-                            <TableCell className="text-muted-foreground">
-                              {offer.createdAt ? new Date(offer.createdAt).toLocaleDateString() : "N/A"}
-                            </TableCell>
-                            <TableCell className="font-medium">{offer.customerName}</TableCell>
-                            <TableCell>{product?.title || "Unknown Product"}</TableCell>
-                            <TableCell>{offer.offerAmount}</TableCell>
-                            <TableCell>
-                              <Badge 
-                                variant={
-                                  offer.status === 'accepted' ? 'default' : 
-                                  offer.status === 'rejected' ? 'destructive' : 'secondary'
-                                }
-                                className="capitalize"
-                              >
-                                {offer.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="text-green-600 hover:bg-green-50" 
-                                  title="Accept"
-                                  onClick={() => updateOfferStatusMutation.mutate({ id: offer.id, status: "accepted" })}
-                                  disabled={offer.status !== "pending"}
-                                >
-                                  <CheckCircle2 className="w-4 h-4" />
-                                </Button>
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="text-red-600 hover:bg-red-50" 
-                                  title="Reject"
-                                  onClick={() => updateOfferStatusMutation.mutate({ id: offer.id, status: "rejected" })}
-                                  disabled={offer.status !== "pending"}
-                                >
-                                  <XCircle className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           {/* Categories Management */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
@@ -455,7 +320,7 @@ export function AdminDashboard() {
                         <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
                           <TableCell className="font-medium">{subscriber.email}</TableCell>
                           <TableCell>
-                            {subscriber.subscribedAt ? new Date(subscriber.subscribedAt).toLocaleDateString() : "N/A"}
+                            {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString() : "N/A"}
                           </TableCell>
                           <TableCell>
                             <Badge variant={subscriber.isActive ? "default" : "secondary"}>
