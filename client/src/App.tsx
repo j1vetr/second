@@ -22,7 +22,7 @@ function Router() {
       <Route path="/admins" component={AdminDashboard} />
       
       {/* Public routes wrapped in Layout */}
-      <Route path="/:rest*">
+      <Route>
         <Layout>
           <Switch>
             <Route path="/" component={Home} />
