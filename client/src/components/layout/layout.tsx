@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { WhatsAppButton } from "./whatsapp-button";
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -22,6 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }

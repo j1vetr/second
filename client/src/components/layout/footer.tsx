@@ -26,7 +26,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-secondary/50 border-t pt-16 pb-8">
+    <footer className="bg-secondary/50 border-t pt-16 pb-20 md:pb-8">
       <div className="container mx-auto px-4">
         <div className="bg-gradient-to-r from-primary/10 to-orange-500/10 rounded-2xl p-6 md:p-8 mb-12 border border-primary/20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
