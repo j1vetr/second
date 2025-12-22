@@ -321,27 +321,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">Browse Categories</h2>
-          <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0")}>
-            See All <ArrowRight className="ml-2 w-4 h-4" />
-          </Link>
-        </div>
-        {categoriesLoading ? (
-          <div className="flex justify-center py-12">
-            <Spinner />
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map(cat => (
-              <CategoryCard key={cat.id} id={cat.id} name={cat.name} iconName={cat.icon} />
-            ))}
-          </div>
-        )}
-      </section>
-
       {/* Featured Products */}
       <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
