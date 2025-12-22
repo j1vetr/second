@@ -25,11 +25,11 @@ export function AdminDashboard() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Yönetim Paneli</h1>
-          <p className="text-muted-foreground">Ürünleri ve kategorileri yönetin.</p>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Manage products and categories.</p>
         </div>
         <Button className="bg-primary text-white">
-          <Plus className="w-4 h-4 mr-2" /> Yeni Ürün Ekle
+          <Plus className="w-4 h-4 mr-2" /> Add New Product
         </Button>
       </div>
 
@@ -38,7 +38,7 @@ export function AdminDashboard() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input 
-              placeholder="Ürün ara..." 
+              placeholder="Search products..." 
               className="pl-9" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -49,11 +49,11 @@ export function AdminDashboard() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Görsel</TableHead>
-              <TableHead>Ürün Adı</TableHead>
-              <TableHead>Kategori</TableHead>
-              <TableHead>Durum</TableHead>
-              <TableHead className="text-right">İşlemler</TableHead>
+              <TableHead className="w-[100px]">Image</TableHead>
+              <TableHead>Product Name</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Condition</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,7 +70,7 @@ export function AdminDashboard() {
                 <TableCell className="capitalize">{product.category}</TableCell>
                 <TableCell>
                   <Badge variant={product.condition === 'new' ? 'default' : 'secondary'}>
-                    {product.condition === 'new' ? 'Sıfır' : '2. El'}
+                    {product.condition === 'new' ? 'New' : 'Used'}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

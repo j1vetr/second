@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
         {/* Mobile Menu */}
         <Sheet>
           <SheetTrigger asChild>
@@ -33,8 +33,8 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="left">
             <nav className="flex flex-col gap-4 mt-8">
-              <Link href="/" className="text-lg font-medium">Ana Sayfa</Link>
-              <div className="text-sm font-semibold text-muted-foreground mt-4">Kategoriler</div>
+              <Link href="/" className="text-lg font-medium">Home</Link>
+              <div className="text-sm font-semibold text-muted-foreground mt-4">Categories</div>
               {CATEGORIES.map(cat => (
                 <Link key={cat.id} href={`/category/${cat.id}`} className="text-sm hover:text-primary transition-colors">
                   {cat.name}
@@ -47,7 +47,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/">
           <a className="flex items-center gap-2">
-            <img src="/assets/logo.png" alt="SecondStore" className="h-8 md:h-10 object-contain" />
+            <img src="/assets/logo.png" alt="SecondStore" className="h-12 md:h-16 object-contain" />
           </a>
         </Link>
 
@@ -55,13 +55,13 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-6">
           <Link href="/">
             <a className={`text-sm font-medium transition-colors hover:text-primary ${location === '/' ? 'text-primary' : ''}`}>
-              Ana Sayfa
+              Home
             </a>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="text-sm font-medium">
-                Kategoriler
+                Categories
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-[200px]">
@@ -74,7 +74,7 @@ export function Header() {
           </DropdownMenu>
           <Link href="/products">
             <a className={`text-sm font-medium transition-colors hover:text-primary ${location === '/products' ? 'text-primary' : ''}`}>
-              Tüm Ürünler
+              All Products
             </a>
           </Link>
         </nav>
@@ -83,7 +83,7 @@ export function Header() {
         <div className="flex items-center gap-2 md:gap-4 flex-1 md:flex-none justify-end">
           <form onSubmit={handleSearch} className="hidden lg:block relative w-[250px]">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Ürün ara..." className="pl-9 bg-secondary/50 border-transparent focus:bg-background focus:border-primary/50 transition-all rounded-full" />
+            <Input type="search" placeholder="Search products..." className="pl-9 bg-secondary/50 border-transparent focus:bg-background focus:border-primary/50 transition-all rounded-full" />
           </form>
 
           <Button variant="ghost" size="icon" onClick={() => {

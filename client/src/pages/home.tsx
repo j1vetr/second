@@ -21,22 +21,22 @@ export function Home() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Aradığın Fırsat, <br className="hidden md:block" />
-              <span className="text-primary">SecondStore</span>'da Seni Bekliyor.
+              The Opportunity You're Looking For, <br className="hidden md:block" />
+              Awaits at <span className="text-primary">SecondStore</span>.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              Premium ikinci el ve sıfır ürünler için güvenilir adres. 
-              Fiyat yok, stres yok. Beğen, teklif ver, sahip ol.
+              The reliable address for premium second-hand and new products.
+              No price, no stress. Like it, make an offer, own it.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/products">
                 <Button size="lg" className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto">
-                  Ürünleri Keşfet
+                  Discover Products
                 </Button>
               </Link>
               <Link href="/about">
                 <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto">
-                  Nasıl Çalışır?
+                  How it Works?
                 </Button>
               </Link>
             </div>
@@ -50,9 +50,9 @@ export function Home() {
       {/* Categories */}
       <section className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">Kategorilere Göz At</h2>
+          <h2 className="text-2xl font-bold">Browse Categories</h2>
           <Link href="/products">
-            <Button variant="link" className="text-primary p-0">Tümünü Gör <ArrowRight className="ml-2 w-4 h-4" /></Button>
+            <Button variant="link" className="text-primary p-0">See All <ArrowRight className="ml-2 w-4 h-4" /></Button>
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -66,11 +66,11 @@ export function Home() {
       <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Öne Çıkan Fırsatlar</h2>
-            <p className="text-muted-foreground">Sizin için seçtiğimiz en özel parçalar.</p>
+            <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
+            <p className="text-muted-foreground">Special pieces selected for you.</p>
           </div>
           <Link href="/products">
-            <Button variant="outline" className="hidden sm:flex">Hepsini İncele</Button>
+            <Button variant="outline" className="hidden sm:flex">View All</Button>
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -85,25 +85,25 @@ export function Home() {
         <div className="grid md:grid-cols-3 gap-8">
           <Feature 
             icon={<ShieldCheck className="w-10 h-10 text-primary" />}
-            title="Güvenli Alışveriş"
-            desc="Tüm ürünler uzman ekibimiz tarafından kontrol edilir ve onaylanır."
+            title="Secure Shopping"
+            desc="All products are checked and approved by our expert team."
           />
           <Feature 
             icon={<MessageCircle className="w-10 h-10 text-primary" />}
-            title="Kolay İletişim"
-            desc="Beğendiğiniz ürün için tek tıkla teklif verin, satıcıyla anında görüşün."
+            title="Easy Communication"
+            desc="Make an offer for the product you like with one click, talk to the seller instantly."
           />
           <Feature 
             icon={<Truck className="w-10 h-10 text-primary" />}
-            title="Hızlı Teslimat"
-            desc="Anlaşmalı kargo firmaları ile ürünleriniz güvenle kapınızda."
+            title="Fast Delivery"
+            desc="Your products are safely at your door with contracted cargo companies."
           />
         </div>
       </section>
       
       {/* New Arrivals */}
       <section className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-8">Yeni Eklenenler</h2>
+        <h2 className="text-2xl font-bold mb-8">New Arrivals</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {newProducts.map(product => (
             <ProductCard key={product.id} product={product} />

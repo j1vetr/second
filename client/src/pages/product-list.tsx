@@ -40,12 +40,12 @@ export function ProductList() {
 
   const categoryName = categoryId 
     ? CATEGORIES.find(c => c.id === categoryId)?.name 
-    : "Tüm Ürünler";
+    : "All Products";
 
   const FilterContent = () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold mb-4 text-lg">Durum</h3>
+        <h3 className="font-semibold mb-4 text-lg">Condition</h3>
         <div className="space-y-3">
           <div className="flex items-center space-x-2">
             <Checkbox 
@@ -56,7 +56,7 @@ export function ProductList() {
                 else setFilterCondition(filterCondition.filter(c => c !== 'new'))
               }}
             />
-            <Label htmlFor="new">Sıfır</Label>
+            <Label htmlFor="new">New</Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox 
@@ -67,7 +67,7 @@ export function ProductList() {
                 else setFilterCondition(filterCondition.filter(c => c !== 'used'))
               }}
             />
-            <Label htmlFor="used">2. El</Label>
+            <Label htmlFor="used">Used</Label>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export function ProductList() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold mb-2">{categoryName}</h1>
-          <p className="text-muted-foreground">{products.length} ürün listeleniyor</p>
+          <p className="text-muted-foreground">{products.length} products listed</p>
         </div>
         
         <div className="flex items-center gap-2 w-full md:w-auto">
@@ -87,7 +87,7 @@ export function ProductList() {
           <Sheet>
             <SheetTrigger asChild>
                <Button variant="outline" className="md:hidden flex-1">
-                <SlidersHorizontal className="w-4 h-4 mr-2" /> Filtrele
+                <SlidersHorizontal className="w-4 h-4 mr-2" /> Filter
                </Button>
             </SheetTrigger>
             <SheetContent side="left">
@@ -99,11 +99,11 @@ export function ProductList() {
 
           <Select value={sort} onValueChange={setSort}>
             <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue placeholder="Sıralama" />
+              <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">En Yeniler</SelectItem>
-              <SelectItem value="featured">Öne Çıkanlar</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="featured">Featured</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -127,8 +127,8 @@ export function ProductList() {
             </div>
           ) : (
              <div className="text-center py-20 bg-secondary/20 rounded-xl">
-               <p className="text-lg text-muted-foreground">Bu kriterlere uygun ürün bulunamadı.</p>
-               <Button variant="link" onClick={() => setFilterCondition([])}>Filtreleri Temizle</Button>
+               <p className="text-lg text-muted-foreground">No products found for these criteria.</p>
+               <Button variant="link" onClick={() => setFilterCondition([])}>Clear Filters</Button>
              </div>
           )}
         </div>

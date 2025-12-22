@@ -23,8 +23,8 @@ export function OfferModal({ product }: { product: Product }) {
     e.preventDefault();
     setOpen(false);
     toast({
-      title: "Teklifiniz Alındı!",
-      description: "En kısa sürede sizinle iletişime geçeceğiz.",
+      title: "Offer Received!",
+      description: "We will contact you as soon as possible.",
       duration: 5000,
     });
   };
@@ -33,40 +33,40 @@ export function OfferModal({ product }: { product: Product }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="lg" className="flex-1 bg-primary hover:bg-primary/90 text-lg py-6 shadow-lg shadow-primary/25">
-          Hemen Teklif Al
+          Get Offer Now
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Teklif İste</DialogTitle>
+          <DialogTitle>Request Offer</DialogTitle>
           <DialogDescription>
-            <strong>{product.title}</strong> için teklif formunu doldurun.
+            Fill out the form to get an offer for <strong>{product.title}</strong>.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Ad Soyad</Label>
-            <Input id="name" required placeholder="Adınız Soyadınız" />
+            <Label htmlFor="name">Full Name</Label>
+            <Input id="name" required placeholder="John Doe" />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="phone">Telefon</Label>
-            <Input id="phone" type="tel" required placeholder="05XX XXX XX XX" />
+            <Label htmlFor="phone">Phone</Label>
+            <Input id="phone" type="tel" required placeholder="+90 5XX XXX XX XX" />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">E-posta</Label>
-            <Input id="email" type="email" required placeholder="ornek@email.com" />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required placeholder="example@email.com" />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="note">Notunuz (Opsiyonel)</Label>
-            <Textarea id="note" placeholder="Ürün hakkında sormak istedikleriniz..." />
+            <Label htmlFor="note">Note (Optional)</Label>
+            <Textarea id="note" placeholder="Any questions about the product..." />
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox id="terms" required />
             <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground">
-              KVKK ve kullanım şartlarını kabul ediyorum.
+              I accept the privacy policy and terms of use.
             </Label>
           </div>
-          <Button type="submit" className="w-full mt-2">Teklifi Gönder</Button>
+          <Button type="submit" className="w-full mt-2">Submit Offer</Button>
         </form>
       </DialogContent>
     </Dialog>

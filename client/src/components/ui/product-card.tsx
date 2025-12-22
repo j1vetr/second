@@ -31,12 +31,12 @@ export function ProductCard({ product }: ProductCardProps) {
             variant={product.condition === 'new' ? 'default' : 'secondary'}
             className={`${product.condition === 'new' ? 'bg-primary text-primary-foreground' : 'bg-white/90 text-black backdrop-blur-sm'} border-0 px-3 py-1 font-medium shadow-sm`}
           >
-            {product.condition === 'new' ? 'Sıfır' : '2. El'}
+            {product.condition === 'new' ? 'Brand New' : 'Used'}
           </Badge>
           
           {product.featured && (
             <Badge className="bg-yellow-400/90 text-black border-0 backdrop-blur-sm gap-1">
-              <Sparkles className="w-3 h-3" /> Öne Çıkan
+              <Sparkles className="w-3 h-3" /> Featured
             </Badge>
           )}
         </div>
@@ -45,7 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
           <Link href={`/product/${product.id}`}>
             <Button variant="secondary" className="rounded-full gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-              İncele <ArrowRight className="w-4 h-4" />
+              View <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>
@@ -63,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="pt-2 flex items-center justify-between gap-3 border-t border-border/50">
            <Link href={`/product/${product.id}`} className="w-full">
             <Button className="w-full bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/20">
-              Teklif Al
+              Get Offer
             </Button>
           </Link>
         </div>
