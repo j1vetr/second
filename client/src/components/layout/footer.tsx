@@ -21,20 +21,20 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4 text-foreground">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/"><a className="hover:text-primary transition-colors">Home</a></Link></li>
-              <li><Link href="/products"><a className="hover:text-primary transition-colors">All Products</a></Link></li>
-              <li><Link href="/how-it-works"><a className="hover:text-primary transition-colors">How it Works</a></Link></li>
-              <li><Link href="/contact"><a className="hover:text-primary transition-colors">Contact</a></Link></li>
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="/products" className="hover:text-primary transition-colors">All Products</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-primary transition-colors">How it Works</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold mb-4 text-foreground">Categories</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/category/furniture"><a className="hover:text-primary transition-colors">Furniture</a></Link></li>
-              <li><Link href="/category/electronics"><a className="hover:text-primary transition-colors">Electronics</a></Link></li>
-              <li><Link href="/category/fashion"><a className="hover:text-primary transition-colors">Fashion</a></Link></li>
-              <li><Link href="/category/hobbies"><a className="hover:text-primary transition-colors">Hobbies</a></Link></li>
+              <li><Link href="/category/furniture" className="hover:text-primary transition-colors">Furniture</Link></li>
+              <li><Link href="/category/electronics" className="hover:text-primary transition-colors">Electronics</Link></li>
+              <li><Link href="/category/fashion" className="hover:text-primary transition-colors">Fashion</Link></li>
+              <li><Link href="/category/hobbies" className="hover:text-primary transition-colors">Hobbies</Link></li>
             </ul>
           </div>
 
