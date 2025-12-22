@@ -178,7 +178,7 @@ export function Home() {
 
             {/* Hero Content */}
             <div className="flex-1 flex flex-col justify-center lg:pl-8">
-              <div className="text-center lg:text-left">
+              <div className="text-center">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -217,7 +217,7 @@ export function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed"
+                  className="text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed"
                 >
                   Browse, like it, make an offer. No fixed prices, just great deals on quality products.
                 </motion.p>
@@ -226,7 +226,7 @@ export function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
-                  className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4"
+                  className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
                   <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-14 px-10 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto group")}>
                     Discover Products
