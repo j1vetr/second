@@ -43,11 +43,11 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span>Istanbul, Turkey<br />Head Office</span>
+                <span>Fritz-Oppliger-Strasse 18,<br />2504 Biel</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
-                <span>+90 (555) 123 45 67</span>
+                <span>+41 78 866 44 92</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
