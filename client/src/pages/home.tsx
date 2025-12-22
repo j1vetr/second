@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Truck, MessageCircle } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
+import * as Icons from "lucide-react";
 
 export function Home() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
@@ -29,38 +30,115 @@ export function Home() {
 
   return (
     <div className="space-y-16 pb-16">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-secondary/30 pt-16 pb-24 lg:pt-32 lg:pb-40">
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              The Opportunity You're Looking For, <br className="hidden md:block" />
-              Awaits at <span className="text-primary">SecondStore</span>.
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              The reliable address for premium second-hand and new products.
-              No price, no stress. Like it, make an offer, own it.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto")}>
-                  Discover Products
-              </Link>
-              <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-12 px-8 text-base w-full sm:w-auto")}>
-                  How it Works?
-              </Link>
+      {/* Hero Section with Category Sidebar */}
+      <section className="relative overflow-hidden bg-secondary/30">
+        <div className="container mx-auto px-4 py-8 lg:py-16">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Category Sidebar */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="lg:w-64 flex-shrink-0"
+            >
+              <div className="bg-card border rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-primary text-primary-foreground px-4 py-3 font-semibold">
+                  Categories
+                </div>
+                {categoriesLoading ? (
+                  <div className="p-4 flex justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <nav className="py-2">
+                    {categories.map((cat, index) => {
+                      const Icon = (Icons as any)[cat.icon] || Icons.Box;
+                      return (
+                        <Link key={cat.id} href={`/category/${cat.id}`}>
+                          <motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-secondary/50 transition-colors cursor-pointer group"
+                            data-testid={`hero-category-${cat.id}`}
+                          >
+                            <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <span className="text-sm group-hover:text-primary transition-colors">{cat.name}</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                          </motion.div>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Hero Content */}
+            <div className="flex-1 flex flex-col justify-center lg:pl-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-center lg:text-left"
+              >
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  The Opportunity You're Looking For, <br className="hidden md:block" />
+                  Awaits at <span className="text-primary">SecondStore</span>.
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
+                  The reliable address for premium second-hand and new products.
+                  No price, no stress. Like it, make an offer, own it.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
+                  <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto")}>
+                    Discover Products
+                  </Link>
+                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-12 px-8 text-base w-full sm:w-auto")}>
+                    How it Works?
+                  </Link>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
+
+            {/* Featured Image/Banner */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="hidden xl:block w-80 flex-shrink-0"
+            >
+              <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-6 h-full flex flex-col justify-center border border-primary/10">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">Today's Deals</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Special discounts on selected items</p>
+                  <Link href="/products" className={cn(buttonVariants({ size: "sm" }), "bg-primary text-white")}>
+                    View Deals
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
         
         {/* Abstract Background Decoration */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10" />
       </section>
 
-      {/* Categories */}
+      {/* Stats Section */}
+      <section className="container mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Products" />
+          <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Happy Customers" />
+          <StatCard icon={<Star className="w-6 h-6" />} value="4.9" label="Customer Rating" />
+          <StatCard icon={<TrendingUp className="w-6 h-6" />} value="98%" label="Satisfaction Rate" />
+        </div>
+      </section>
+
+      {/* Categories Grid */}
       <section className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">Browse Categories</h2>
@@ -107,6 +185,12 @@ export function Home() {
 
       {/* How it works / Trust */}
       <section className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Why Choose SecondStore?</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            We provide a trusted marketplace for quality second-hand and new products with transparent pricing.
+          </p>
+        </div>
         <div className="grid md:grid-cols-3 gap-8">
           <Feature 
             icon={<ShieldCheck className="w-10 h-10 text-primary" />}
@@ -128,11 +212,75 @@ export function Home() {
       
       {/* New Arrivals */}
       <section className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-8">New Arrivals</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold">New Arrivals</h2>
+            <p className="text-muted-foreground">Fresh products just added to our collection.</p>
+          </div>
+          <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0")}>
+            See All <ArrowRight className="ml-2 w-4 h-4" />
+          </Link>
+        </div>
+        {productsLoading ? (
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
+        ) : newProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No new products at the moment. Check back soon!
+          </div>
+        )}
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="container mx-auto px-4">
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-3xl p-8 md:p-12 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay Updated</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto mb-6">
+            Subscribe to our newsletter and be the first to know about new arrivals and special offers.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 px-4 py-3 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              data-testid="input-newsletter-email"
+            />
+            <Button className="bg-primary hover:bg-primary/90 text-white px-6" data-testid="button-subscribe">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold mb-2">What Our Customers Say</h2>
+          <p className="text-muted-foreground">Real reviews from satisfied customers</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          <TestimonialCard 
+            name="Ahmet Y."
+            text="I found exactly what I was looking for at a great price. The process was smooth and the product arrived quickly."
+            rating={5}
+          />
+          <TestimonialCard 
+            name="Elif K."
+            text="Love the offer system! I got a beautiful vintage desk for my home office. Highly recommend SecondStore."
+            rating={5}
+          />
+          <TestimonialCard 
+            name="Mehmet S."
+            text="Great customer service and quality products. Will definitely be shopping here again."
+            rating={4}
+          />
         </div>
       </section>
     </div>
@@ -141,12 +289,50 @@ export function Home() {
 
 function Feature({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="p-6 rounded-2xl bg-card border text-center hover:border-primary/30 transition-colors">
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="p-6 rounded-2xl bg-card border text-center hover:border-primary/30 transition-colors hover:shadow-lg"
+    >
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-muted-foreground">{desc}</p>
-    </div>
+    </motion.div>
+  );
+}
+
+function StatCard({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) {
+  return (
+    <motion.div 
+      whileHover={{ scale: 1.02 }}
+      className="bg-card border rounded-xl p-6 text-center"
+    >
+      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3 text-primary">
+        {icon}
+      </div>
+      <div className="text-2xl font-bold text-primary">{value}</div>
+      <div className="text-sm text-muted-foreground">{label}</div>
+    </motion.div>
+  );
+}
+
+function TestimonialCard({ name, text, rating }: { name: string, text: string, rating: number }) {
+  return (
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="bg-card border rounded-xl p-6"
+    >
+      <div className="flex gap-1 mb-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star 
+            key={i} 
+            className={cn("w-4 h-4", i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground/30")} 
+          />
+        ))}
+      </div>
+      <p className="text-muted-foreground mb-4">"{text}"</p>
+      <div className="font-semibold">{name}</div>
+    </motion.div>
   );
 }
