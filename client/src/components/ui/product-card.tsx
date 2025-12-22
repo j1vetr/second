@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { ArrowRight, BadgeCheck, Sparkles, Box } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/lib/mockData";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -43,10 +44,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Overlay Action */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-          <Link href={`/product/${product.id}`}>
-            <Button variant="secondary" className="rounded-full gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-              View <ArrowRight className="w-4 h-4" />
-            </Button>
+          <Link href={`/product/${product.id}`} className={cn(buttonVariants({ variant: "secondary" }), "rounded-full gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300")}>
+            View <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -61,10 +60,8 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="pt-2 flex items-center justify-between gap-3 border-t border-border/50">
-           <Link href={`/product/${product.id}`} className="w-full">
-            <Button className="w-full bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/20">
-              Get Offer
-            </Button>
+           <Link href={`/product/${product.id}`} className={cn(buttonVariants({ variant: "default" }), "w-full shadow-lg shadow-primary/20")}>
+             Get Offer
           </Link>
         </div>
       </div>

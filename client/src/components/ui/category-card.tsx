@@ -14,7 +14,7 @@ export function CategoryCard({ id, name, iconName }: CategoryCardProps) {
 
   return (
     <Link href={`/category/${id}`}>
-      <motion.a
+      <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         className="flex flex-col items-center justify-center p-6 bg-card border rounded-xl hover:border-primary/50 hover:bg-secondary/50 transition-colors cursor-pointer group h-full"
@@ -23,7 +23,7 @@ export function CategoryCard({ id, name, iconName }: CategoryCardProps) {
           <Icon className="w-6 h-6" />
         </div>
         <span className="font-medium text-center group-hover:text-primary transition-colors">{name}</span>
-      </motion.a>
+      </motion.div>
     </Link>
   );
 }

@@ -1,10 +1,11 @@
 import { ArrowRight, ShieldCheck, Truck, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
 import { CategoryCard } from "@/components/ui/category-card";
 import { CATEGORIES, MOCK_PRODUCTS } from "@/lib/mockData";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function Home() {
   const featuredProducts = MOCK_PRODUCTS.filter(p => p.featured);
@@ -29,15 +30,11 @@ export function Home() {
               No price, no stress. Like it, make an offer, own it.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/products">
-                <Button size="lg" className="h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto">
+              <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto")}>
                   Discover Products
-                </Button>
               </Link>
-              <Link href="/how-it-works">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto">
+              <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-12 px-8 text-base w-full sm:w-auto")}>
                   How it Works?
-                </Button>
               </Link>
             </div>
           </motion.div>
@@ -51,8 +48,8 @@ export function Home() {
       <section className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">Browse Categories</h2>
-          <Link href="/products">
-            <Button variant="link" className="text-primary p-0">See All <ArrowRight className="ml-2 w-4 h-4" /></Button>
+          <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0")}>
+            See All <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -69,8 +66,8 @@ export function Home() {
             <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
             <p className="text-muted-foreground">Special pieces selected for you.</p>
           </div>
-          <Link href="/products">
-            <Button variant="outline" className="hidden sm:flex">View All</Button>
+          <Link href="/products" className={cn(buttonVariants({ variant: "outline" }), "hidden sm:flex")}>
+            View All
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
