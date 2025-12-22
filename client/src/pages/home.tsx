@@ -1,14 +1,100 @@
-import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight, Zap } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
 import { CategoryCard } from "@/components/ui/category-card";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import * as Icons from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import type { Product } from "@shared/schema";
+
+function TodaysDealsSlider({ products }: { products: Product[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const dealProducts = useMemo(() => {
+    return [...products].sort(() => Math.random() - 0.5).slice(0, 5);
+  }, [products]);
+
+  useEffect(() => {
+    if (dealProducts.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % dealProducts.length);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [dealProducts.length]);
+
+  if (dealProducts.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground text-sm">
+        No deals available
+      </div>
+    );
+  }
+
+  const currentProduct = dealProducts[currentIndex];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Zap className="w-5 h-5 text-primary" />
+        <h3 className="font-bold text-lg">Today's Deals</h3>
+      </div>
+      
+      <div className="relative h-48 overflow-hidden rounded-xl">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentProduct.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="absolute inset-0"
+          >
+            <Link href={`/product/${currentProduct.id}`}>
+              <div className="relative h-full bg-white rounded-xl overflow-hidden group cursor-pointer">
+                <img 
+                  src={currentProduct.image} 
+                  alt={currentProduct.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                  <p className="font-semibold text-sm line-clamp-2">{currentProduct.title}</p>
+                  <p className="text-xs text-white/80 mt-1">{currentProduct.category}</p>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex justify-center gap-1.5">
+        {dealProducts.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            className={cn(
+              "w-2 h-2 rounded-full transition-all",
+              i === currentIndex
+                ? "bg-primary w-4" 
+                : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+            )}
+          />
+        ))}
+      </div>
+
+      <Link href="/products" className={cn(buttonVariants({ size: "sm" }), "w-full bg-primary text-white")}>
+        View All Deals
+      </Link>
+    </div>
+  );
+}
 
 export function Home() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
@@ -32,7 +118,7 @@ export function Home() {
     <div className="space-y-16 pb-16">
       {/* Hero Section with Category Sidebar */}
       <section className="relative overflow-hidden bg-secondary/30">
-        <div className="container mx-auto px-4 py-8 lg:py-16">
+        <div className="container mx-auto px-4 py-8 lg:py-12">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Category Sidebar */}
             <motion.div 
@@ -82,13 +168,11 @@ export function Home() {
                 transition={{ duration: 0.6 }}
                 className="text-center lg:text-left"
               >
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  The Opportunity You're Looking For, <br className="hidden md:block" />
-                  Awaits at <span className="text-primary">SecondStore</span>.
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Premium Products, <span className="text-primary">Your Price</span>
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
-                  The reliable address for premium second-hand and new products.
-                  No price, no stress. Like it, make an offer, own it.
+                <p className="text-lg text-muted-foreground max-w-xl mb-6 leading-relaxed">
+                  Browse, like it, make an offer. No fixed prices, just great deals.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
                   <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto")}>
@@ -101,24 +185,21 @@ export function Home() {
               </motion.div>
             </div>
 
-            {/* Featured Image/Banner */}
+            {/* Today's Deals Slider */}
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="hidden xl:block w-80 flex-shrink-0"
+              className="hidden xl:block w-72 flex-shrink-0"
             >
-              <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-6 h-full flex flex-col justify-center border border-primary/10">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp className="w-8 h-8 text-primary" />
+              <div className="bg-card rounded-2xl p-4 border shadow-sm h-full">
+                {productsLoading ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Spinner />
                   </div>
-                  <h3 className="font-bold text-lg mb-2">Today's Deals</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Special discounts on selected items</p>
-                  <Link href="/products" className={cn(buttonVariants({ size: "sm" }), "bg-primary text-white")}>
-                    View Deals
-                  </Link>
-                </div>
+                ) : (
+                  <TodaysDealsSlider products={allProducts} />
+                )}
               </div>
             </motion.div>
           </div>
