@@ -1,6 +1,12 @@
 import { Link, useLocation } from "wouter";
-import { Search, Menu, Sun, Moon } from "lucide-react";
+import { Search, Menu, Sun, Moon, Globe } from "lucide-react";
 import * as Icons from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -243,6 +249,29 @@ export function Header() {
             )}
           </div>
 
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" data-testid="button-language">
+                <Globe className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Change language</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => changeLanguage('en')} className="cursor-pointer">
+                <span className="mr-2">🇬🇧</span> English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeLanguage('de')} className="cursor-pointer">
+                <span className="mr-2">🇩🇪</span> Deutsch
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeLanguage('fr')} className="cursor-pointer">
+                <span className="mr-2">🇫🇷</span> Français
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeLanguage('es')} className="cursor-pointer">
+                <span className="mr-2">🇪🇸</span> Español
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button variant="ghost" size="icon" onClick={() => {
             const isDark = document.documentElement.classList.contains('dark');
             setTheme(isDark ? "light" : "dark");
@@ -255,6 +284,17 @@ export function Header() {
       </div>
     </header>
   );
+}
+
+function changeLanguage(lang: string) {
+  const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+  if (selectElement) {
+    selectElement.value = lang;
+    selectElement.dispatchEvent(new Event('change'));
+  } else {
+    document.cookie = `googtrans=/en/${lang}; path=/`;
+    window.location.reload();
+  }
 }
 
 const ListItem = React.forwardRef<
