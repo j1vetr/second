@@ -25,6 +25,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useMemo } from "react";
 import DOMPurify from "dompurify";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -59,6 +60,8 @@ export function ProductDetail() {
     queryFn: () => getProduct(id!),
     enabled: !!id,
   });
+
+  usePageTitle(product?.title || "Product Details");
 
   const { data: allProducts = [] } = useQuery({
     queryKey: ["products", product?.category],

@@ -23,20 +23,27 @@ import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts, getCategories } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export function ProductList() {
   const { categoryId } = useParams();
   const [filterCondition, setFilterCondition] = useState<string[]>([]);
   const [sort, setSort] = useState("newest");
 
-  const { data: allProducts = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products", categoryId],
-    queryFn: () => categoryId ? getProducts({ category: categoryId }) : getProducts(),
-  });
-
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  });
+
+  const categoryName = categoryId 
+    ? categories.find(c => c.id === categoryId)?.name || categoryId 
+    : "All Products";
+  
+  usePageTitle(categoryName);
+
+  const { data: allProducts = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["products", categoryId],
+    queryFn: () => categoryId ? getProducts({ category: categoryId }) : getProducts(),
   });
 
   let products = allProducts;
@@ -50,10 +57,6 @@ export function ProductList() {
   if (sort === "featured") {
     products = [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   }
-
-  const categoryName = categoryId 
-    ? categories.find(c => c.id === categoryId)?.name 
-    : "All Products";
 
   const FilterContent = () => (
     <div className="space-y-6">

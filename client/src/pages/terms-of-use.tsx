@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ChevronRight, FileText, Scale, AlertTriangle, CreditCard, Package, Ban, Gavel } from "lucide-react";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -83,6 +84,8 @@ const sections = [
 ];
 
 export function TermsOfUse() {
+  usePageTitle("Terms of Use");
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
       <div className="container mx-auto px-4 py-12">

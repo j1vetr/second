@@ -13,6 +13,7 @@ import { ProductCardSkeleton, CategoryCardSkeleton } from "@/components/ui/shimm
 import * as Icons from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import type { Product } from "@shared/schema";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 function TodaysDealsSlider({ products }: { products: Product[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -115,6 +116,8 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
 }
 
 export function Home() {
+  usePageTitle("Premium Products at Your Price");
+  
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,

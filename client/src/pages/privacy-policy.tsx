@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ChevronRight, Shield, Eye, Lock, Database, UserCheck, Mail } from "lucide-react";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -75,6 +76,8 @@ const sections = [
 ];
 
 export function PrivacyPolicy() {
+  usePageTitle("Privacy Policy");
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
       <div className="container mx-auto px-4 py-12">

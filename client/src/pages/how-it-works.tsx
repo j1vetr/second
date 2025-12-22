@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { MessageCircle, Search, Truck, CheckCircle2, ShieldCheck, Box } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export function HowItWorks() {
+  usePageTitle("How It Works");
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
