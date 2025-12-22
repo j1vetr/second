@@ -204,26 +204,6 @@ export function Home() {
             {/* Hero Content */}
             <div className="flex-1 flex flex-col justify-center lg:pl-8">
               <div className="text-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="inline-block mb-3"
-                >
-                  <motion.span 
-                    whileHover={{ scale: 1.05 }}
-                    className="px-4 py-1.5 bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary text-sm font-medium rounded-full border border-primary/20 inline-flex items-center gap-2 cursor-default"
-                  >
-                    <motion.span
-                      animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      👋
-                    </motion.span>
-                    Welcome to SecondStore
-                  </motion.span>
-                </motion.div>
-                
                 <div className="overflow-hidden mb-2">
                   <motion.h1 
                     initial={{ y: 100, opacity: 0 }}
