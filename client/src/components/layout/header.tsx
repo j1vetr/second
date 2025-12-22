@@ -89,11 +89,13 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/">
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-                    Home
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild>
+                  <Link href="/">
+                    <a className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
+                      Home
+                    </a>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -113,11 +115,13 @@ export function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/products">
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-                    All Products
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild>
+                  <Link href="/products">
+                    <a className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
+                      All Products
+                    </a>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -178,9 +182,9 @@ export function Header() {
           </Button>
 
           <Link href="/admin-login">
-             <Button variant="outline" size="sm" className="hidden md:flex">
+             <a className="hidden md:flex inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
                Admin
-             </Button>
+             </a>
           </Link>
         </div>
       </div>
