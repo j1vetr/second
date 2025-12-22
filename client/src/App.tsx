@@ -12,6 +12,9 @@ import { ProductDetail } from "@/pages/product-detail";
 import { AdminDashboard } from "@/pages/admin-dashboard";
 import { AdminLogin } from "@/pages/admin-login";
 import { HowItWorks } from "@/pages/how-it-works";
+import { PrivacyPolicy } from "@/pages/privacy-policy";
+import { TermsOfUse } from "@/pages/terms-of-use";
+import { CookiePolicy } from "@/pages/cookie-policy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -30,6 +33,9 @@ function Router() {
             <Route path="/category/:categoryId" component={ProductList} />
             <Route path="/product/:id" component={ProductDetail} />
             <Route path="/how-it-works" component={HowItWorks} />
+            <Route path="/privacy-policy" component={PrivacyPolicy} />
+            <Route path="/terms-of-use" component={TermsOfUse} />
+            <Route path="/cookie-policy" component={CookiePolicy} />
             <Route component={NotFound} />
           </Switch>
         </Layout>
