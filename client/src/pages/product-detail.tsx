@@ -3,11 +3,12 @@ import { MOCK_PRODUCTS } from "@/lib/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { OfferModal } from "@/components/ui/offer-modal";
-import { MessageCircle, Share2, Heart, CheckCircle2, ShieldCheck, Box, Truck } from "lucide-react";
+import { MessageCircle, Share2, Heart, CheckCircle2, ShieldCheck, Box, Truck, Ruler, Scale, Package } from "lucide-react";
 import { ProductCard } from "@/components/ui/product-card";
 import { motion } from "framer-motion";
 import NotFound from "@/pages/not-found";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -45,28 +46,109 @@ export function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           
           {/* Gallery Section (Left - 7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            <motion.div 
-              layoutId={`product-image-${product.id}`}
-              className="aspect-[4/3] rounded-2xl overflow-hidden bg-white border shadow-sm relative group"
-            >
-              <img 
-                src={product.image} 
-                alt={product.title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-                 {product.isNew && <Badge className="bg-primary text-white">New Arrival</Badge>}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="space-y-6">
+              <motion.div 
+                layoutId={`product-image-${product.id}`}
+                className="aspect-[4/3] rounded-2xl overflow-hidden bg-white border shadow-sm relative group"
+              >
+                <img 
+                  src={product.image} 
+                  alt={product.title} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                   {product.isNew && <Badge className="bg-primary text-white">New Arrival</Badge>}
+                </div>
+              </motion.div>
+              
+              <div className="grid grid-cols-4 gap-4">
+                 {/* Mock thumbnails */}
+                 {[1,2,3,4].map(i => (
+                   <div key={i} className="aspect-square rounded-xl overflow-hidden bg-white border cursor-pointer hover:ring-2 hover:ring-primary transition-all opacity-80 hover:opacity-100">
+                     <img src={product.image} className="w-full h-full object-cover" />
+                   </div>
+                 ))}
               </div>
-            </motion.div>
-            
-            <div className="grid grid-cols-4 gap-4">
-               {/* Mock thumbnails */}
-               {[1,2,3,4].map(i => (
-                 <div key={i} className="aspect-square rounded-xl overflow-hidden bg-white border cursor-pointer hover:ring-2 hover:ring-primary transition-all opacity-80 hover:opacity-100">
-                   <img src={product.image} className="w-full h-full object-cover" />
-                 </div>
-               ))}
+            </div>
+
+            {/* Product Specifications & Details Tabs */}
+            <div className="bg-card rounded-2xl border shadow-sm p-6 md:p-8">
+              <Tabs defaultValue="description" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                  <TabsTrigger value="description">Description</TabsTrigger>
+                  <TabsTrigger value="specs">Specifications</TabsTrigger>
+                  <TabsTrigger value="included">Included Items</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="description" className="space-y-4">
+                  <h3 className="text-lg font-semibold">About this product</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {product.description || "No detailed description provided for this product."}
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed mt-4">
+                    This item has been carefully inspected by our team. 
+                    {product.condition === 'new' 
+                      ? " As a brand new product, it comes in original packaging with all factory accessories." 
+                      : " As a pre-owned item, please check the condition rating and photos carefully."}
+                  </p>
+                </TabsContent>
+                
+                <TabsContent value="specs" className="space-y-4">
+                   <h3 className="text-lg font-semibold mb-4">Technical Specifications</h3>
+                   <div className="grid md:grid-cols-2 gap-4">
+                      <div className="flex items-center p-3 bg-secondary/30 rounded-lg">
+                        <Ruler className="w-5 h-5 text-primary mr-3" />
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Dimensions</p>
+                          <p className="font-medium">{product.dimensions || "Not specified"}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-secondary/30 rounded-lg">
+                        <Scale className="w-5 h-5 text-primary mr-3" />
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Weight</p>
+                          <p className="font-medium">{product.weight || "Not specified"}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-secondary/30 rounded-lg">
+                        <Box className="w-5 h-5 text-primary mr-3" />
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Condition</p>
+                          <p className="font-medium capitalize">{product.condition === 'new' ? 'Brand New' : 'Used'}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-secondary/30 rounded-lg">
+                        <ShieldCheck className="w-5 h-5 text-primary mr-3" />
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Warranty</p>
+                          <p className="font-medium">{product.condition === 'new' ? '2 Years' : 'None'}</p>
+                        </div>
+                      </div>
+                   </div>
+                </TabsContent>
+
+                <TabsContent value="included">
+                  <h3 className="text-lg font-semibold mb-4">What's in the box?</h3>
+                  {product.includedItems && product.includedItems.length > 0 ? (
+                    <ul className="space-y-2">
+                      {product.includedItems.map((item, index) => (
+                        <li key={index} className="flex items-center gap-3 p-3 bg-secondary/20 rounded-lg border border-transparent hover:border-border transition-colors">
+                          <div className="bg-primary/10 p-2 rounded-full">
+                            <Package className="w-4 h-4 text-primary" />
+                          </div>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Package className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p>Included items list not available.</p>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
 
@@ -104,12 +186,6 @@ export function ProductDetail() {
               </div>
 
               <Separator />
-
-              <div className="space-y-4">
-                 <p className="text-muted-foreground leading-relaxed">
-                   {product.description || "No detailed description provided for this product."}
-                 </p>
-              </div>
 
               <div className="grid grid-cols-2 gap-4 py-2">
                  <div className="p-3 bg-secondary/20 rounded-lg border border-border/50">

@@ -14,17 +14,43 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/components/theme-provider";
-import { CATEGORIES } from "@/lib/mockData";
+import { CATEGORIES, MOCK_PRODUCTS, Product } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export function Header() {
   const { setTheme } = useTheme();
   const [location] = useLocation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app this would search
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    if (term.length > 0) {
+      const results = MOCK_PRODUCTS.filter(product =>
+        product.title.toLowerCase().includes(term.toLowerCase()) ||
+        product.category.toLowerCase().includes(term.toLowerCase())
+      );
+      setSearchResults(results);
+      setShowResults(true);
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
   };
 
   return (
@@ -99,10 +125,48 @@ export function Header() {
 
         {/* Search & Actions */}
         <div className="flex items-center gap-2 md:gap-4 flex-1 md:flex-none justify-end">
-          <form onSubmit={handleSearch} className="hidden lg:block relative w-[250px]">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Search products..." className="pl-9 bg-secondary/50 border-transparent focus:bg-background focus:border-primary/50 transition-all rounded-full" />
-          </form>
+          <div className="hidden lg:block relative w-[300px]" ref={searchRef}>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input 
+                type="search" 
+                placeholder="Search products..." 
+                className="pl-9 bg-secondary/50 border-transparent focus:bg-background focus:border-primary/50 transition-all rounded-full"
+                value={searchTerm}
+                onChange={handleSearch}
+                onFocus={() => { if (searchTerm) setShowResults(true); }}
+              />
+            </div>
+            
+            {showResults && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-popover rounded-xl border shadow-lg overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                {searchResults.length > 0 ? (
+                  <ul className="max-h-[300px] overflow-y-auto py-2">
+                    {searchResults.map(product => (
+                      <li key={product.id}>
+                        <Link href={`/product/${product.id}`}>
+                          <a 
+                            className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors"
+                            onClick={() => setShowResults(false)}
+                          >
+                            <img src={product.image} alt={product.title} className="w-10 h-10 rounded-md object-cover" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{product.title}</p>
+                              <p className="text-xs text-muted-foreground truncate capitalize">{product.category}</p>
+                            </div>
+                          </a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    No products found
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           <Button variant="ghost" size="icon" onClick={() => {
             const isDark = document.documentElement.classList.contains('dark');
@@ -159,4 +223,3 @@ function DynamicIcon({ name, className }: { name: string; className?: string }) 
   const Icon = (Icons as any)[name] || Icons.Circle;
   return <Icon className={className} />;
 }
-
