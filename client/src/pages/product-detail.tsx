@@ -111,6 +111,18 @@ export function ProductDetail() {
 
               <div className="flex flex-col gap-3 pt-2">
                 <OfferModal product={product} />
+                
+                <a 
+                  href={`https://wa.me/905551234567?text=${encodeURIComponent(`Hi, I'm interested in ${product.title} (ID: ${product.id}). Is it still available?`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full"
+                >
+                  <Button className="w-full text-base h-12 bg-[#25D366] hover:bg-[#128C7E] text-white">
+                    <MessageCircle className="w-4 h-4 mr-2" /> Order via WhatsApp
+                  </Button>
+                </a>
+
                 <Button variant="outline" size="lg" className="w-full text-base h-12">
                   <MessageCircle className="w-4 h-4 mr-2" /> Ask Seller a Question
                 </Button>
