@@ -136,7 +136,7 @@ export function Header() {
   };
 
   return (
-    <header className="z-50 w-full border-b bg-background">
+    <header className="relative w-full border-b bg-background">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
         {/* Mobile Menu */}
         <Sheet>
