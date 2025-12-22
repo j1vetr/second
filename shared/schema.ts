@@ -33,6 +33,7 @@ export const products = pgTable("products", {
   category: varchar("category").notNull().references(() => categories.id),
   condition: varchar("condition", { enum: ["new", "used"] }).notNull(),
   image: text("image").notNull(),
+  images: text("images").array().default(sql`ARRAY[]::text[]`),
   featured: boolean("featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   description: text("description"),
