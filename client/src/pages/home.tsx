@@ -34,7 +34,7 @@ export function Home() {
                   Discover Products
                 </Button>
               </Link>
-              <Link href="/about">
+              <Link href="/how-it-works">
                 <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto">
                   How it Works?
                 </Button>

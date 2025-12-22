@@ -10,6 +10,7 @@ import { Home } from "@/pages/home";
 import { ProductList } from "@/pages/product-list";
 import { ProductDetail } from "@/pages/product-detail";
 import { AdminDashboard } from "@/pages/admin";
+import { HowItWorks } from "@/pages/how-it-works";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
         <Route path="/products" component={ProductList} />
         <Route path="/category/:categoryId" component={ProductList} />
         <Route path="/product/:id" component={ProductDetail} />
+        <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/admin" component={AdminDashboard} />
         <Route component={NotFound} />
       </Switch>
