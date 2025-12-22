@@ -3,13 +3,29 @@ import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
 import { CategoryCard } from "@/components/ui/category-card";
-import { CATEGORIES, MOCK_PRODUCTS } from "@/lib/mockData";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getCategories, getProducts } from "@/lib/api";
+import { Spinner } from "@/components/ui/spinner";
 
 export function Home() {
-  const featuredProducts = MOCK_PRODUCTS.filter(p => p.featured);
-  const newProducts = MOCK_PRODUCTS.filter(p => p.isNew).slice(0, 4);
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
+
+  const { data: allProducts = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => getProducts(),
+  });
+
+  const { data: featuredProducts = [], isLoading: featuredLoading } = useQuery({
+    queryKey: ["products", "featured"],
+    queryFn: () => getProducts({ featured: true }),
+  });
+
+  const newProducts = allProducts.filter(p => p.isNew).slice(0, 4);
 
   return (
     <div className="space-y-16 pb-16">
@@ -52,11 +68,17 @@ export function Home() {
             See All <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {CATEGORIES.map(cat => (
-            <CategoryCard key={cat.id} id={cat.id} name={cat.name} iconName={cat.icon} />
-          ))}
-        </div>
+        {categoriesLoading ? (
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {categories.map(cat => (
+              <CategoryCard key={cat.id} id={cat.id} name={cat.name} iconName={cat.icon} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Featured Products */}
@@ -70,11 +92,17 @@ export function Home() {
             View All
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {featuredLoading ? (
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* How it works / Trust */}

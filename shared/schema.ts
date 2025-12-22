@@ -33,13 +33,13 @@ export const products = pgTable("products", {
   category: varchar("category").notNull().references(() => categories.id),
   condition: varchar("condition", { enum: ["new", "used"] }).notNull(),
   image: text("image").notNull(),
-  featured: boolean("featured").default(false),
-  isNew: boolean("is_new").default(false),
+  featured: boolean("featured").notNull().default(false),
+  isNew: boolean("is_new").notNull().default(false),
   description: text("description"),
   dimensions: text("dimensions"),
   weight: text("weight"),
-  includedItems: text("included_items").array(),
-  createdAt: timestamp("created_at").defaultNow(),
+  includedItems: text("included_items").array().default(sql`ARRAY[]::text[]`),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({

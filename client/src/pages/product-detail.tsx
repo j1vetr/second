@@ -1,5 +1,4 @@
 import { useParams } from "wouter";
-import { MOCK_PRODUCTS } from "@/lib/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { OfferModal } from "@/components/ui/offer-modal";
@@ -9,6 +8,9 @@ import { motion } from "framer-motion";
 import NotFound from "@/pages/not-found";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
+import { getProduct, getProducts } from "@/lib/api";
+import { Spinner } from "@/components/ui/spinner";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -25,11 +27,30 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 export function ProductDetail() {
   const { id } = useParams();
-  const product = MOCK_PRODUCTS.find(p => p.id === id);
+  
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProduct(id!),
+    enabled: !!id,
+  });
 
-  if (!product) return <NotFound />;
+  const { data: allProducts = [] } = useQuery({
+    queryKey: ["products", product?.category],
+    queryFn: () => product?.category ? getProducts({ category: product.category }) : getProducts(),
+    enabled: !!product,
+  });
 
-  const similarProducts = MOCK_PRODUCTS
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error || !product) return <NotFound />;
+
+  const similarProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

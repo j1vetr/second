@@ -3,7 +3,7 @@ import { ArrowRight, BadgeCheck, Sparkles, Box } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Product } from "@/lib/mockData";
+import type { Product } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
 interface ProductCardProps {

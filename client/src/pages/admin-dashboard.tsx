@@ -11,22 +11,78 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MOCK_PRODUCTS, CATEGORIES } from "@/lib/mockData";
 import { Plus, Pencil, Trash2, Search, Package, Users, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-
-// Mock Offers Data
-const MOCK_OFFERS = [
-  { id: 1, product: "Modern L Corner Sofa Set", customer: "John Doe", offer: "850 CHF", status: "pending", date: "2024-03-20" },
-  { id: 2, product: "iPhone 14 Pro Max", customer: "Sarah Smith", offer: "950 CHF", status: "accepted", date: "2024-03-19" },
-  { id: 3, product: "Samsung 4K Smart TV", customer: "Mike Johnson", offer: "400 CHF", status: "rejected", date: "2024-03-18" },
-];
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus } from "@/lib/api";
+import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/hooks/use-toast";
 
 export function AdminDashboard() {
-  const [products, setProducts] = useState(MOCK_PRODUCTS);
-  const [categories, setCategories] = useState(CATEGORIES);
   const [search, setSearch] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: products = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
+
+  const { data: offers = [], isLoading: offersLoading } = useQuery({
+    queryKey: ["offers"],
+    queryFn: () => getOffers(),
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast({ title: "Product deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete product", variant: "destructive" });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast({ title: "Category deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete category", variant: "destructive" });
+    },
+  });
+
+  const deleteOfferMutation = useMutation({
+    mutationFn: deleteOffer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
+      toast({ title: "Offer deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete offer", variant: "destructive" });
+    },
+  });
+
+  const updateOfferStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "pending" | "accepted" | "rejected" }) =>
+      updateOfferStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
+      toast({ title: "Offer status updated" });
+    },
+    onError: () => {
+      toast({ title: "Failed to update offer status", variant: "destructive" });
+    },
+  });
 
   const filteredProducts = products.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase())
@@ -85,54 +141,72 @@ export function AdminDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[80px]">Image</TableHead>
-                      <TableHead>Product Name</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Condition</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredProducts.map((product) => (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          <img 
-                            src={product.image} 
-                            alt={product.title} 
-                            className="w-10 h-10 rounded-md object-cover bg-secondary"
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">{product.title}</TableCell>
-                        <TableCell className="capitalize">{product.category}</TableCell>
-                        <TableCell>
-                          <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="capitalize">
-                            {product.condition}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Active</Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" title="View">
-                              <Eye className="w-4 h-4 text-muted-foreground" />
-                            </Button>
-                            <Button variant="ghost" size="icon" title="Edit">
-                              <Pencil className="w-4 h-4 text-primary" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10" title="Delete">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                {productsLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[80px]">Image</TableHead>
+                        <TableHead>Product Name</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Condition</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProducts.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            <img 
+                              src={product.image} 
+                              alt={product.title} 
+                              className="w-10 h-10 rounded-md object-cover bg-secondary"
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">{product.title}</TableCell>
+                          <TableCell className="capitalize">{product.category}</TableCell>
+                          <TableCell>
+                            <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="capitalize">
+                              {product.condition}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Active</Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Link href={`/product/${product.id}`}>
+                                <Button variant="ghost" size="icon" title="View">
+                                  <Eye className="w-4 h-4 text-muted-foreground" />
+                                </Button>
+                              </Link>
+                              <Button variant="ghost" size="icon" title="Edit">
+                                <Pencil className="w-4 h-4 text-primary" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10" 
+                                title="Delete"
+                                onClick={() => {
+                                  if (confirm(`Are you sure you want to delete "${product.title}"?`)) {
+                                    deleteProductMutation.mutate(product.id);
+                                  }
+                                }}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -171,49 +245,74 @@ export function AdminDashboard() {
 
             <Card>
               <CardContent className="pt-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Offer Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {MOCK_OFFERS.map((offer) => (
-                      <TableRow key={offer.id}>
-                        <TableCell className="text-muted-foreground">{offer.date}</TableCell>
-                        <TableCell className="font-medium">{offer.customer}</TableCell>
-                        <TableCell>{offer.product}</TableCell>
-                        <TableCell>{offer.offer}</TableCell>
-                        <TableCell>
-                          <Badge 
-                            variant={
-                              offer.status === 'accepted' ? 'default' : 
-                              offer.status === 'rejected' ? 'destructive' : 'secondary'
-                            }
-                            className="capitalize"
-                          >
-                            {offer.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" className="text-green-600 hover:bg-green-50" title="Accept">
-                              <CheckCircle2 className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-50" title="Reject">
-                              <XCircle className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                {offersLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Customer</TableHead>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Offer Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {offers.map((offer) => {
+                        const product = products.find(p => p.id === offer.productId);
+                        return (
+                          <TableRow key={offer.id}>
+                            <TableCell className="text-muted-foreground">
+                              {offer.createdAt ? new Date(offer.createdAt).toLocaleDateString() : "N/A"}
+                            </TableCell>
+                            <TableCell className="font-medium">{offer.customerName}</TableCell>
+                            <TableCell>{product?.title || "Unknown Product"}</TableCell>
+                            <TableCell>{offer.offerAmount}</TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={
+                                  offer.status === 'accepted' ? 'default' : 
+                                  offer.status === 'rejected' ? 'destructive' : 'secondary'
+                                }
+                                className="capitalize"
+                              >
+                                {offer.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="text-green-600 hover:bg-green-50" 
+                                  title="Accept"
+                                  onClick={() => updateOfferStatusMutation.mutate({ id: offer.id, status: "accepted" })}
+                                  disabled={offer.status !== "pending"}
+                                >
+                                  <CheckCircle2 className="w-4 h-4" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="text-red-600 hover:bg-red-50" 
+                                  title="Reject"
+                                  onClick={() => updateOfferStatusMutation.mutate({ id: offer.id, status: "rejected" })}
+                                  disabled={offer.status !== "pending"}
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -230,30 +329,44 @@ export function AdminDashboard() {
               </Button>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map((cat) => (
-                <Card key={cat.id} className="group hover:border-primary/50 transition-all">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{cat.name}</CardTitle>
-                    <div className="p-2 bg-secondary rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                      {/* Icon placeholder logic */}
-                      <Package className="w-4 h-4" /> 
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
-                    <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Pencil className="w-3 h-3" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive">
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {categoriesLoading ? (
+              <div className="flex justify-center py-12">
+                <Spinner />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {categories.map((cat) => (
+                  <Card key={cat.id} className="group hover:border-primary/50 transition-all">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{cat.name}</CardTitle>
+                      <div className="p-2 bg-secondary rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                        <Package className="w-4 h-4" /> 
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
+                      <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Pencil className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to delete "${cat.name}"?`)) {
+                              deleteCategoryMutation.mutate(cat.id);
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

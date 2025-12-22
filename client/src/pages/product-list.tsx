@@ -11,7 +11,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { MOCK_PRODUCTS, CATEGORIES } from "@/lib/mockData";
 import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { 
@@ -21,18 +20,26 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts, getCategories } from "@/lib/api";
+import { Spinner } from "@/components/ui/spinner";
 
 export function ProductList() {
   const { categoryId } = useParams();
   const [filterCondition, setFilterCondition] = useState<string[]>([]);
   const [sort, setSort] = useState("newest");
 
-  let products = MOCK_PRODUCTS;
+  const { data: allProducts = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["products", categoryId],
+    queryFn: () => categoryId ? getProducts({ category: categoryId }) : getProducts(),
+  });
 
-  // Filter by category
-  if (categoryId) {
-    products = products.filter(p => p.category === categoryId);
-  }
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
+
+  let products = allProducts;
 
   // Filter by condition
   if (filterCondition.length > 0) {
@@ -40,13 +47,12 @@ export function ProductList() {
   }
 
   // Sorting
-  if (sort === "newest") {
-    // Mock sorting logic
-    products = [...products].reverse(); 
+  if (sort === "featured") {
+    products = [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   }
 
   const categoryName = categoryId 
-    ? CATEGORIES.find(c => c.id === categoryId)?.name 
+    ? categories.find(c => c.id === categoryId)?.name 
     : "All Products";
 
   const FilterContent = () => (
@@ -170,7 +176,11 @@ export function ProductList() {
               </div>
             </div>
 
-            {products.length > 0 ? (
+            {productsLoading ? (
+              <div className="flex justify-center py-24">
+                <Spinner />
+              </div>
+            ) : products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {products.map(product => (
                   <ProductCard key={product.id} product={product} />
