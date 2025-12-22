@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, insertCategorySchema, insertOfferSchema } from "@shared/schema";
+import { insertProductSchema, insertCategorySchema, insertOfferSchema, insertNewsletterSubscriberSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import multer from "multer";
@@ -313,6 +313,61 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting offer:", error);
       res.status(500).json({ error: "Failed to delete offer" });
+    }
+  });
+
+  // Newsletter Routes
+  app.get("/api/newsletter", async (req, res) => {
+    try {
+      const subscribers = await storage.getNewsletterSubscribers();
+      res.json(subscribers);
+    } catch (error) {
+      console.error("Error fetching newsletter subscribers:", error);
+      res.status(500).json({ error: "Failed to fetch subscribers" });
+    }
+  });
+
+  app.post("/api/newsletter/subscribe", async (req, res) => {
+    try {
+      const validatedData = insertNewsletterSubscriberSchema.parse(req.body);
+      const subscriber = await storage.createNewsletterSubscriber(validatedData);
+      res.status(201).json(subscriber);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: fromZodError(error).message });
+      }
+      if (error?.code === '23505') {
+        return res.status(400).json({ error: "This email is already subscribed" });
+      }
+      console.error("Error subscribing to newsletter:", error);
+      res.status(500).json({ error: "Failed to subscribe" });
+    }
+  });
+
+  app.patch("/api/newsletter/:id", async (req, res) => {
+    try {
+      const { isActive } = req.body;
+      const subscriber = await storage.updateNewsletterSubscriber(req.params.id, isActive);
+      if (!subscriber) {
+        return res.status(404).json({ error: "Subscriber not found" });
+      }
+      res.json(subscriber);
+    } catch (error) {
+      console.error("Error updating subscriber:", error);
+      res.status(500).json({ error: "Failed to update subscriber" });
+    }
+  });
+
+  app.delete("/api/newsletter/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteNewsletterSubscriber(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Subscriber not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting subscriber:", error);
+      res.status(500).json({ error: "Failed to delete subscriber" });
     }
   });
 

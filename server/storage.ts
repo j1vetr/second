@@ -7,13 +7,16 @@ import {
   type InsertCategory,
   type Offer,
   type InsertOffer,
+  type NewsletterSubscriber,
+  type InsertNewsletterSubscriber,
   users,
   products,
   categories,
-  offers
+  offers,
+  newsletterSubscribers
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, gte } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -46,6 +49,14 @@ export interface IStorage {
   createOffer(offer: InsertOffer): Promise<Offer>;
   updateOfferStatus(id: string, status: "pending" | "accepted" | "rejected"): Promise<Offer | undefined>;
   deleteOffer(id: string): Promise<boolean>;
+
+  // Newsletter methods
+  getNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
+  getActiveNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
+  createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
+  updateNewsletterSubscriber(id: string, isActive: boolean): Promise<NewsletterSubscriber | undefined>;
+  deleteNewsletterSubscriber(id: string): Promise<boolean>;
+  getRecentProducts(days: number): Promise<Product[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -202,6 +213,51 @@ export class DatabaseStorage implements IStorage {
   async deleteOffer(id: string): Promise<boolean> {
     const result = await db.delete(offers).where(eq(offers.id, id));
     return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Newsletter methods
+  async getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+    return await db.select().from(newsletterSubscribers).orderBy(desc(newsletterSubscribers.createdAt));
+  }
+
+  async getActiveNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+    return await db
+      .select()
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.isActive, true))
+      .orderBy(desc(newsletterSubscribers.createdAt));
+  }
+
+  async createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+    const [newSubscriber] = await db
+      .insert(newsletterSubscribers)
+      .values(subscriber)
+      .returning();
+    return newSubscriber;
+  }
+
+  async updateNewsletterSubscriber(id: string, isActive: boolean): Promise<NewsletterSubscriber | undefined> {
+    const [updated] = await db
+      .update(newsletterSubscribers)
+      .set({ isActive })
+      .where(eq(newsletterSubscribers.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async deleteNewsletterSubscriber(id: string): Promise<boolean> {
+    const result = await db.delete(newsletterSubscribers).where(eq(newsletterSubscribers.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  async getRecentProducts(days: number): Promise<Product[]> {
+    const dateThreshold = new Date();
+    dateThreshold.setDate(dateThreshold.getDate() - days);
+    return await db
+      .select()
+      .from(products)
+      .where(and(eq(products.isActive, true), gte(products.createdAt, dateThreshold)))
+      .orderBy(desc(products.createdAt));
   }
 }
 

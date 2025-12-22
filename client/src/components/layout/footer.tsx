@@ -1,10 +1,62 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Twitter, Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { subscribeToNewsletter } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setIsSubscribing(true);
+    try {
+      await subscribeToNewsletter(email.trim());
+      toast({ title: "Successfully subscribed!", description: "You'll receive updates about new products." });
+      setEmail("");
+    } catch (error: any) {
+      toast({ title: error.message || "Failed to subscribe", variant: "destructive" });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   return (
     <footer className="bg-secondary/50 border-t pt-16 pb-8">
       <div className="container mx-auto px-4">
+        <div className="bg-gradient-to-r from-primary/10 to-orange-500/10 rounded-2xl p-6 md:p-8 mb-12 border border-primary/20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h3 className="text-xl font-bold mb-2">Stay Updated!</h3>
+              <p className="text-muted-foreground text-sm">Subscribe to get notified about new products and special offers.</p>
+            </div>
+            <form onSubmit={handleSubscribe} className="flex gap-2 w-full md:w-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="flex-1 md:w-64 px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                required
+                data-testid="input-newsletter-email"
+              />
+              <button
+                type="submit"
+                disabled={isSubscribing}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                data-testid="button-newsletter-subscribe"
+              >
+                {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="space-y-4">
             <img src="/assets/logo.png" alt="SecondStore" className="h-12 object-contain" />

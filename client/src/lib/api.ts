@@ -123,3 +123,42 @@ export async function deleteOffer(id: string): Promise<void> {
   });
   if (!response.ok) throw new Error("Failed to delete offer");
 }
+
+// Newsletter API
+import type { NewsletterSubscriber } from "@shared/schema";
+
+export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+  const response = await fetch(`${API_BASE}/newsletter`);
+  if (!response.ok) throw new Error("Failed to fetch subscribers");
+  return response.json();
+}
+
+export async function subscribeToNewsletter(email: string): Promise<NewsletterSubscriber> {
+  const response = await fetch(`${API_BASE}/newsletter/subscribe`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to subscribe");
+  }
+  return response.json();
+}
+
+export async function updateNewsletterSubscriber(id: string, isActive: boolean): Promise<NewsletterSubscriber> {
+  const response = await fetch(`${API_BASE}/newsletter/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isActive }),
+  });
+  if (!response.ok) throw new Error("Failed to update subscriber");
+  return response.json();
+}
+
+export async function deleteNewsletterSubscriber(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE}/newsletter/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete subscriber");
+}

@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, Search, Package, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, MessageSquare, LayoutGrid, Eye, CheckCircle2, XCircle, Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAdminProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus } from "@/lib/api";
+import { getAdminProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus, getNewsletterSubscribers, deleteNewsletterSubscriber, updateNewsletterSubscriber } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ProductForm } from "@/components/ui/product-form";
@@ -40,6 +40,11 @@ export function AdminDashboard() {
   const { data: offers = [], isLoading: offersLoading } = useQuery({
     queryKey: ["offers"],
     queryFn: () => getOffers(),
+  });
+
+  const { data: subscribers = [], isLoading: subscribersLoading } = useQuery({
+    queryKey: ["newsletter-subscribers"],
+    queryFn: getNewsletterSubscribers,
   });
 
   const deleteProductMutation = useMutation({
@@ -88,6 +93,29 @@ export function AdminDashboard() {
     },
   });
 
+  const deleteSubscriberMutation = useMutation({
+    mutationFn: deleteNewsletterSubscriber,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
+      toast({ title: "Subscriber deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete subscriber", variant: "destructive" });
+    },
+  });
+
+  const updateSubscriberMutation = useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      updateNewsletterSubscriber(id, isActive),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
+      toast({ title: "Subscriber updated" });
+    },
+    onError: () => {
+      toast({ title: "Failed to update subscriber", variant: "destructive" });
+    },
+  });
+
   const filteredProducts = products.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -112,10 +140,11 @@ export function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+          <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="offers">Offers</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
+            <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
           </TabsList>
 
           {/* Products Management */}
@@ -384,6 +413,96 @@ export function AdminDashboard() {
                 })}
               </div>
             )}
+          </TabsContent>
+
+          {/* Newsletter Management */}
+          <TabsContent value="newsletter" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold">Newsletter Subscribers</h2>
+                <p className="text-muted-foreground">Manage newsletter subscriptions. Emails are sent every 2 days about new products.</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4" />
+                <span>{subscribers.filter(s => s.isActive).length} active subscribers</span>
+              </div>
+            </div>
+
+            <Card>
+              <CardContent className="pt-6">
+                {subscribersLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Spinner />
+                  </div>
+                ) : subscribers.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Mail className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p>No subscribers yet</p>
+                    <p className="text-sm">Subscribers will appear here when users sign up for the newsletter.</p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Subscribed</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {subscribers.map((subscriber) => (
+                        <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
+                          <TableCell className="font-medium">{subscriber.email}</TableCell>
+                          <TableCell>
+                            {subscriber.subscribedAt ? new Date(subscriber.subscribedAt).toLocaleDateString() : "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={subscriber.isActive ? "default" : "secondary"}>
+                              {subscriber.isActive ? "Active" : "Inactive"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => updateSubscriberMutation.mutate({ 
+                                  id: subscriber.id, 
+                                  isActive: !subscriber.isActive 
+                                })}
+                                title={subscriber.isActive ? "Deactivate" : "Activate"}
+                                data-testid={`button-toggle-subscriber-${subscriber.id}`}
+                              >
+                                {subscriber.isActive ? (
+                                  <XCircle className="w-4 h-4 text-muted-foreground" />
+                                ) : (
+                                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive"
+                                onClick={() => {
+                                  if (confirm(`Delete subscriber "${subscriber.email}"?`)) {
+                                    deleteSubscriberMutation.mutate(subscriber.id);
+                                  }
+                                }}
+                                data-testid={`button-delete-subscriber-${subscriber.id}`}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
