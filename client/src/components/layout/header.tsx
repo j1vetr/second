@@ -177,7 +177,7 @@ export function Header() {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          <Link href="/admin">
+          <Link href="/admin-login">
              <Button variant="outline" size="sm" className="hidden md:flex">
                Admin
              </Button>
