@@ -153,23 +153,34 @@ export async function registerRoutes(
     }
   });
 
-  // Products Routes
+  // Products Routes (public - only active products)
   app.get("/api/products", async (req, res) => {
     try {
       const { category, featured } = req.query;
       
       let products;
       if (category) {
-        products = await storage.getProductsByCategory(category as string);
+        products = await storage.getActiveProductsByCategory(category as string);
       } else if (featured === "true") {
         products = await storage.getFeaturedProducts();
       } else {
-        products = await storage.getProducts();
+        products = await storage.getActiveProducts();
       }
       
       res.json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  // Admin Products Route (all products including inactive)
+  app.get("/api/admin/products", async (req, res) => {
+    try {
+      const products = await storage.getProducts();
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching all products:", error);
       res.status(500).json({ error: "Failed to fetch products" });
     }
   });

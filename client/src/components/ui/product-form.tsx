@@ -35,6 +35,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     weight: product?.weight || "",
     featured: product?.featured || false,
     isNew: product?.isNew || false,
+    isActive: product?.isActive ?? true,
     includedItems: product?.includedItems || [],
     price: product?.price || null,
     discountPrice: product?.discountPrice || null,
@@ -51,6 +52,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     mutationFn: (data: InsertProduct) => createProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       toast({ title: "Product created successfully" });
       setOpen(false);
       resetForm();
@@ -64,6 +66,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     mutationFn: (data: Partial<InsertProduct>) => updateProduct(product!.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       toast({ title: "Product updated successfully" });
       setOpen(false);
     },
@@ -84,6 +87,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       weight: "",
       featured: false,
       isNew: false,
+      isActive: true,
       includedItems: [],
       price: null,
       discountPrice: null,
@@ -410,7 +414,21 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             </div>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-6">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="isActive"
+                checked={formData.isActive ?? true}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+              />
+              <Label htmlFor="isActive" className="flex items-center gap-2">
+                Active
+                <span className={`text-xs px-2 py-0.5 rounded ${formData.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                  {formData.isActive ? 'Visible' : 'Hidden'}
+                </span>
+              </Label>
+            </div>
+
             <div className="flex items-center gap-2">
               <Switch
                 id="featured"

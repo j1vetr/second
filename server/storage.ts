@@ -13,7 +13,7 @@ import {
   offers
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -30,8 +30,10 @@ export interface IStorage {
 
   // Product methods
   getProducts(): Promise<Product[]>;
+  getActiveProducts(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   getProductsByCategory(categoryId: string): Promise<Product[]>;
+  getActiveProductsByCategory(categoryId: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
@@ -103,6 +105,14 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(products).orderBy(desc(products.createdAt));
   }
 
+  async getActiveProducts(): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .where(eq(products.isActive, true))
+      .orderBy(desc(products.createdAt));
+  }
+
   async getProduct(id: string): Promise<Product | undefined> {
     const [product] = await db.select().from(products).where(eq(products.id, id));
     return product || undefined;
@@ -116,11 +126,19 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(products.createdAt));
   }
 
+  async getActiveProductsByCategory(categoryId: string): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .where(and(eq(products.category, categoryId), eq(products.isActive, true)))
+      .orderBy(desc(products.createdAt));
+  }
+
   async getFeaturedProducts(): Promise<Product[]> {
     return await db
       .select()
       .from(products)
-      .where(eq(products.featured, true))
+      .where(and(eq(products.featured, true), eq(products.isActive, true)))
       .orderBy(desc(products.createdAt));
   }
 

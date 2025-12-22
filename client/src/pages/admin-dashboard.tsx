@@ -15,7 +15,7 @@ import { Plus, Pencil, Trash2, Search, Package, MessageSquare, LayoutGrid, Eye, 
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus } from "@/lib/api";
+import { getAdminProducts, getCategories, getOffers, deleteProduct, deleteCategory, deleteOffer, updateOfferStatus } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ProductForm } from "@/components/ui/product-form";
@@ -28,8 +28,8 @@ export function AdminDashboard() {
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => getProducts(),
+    queryKey: ["admin-products"],
+    queryFn: getAdminProducts,
   });
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
@@ -45,6 +45,7 @@ export function AdminDashboard() {
   const deleteProductMutation = useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast({ title: "Product deleted successfully" });
     },
@@ -183,7 +184,11 @@ export function AdminDashboard() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Active</Badge>
+                            {product.isActive ? (
+                              <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Active</Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50">Inactive</Badge>
+                            )}
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">

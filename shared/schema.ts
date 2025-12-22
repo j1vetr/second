@@ -36,6 +36,7 @@ export const products = pgTable("products", {
   images: text("images").array().default(sql`ARRAY[]::text[]`),
   featured: boolean("featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
+  isActive: boolean("is_active").notNull().default(true),
   description: text("description"),
   dimensions: text("dimensions"),
   weight: text("weight"),

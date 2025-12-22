@@ -54,6 +54,12 @@ export async function getProduct(id: string): Promise<Product> {
   return response.json();
 }
 
+export async function getAdminProducts(): Promise<Product[]> {
+  const response = await fetch(`${API_BASE}/admin/products`);
+  if (!response.ok) throw new Error("Failed to fetch products");
+  return response.json();
+}
+
 export async function createProduct(product: InsertProduct): Promise<Product> {
   const response = await fetch(`${API_BASE}/products`, {
     method: "POST",
