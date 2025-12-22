@@ -273,18 +273,20 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.5 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
-                  <Link href="/products">
+                  <Link href="/products" className="w-full sm:w-auto">
                     <motion.button
                       whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
                       whileTap={{ scale: 0.98 }}
-                      className="h-14 px-10 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto rounded-xl font-semibold inline-flex items-center justify-center group"
+                      className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
                     >
                       Discover Products
                       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
                   </Link>
-                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-14 px-10 text-base w-full sm:w-auto rounded-xl")}>
-                    How it Works?
+                  <Link href="/how-it-works" className="w-full sm:w-auto">
+                    <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
+                      How it Works?
+                    </Button>
                   </Link>
                 </motion.div>
               </div>
