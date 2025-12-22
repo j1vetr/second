@@ -15,7 +15,7 @@ function ScrollToTop() {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background font-sans text-foreground selection:bg-primary/20">
+    <div className="min-h-screen flex flex-col bg-background font-sans text-foreground selection:bg-primary/20 overflow-x-hidden">
       <ScrollToTop />
       <Header />
       <main className="flex-1">
