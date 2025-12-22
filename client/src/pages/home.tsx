@@ -178,27 +178,65 @@ export function Home() {
 
             {/* Hero Content */}
             <div className="flex-1 flex flex-col justify-center lg:pl-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="text-center lg:text-left"
-              >
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  Premium Products, <span className="text-primary">Your Price</span>
-                </h1>
-                <p className="text-lg text-muted-foreground max-w-xl mb-6 leading-relaxed">
-                  Browse, like it, make an offer. No fixed prices, just great deals.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
-                  <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto")}>
+              <div className="text-center lg:text-left">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="inline-block mb-3"
+                >
+                  <span className="px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full border border-primary/20">
+                    Welcome to SecondStore
+                  </span>
+                </motion.div>
+                
+                <div className="overflow-hidden mb-2">
+                  <motion.h1 
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
+                  >
+                    Premium Products
+                  </motion.h1>
+                </div>
+                
+                <div className="overflow-hidden mb-6">
+                  <motion.div
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <span className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
+                      Your Price
+                    </span>
+                  </motion.div>
+                </div>
+
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed"
+                >
+                  Browse, like it, make an offer. No fixed prices, just great deals on quality products.
+                </motion.p>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4"
+                >
+                  <Link href="/products" className={cn(buttonVariants({ size: "lg" }), "h-14 px-10 text-base bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 w-full sm:w-auto group")}>
                     Discover Products
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
-                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-12 px-8 text-base w-full sm:w-auto")}>
+                  <Link href="/how-it-works" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "h-14 px-10 text-base w-full sm:w-auto")}>
                     How it Works?
                   </Link>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
 
             {/* Today's Deals Slider */}
