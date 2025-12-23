@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight, Zap, Sparkles } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, MessageCircle, Star, Users, Package, TrendingUp, ChevronRight, ChevronLeft, Zap, Sparkles, Eye } from "lucide-react";
 import { Link } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
@@ -14,6 +14,67 @@ import * as Icons from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import type { Product } from "@shared/schema";
 import { usePageTitle } from "@/hooks/use-page-title";
+
+function MostViewedSlider({ products }: { products: Product[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  
+  const viewedProducts = useMemo(() => {
+    return [...products].sort(() => Math.random() - 0.5).slice(0, 12);
+  }, [products]);
+
+  const itemsPerView = {
+    mobile: 2,
+    desktop: 5
+  };
+
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
+  if (viewedProducts.length === 0) return null;
+
+  return (
+    <div className="relative">
+      <button 
+        onClick={scrollLeft}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors -ml-2 lg:-ml-5"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      
+      <div 
+        ref={sliderRef}
+        className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {viewedProducts.map((product) => (
+          <div 
+            key={product.id} 
+            className="flex-shrink-0 w-[calc(50%-6px)] sm:w-[calc(33.333%-12px)] lg:w-[calc(20%-13px)]"
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+      
+      <button 
+        onClick={scrollRight}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors -mr-2 lg:-mr-5"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+    </div>
+  );
+}
 
 function TodaysDealsSlider({ products }: { products: Product[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -357,8 +418,33 @@ export function Home() {
         </div>
       </section>
 
+      {/* Most Viewed Products */}
+      <section className="container mx-auto px-4 py-8 lg:py-12">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Eye className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">Most Viewed Products</h2>
+              <p className="text-muted-foreground text-sm">Popular picks from our customers</p>
+            </div>
+          </div>
+          <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0 hidden sm:flex")}>
+            View All <ArrowRight className="ml-2 w-4 h-4" />
+          </Link>
+        </div>
+        {productsLoading ? (
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
+        ) : (
+          <MostViewedSlider products={allProducts} />
+        )}
+      </section>
+
       {/* Featured Products */}
-      <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl -mt-8 lg:mt-0">
+      <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
