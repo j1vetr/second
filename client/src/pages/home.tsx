@@ -357,16 +357,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Products" />
-          <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Happy Customers" />
-          <StatCard icon={<Star className="w-6 h-6" />} value="4.9" label="Customer Rating" />
-          <StatCard icon={<TrendingUp className="w-6 h-6" />} value="98%" label="Satisfaction Rate" />
-        </div>
-      </section>
-
       {/* Featured Products */}
       <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
@@ -468,6 +458,16 @@ export function Home() {
             text="Great customer service and quality products. Will definitely be shopping here again."
             rating={4}
           />
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="container mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Products" />
+          <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Happy Customers" />
+          <StatCard icon={<Star className="w-6 h-6" />} value="4.9" label="Customer Rating" />
+          <StatCard icon={<TrendingUp className="w-6 h-6" />} value="98%" label="Satisfaction Rate" />
         </div>
       </section>
     </div>
