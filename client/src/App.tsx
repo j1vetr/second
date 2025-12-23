@@ -21,6 +21,7 @@ import { HowItWorks } from "@/pages/how-it-works";
 import { PrivacyPolicy } from "@/pages/privacy-policy";
 import { TermsOfUse } from "@/pages/terms-of-use";
 import { CookiePolicy } from "@/pages/cookie-policy";
+import { Contact } from "@/pages/contact";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -42,6 +43,7 @@ function Router() {
             <Route path="/privacy-policy" component={PrivacyPolicy} />
             <Route path="/terms-of-use" component={TermsOfUse} />
             <Route path="/cookie-policy" component={CookiePolicy} />
+            <Route path="/contact" component={Contact} />
             <Route component={NotFound} />
           </Switch>
         </Layout>
