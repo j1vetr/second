@@ -8,7 +8,7 @@ import { Lock } from "lucide-react";
 
 export function AdminLogin() {
   const [, setLocation] = useLocation();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,14 +16,13 @@ export function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     
-    // Mock login delay
     setTimeout(() => {
       setIsLoading(false);
-      // In a real app, you would validate credentials here
-      if (email === "admin@secondstore.ch" && password === "admin") {
+      if (username === "AdminSS" && password === "AdminSSSCR2@.") {
+        localStorage.setItem("adminAuth", "true");
         setLocation("/admins");
       } else {
-        alert("Invalid credentials! (Try: admin@secondstore.ch / admin)");
+        alert("Invalid credentials!");
       }
     }, 1000);
   };
@@ -41,13 +40,13 @@ export function AdminLogin() {
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input 
-                id="email" 
-                type="email" 
-                placeholder="admin@secondstore.ch" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username" 
+                type="text" 
+                placeholder="Enter username" 
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required 
               />
             </div>
