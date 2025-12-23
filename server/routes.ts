@@ -81,8 +81,20 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Serve uploaded files
-  app.use("/uploads", (await import("express")).default.static(uploadsDir));
+  // Serve uploaded files with caching
+  app.use("/uploads", (await import("express")).default.static(uploadsDir, {
+    maxAge: '7d',
+    etag: true,
+    lastModified: true
+  }));
+
+  // Cache control middleware for API responses
+  app.use('/api', (req, res, next) => {
+    if (req.method === 'GET') {
+      res.set('Cache-Control', 'public, max-age=60');
+    }
+    next();
+  });
 
   // File Upload Route
   app.post("/api/upload", upload.single("image"), async (req, res) => {
