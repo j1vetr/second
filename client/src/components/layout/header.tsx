@@ -284,23 +284,38 @@ export function Header() {
   );
 }
 
+function showLangOverlay() {
+  const overlay = document.getElementById('lang-overlay');
+  if (overlay) {
+    overlay.classList.add('active');
+  }
+}
+
 function changeLanguage(lang: string) {
   try {
     const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (selectElement) {
+      showLangOverlay();
       selectElement.value = lang;
       selectElement.dispatchEvent(new Event('change'));
+      // Hide overlay after translation completes
+      setTimeout(() => {
+        const overlay = document.getElementById('lang-overlay');
+        if (overlay) overlay.classList.remove('active');
+      }, 800);
     } else {
+      showLangOverlay();
       document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
       document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
       document.cookie = `googtrans=/en/${lang}; path=/`;
       setTimeout(() => {
         window.location.reload();
-      }, 100);
+      }, 200);
     }
   } catch (error) {
     console.error('Language change error:', error);
-    window.location.reload();
+    showLangOverlay();
+    setTimeout(() => window.location.reload(), 200);
   }
 }
 
