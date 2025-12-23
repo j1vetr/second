@@ -394,7 +394,7 @@ export function Home() {
       </section>
 
       {/* Most Viewed Products */}
-      <section className="container mx-auto px-4 py-8 lg:py-12">
+      <section className="container mx-auto px-4 py-4 lg:py-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -419,7 +419,7 @@ export function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
+      <section className="container mx-auto px-4 bg-secondary/20 py-10 lg:py-12 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
