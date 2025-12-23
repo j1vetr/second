@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Sparkles, Star, Eye, Tag } from "lucide-react";
+import { ArrowRight, Eye, Tag } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Product } from "@shared/schema";
@@ -93,41 +93,21 @@ export function ProductCard({ product }: ProductCardProps) {
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-          <span className={cn(
-            "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg",
-            product.condition === 'new' 
-              ? "bg-gradient-to-r from-primary to-primary/80 text-white" 
-              : "bg-white/95 text-gray-700 backdrop-blur-sm"
-          )}>
-            {product.condition === 'new' ? '✨ New' : '♻️ Used'}
-          </span>
-          
-          {product.featured && (
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg flex items-center gap-1">
-              <Star className="w-3 h-3 fill-current" /> Featured
+        <div className="absolute top-3 left-3 flex gap-2">
+          {product.condition === 'new' && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-primary to-primary/80 text-white">
+              New
             </span>
           )}
           
-          {product.isNew && (
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-400 to-green-500 text-white shadow-lg flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> Just In
+          {product.discountPrice && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg flex items-center gap-1">
+              <Tag className="w-3 h-3" /> -{getDiscountPercent(product.price, product.discountPrice)}%
             </span>
           )}
         </div>
 
-        {product.discountPrice && (
-          <div className="absolute top-3 right-3">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg flex items-center gap-1">
-              <Tag className="w-3 h-3" /> -{getDiscountPercent(product.price, product.discountPrice)}%
-            </span>
-          </div>
-        )}
-
-        <div className={cn(
-          "absolute top-3 right-3 transition-all duration-300 translate-y-2 group-hover:translate-y-0",
-          product.discountPrice ? "opacity-0 group-hover:opacity-100" : "opacity-0 group-hover:opacity-100"
-        )}>
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
           <Link href={`/product/${product.id}`}>
             <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-white hover:scale-110 transition-all">
               <Eye className="w-5 h-5 text-gray-700" />
@@ -163,10 +143,7 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.price ? (
                 <div className="flex items-center gap-2">
                   {product.discountPrice ? (
-                    <>
-                      <span className="text-sm font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
-                      <span className="text-xs text-muted-foreground line-through">{formatPrice(product.price)}</span>
-                    </>
+                    <span className="text-sm font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
                   ) : (
                     <span className="text-sm font-bold text-primary">{formatPrice(product.price)}</span>
                   )}
