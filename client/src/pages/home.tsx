@@ -358,7 +358,7 @@ export function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl">
+      <section className="container mx-auto px-4 bg-secondary/20 py-16 rounded-3xl -mt-8 lg:mt-0">
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
