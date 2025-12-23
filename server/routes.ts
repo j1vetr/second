@@ -7,6 +7,7 @@ import { fromZodError } from "zod-validation-error";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(process.cwd(), "public", "uploads");
@@ -62,9 +63,19 @@ const upload = multer({
   storage: storage_multer,
   fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 20 * 1024 * 1024, // 20MB limit
   },
 });
+
+async function optimizeImage(inputPath: string, outputPath: string): Promise<void> {
+  await sharp(inputPath)
+    .webp({ quality: 80 })
+    .resize(1920, 1920, { 
+      fit: 'inside', 
+      withoutEnlargement: true 
+    })
+    .toFile(outputPath);
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -74,15 +85,31 @@ export async function registerRoutes(
   app.use("/uploads", (await import("express")).default.static(uploadsDir));
 
   // File Upload Route
-  app.post("/api/upload", upload.single("image"), (req, res) => {
+  app.post("/api/upload", upload.single("image"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
       
-      // Return the URL path to the uploaded file
-      const imageUrl = `/uploads/${req.file.filename}`;
-      res.json({ url: imageUrl, filename: req.file.filename });
+      const originalPath = req.file.path;
+      const originalFilename = req.file.filename;
+      const webpFilename = originalFilename.replace(/\.[^.]+$/, '.webp');
+      const webpPath = path.join(uploadsDir, webpFilename);
+      
+      try {
+        await optimizeImage(originalPath, webpPath);
+        
+        if (originalPath !== webpPath && fs.existsSync(originalPath)) {
+          fs.unlinkSync(originalPath);
+        }
+        
+        const imageUrl = `/uploads/${webpFilename}`;
+        res.json({ url: imageUrl, filename: webpFilename });
+      } catch (optimizeError) {
+        console.error("Error optimizing image, using original:", optimizeError);
+        const imageUrl = `/uploads/${originalFilename}`;
+        res.json({ url: imageUrl, filename: originalFilename });
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
       res.status(500).json({ error: "Failed to upload file" });
