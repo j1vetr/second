@@ -59,7 +59,8 @@ export function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="space-y-4">
-            <img src="/assets/logo.png" alt="SecondStore" className="h-20 object-contain" />
+            <img src="/assets/logo-light.png" alt="SecondStore" className="h-20 object-contain dark:hidden" />
+            <img src="/assets/logo-dark.png" alt="SecondStore" className="h-20 object-contain hidden dark:block" />
             <p className="text-sm text-muted-foreground leading-relaxed">
               Meeting point for premium second-hand and new products. Reach your dream products with secure shopping and fast communication.
             </p>

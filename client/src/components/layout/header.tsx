@@ -163,7 +163,8 @@ export function Header() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-            <img src="/assets/logo.png" alt="SecondStore" className="h-14 md:h-20 object-contain" />
+            <img src="/assets/logo-light.png" alt="SecondStore" className="h-14 md:h-20 object-contain dark:hidden" />
+            <img src="/assets/logo-dark.png" alt="SecondStore" className="h-14 md:h-20 object-contain hidden dark:block" />
         </Link>
 
         {/* Desktop Navigation */}
