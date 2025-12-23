@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles, Star, Eye, Tag } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Product } from "@shared/schema";
 import { cn } from "@/lib/utils";
@@ -30,6 +30,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [, setLocation] = useLocation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -57,6 +58,14 @@ export function ProductCard({ product }: ProductCardProps) {
     y.set(0);
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('a') || target.closest('button')) {
+      return;
+    }
+    setLocation(`/product/${product.id}`);
+  };
+
   return (
     <motion.div
       ref={cardRef}
@@ -70,8 +79,9 @@ export function ProductCard({ product }: ProductCardProps) {
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={handleCardClick}
       transition={{ duration: 0.3 }}
-      className="group relative bg-card rounded-2xl border overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 perspective-1000"
+      className="group relative bg-card rounded-2xl border overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 perspective-1000 cursor-pointer"
       data-testid={`card-product-${product.id}`}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">

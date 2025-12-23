@@ -266,9 +266,6 @@ export function Header() {
               <DropdownMenuItem onClick={() => changeLanguage('fr')} className="cursor-pointer">
                 <span className="mr-2">🇫🇷</span> Français
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage('es')} className="cursor-pointer">
-                <span className="mr-2">🇪🇸</span> Español
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -287,12 +284,21 @@ export function Header() {
 }
 
 function changeLanguage(lang: string) {
-  const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-  if (selectElement) {
-    selectElement.value = lang;
-    selectElement.dispatchEvent(new Event('change'));
-  } else {
-    document.cookie = `googtrans=/en/${lang}; path=/`;
+  try {
+    const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (selectElement) {
+      selectElement.value = lang;
+      selectElement.dispatchEvent(new Event('change'));
+    } else {
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+      document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+      document.cookie = `googtrans=/en/${lang}; path=/`;
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  } catch (error) {
+    console.error('Language change error:', error);
     window.location.reload();
   }
 }

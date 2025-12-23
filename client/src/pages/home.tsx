@@ -155,12 +155,12 @@ export function Home() {
         <div className="container mx-auto px-4 py-8 pb-12 lg:py-12 relative z-10">
         
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Category Sidebar */}
+            {/* Category Sidebar - Hidden on mobile, shown at bottom */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="lg:w-64 flex-shrink-0"
+              className="hidden lg:block lg:w-64 flex-shrink-0 order-1"
             >
               <div className="bg-card border rounded-xl overflow-hidden shadow-lg lg:bg-card/80 lg:backdrop-blur-sm">
                 <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
@@ -205,7 +205,7 @@ export function Home() {
             </motion.div>
 
             {/* Hero Content */}
-            <div className="flex-1 flex flex-col justify-center lg:pl-8">
+            <div className="flex-1 flex flex-col justify-center lg:pl-8 order-first lg:order-2">
               <div className="text-center">
                 <div className="overflow-hidden mb-2">
                   <motion.h1 
@@ -297,7 +297,7 @@ export function Home() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="hidden xl:block w-72 flex-shrink-0"
+              className="hidden xl:block w-72 flex-shrink-0 order-3"
             >
               <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border shadow-lg h-full animate-tilt-3d">
                 {productsLoading ? (
@@ -306,6 +306,50 @@ export function Home() {
                   </div>
                 ) : (
                   <TodaysDealsSlider products={allProducts} />
+                )}
+              </div>
+            </motion.div>
+
+            {/* Mobile Categories - At Bottom */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="lg:hidden order-last w-full"
+            >
+              <div className="bg-card border rounded-xl overflow-hidden shadow-lg">
+                <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Categories
+                </div>
+                {categoriesLoading ? (
+                  <div className="p-4 space-y-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div key={i} className="h-10 bg-secondary/50 rounded-lg animate-pulse" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 p-3">
+                    {categories.map((cat, index) => {
+                      const Icon = (Icons as any)[cat.icon] || Icons.Box;
+                      return (
+                        <Link key={cat.id} href={`/category/${cat.id}`}>
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.03 }}
+                            className="flex items-center gap-2 px-3 py-2.5 bg-secondary/50 hover:bg-primary/10 rounded-lg transition-colors cursor-pointer group"
+                            data-testid={`mobile-category-${cat.id}`}
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                              <Icon className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="text-sm font-medium group-hover:text-primary transition-colors">{cat.name}</span>
+                          </motion.div>
+                        </Link>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -339,7 +383,7 @@ export function Home() {
             <Spinner />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {featuredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -390,7 +434,7 @@ export function Home() {
             <Spinner />
           </div>
         ) : newProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {newProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
