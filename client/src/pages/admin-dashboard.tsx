@@ -10,8 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, CheckCircle2, XCircle, Mail } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, CheckCircle2, XCircle, Mail, Users, Tags, ShoppingBag, TrendingUp, LogOut, Home, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +21,13 @@ import { useToast } from "@/hooks/use-toast";
 import { ProductForm } from "@/components/ui/product-form";
 import { CategoryForm } from "@/components/ui/category-form";
 import * as LucideIcons from "lucide-react";
+
+const conditionLabels: Record<string, string> = {
+  'new': 'Neuf',
+  'used_like_new': 'Comme Neuf',
+  'used_good': 'Bon État',
+  'used_fair': 'État Correct',
+};
 
 export function AdminDashboard() {
   const [search, setSearch] = useState("");
@@ -47,10 +54,10 @@ export function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      toast({ title: "Product deleted successfully" });
+      toast({ title: "Produit supprimé avec succès" });
     },
     onError: () => {
-      toast({ title: "Failed to delete product", variant: "destructive" });
+      toast({ title: "Échec de la suppression du produit", variant: "destructive" });
     },
   });
 
@@ -58,10 +65,10 @@ export function AdminDashboard() {
     mutationFn: deleteCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast({ title: "Category deleted successfully" });
+      toast({ title: "Catégorie supprimée avec succès" });
     },
     onError: () => {
-      toast({ title: "Failed to delete category", variant: "destructive" });
+      toast({ title: "Échec de la suppression de la catégorie", variant: "destructive" });
     },
   });
 
@@ -69,10 +76,10 @@ export function AdminDashboard() {
     mutationFn: deleteNewsletterSubscriber,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
-      toast({ title: "Subscriber deleted successfully" });
+      toast({ title: "Abonné supprimé avec succès" });
     },
     onError: () => {
-      toast({ title: "Failed to delete subscriber", variant: "destructive" });
+      toast({ title: "Échec de la suppression de l'abonné", variant: "destructive" });
     },
   });
 
@@ -81,10 +88,10 @@ export function AdminDashboard() {
       updateNewsletterSubscriber(id, isActive),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
-      toast({ title: "Subscriber updated" });
+      toast({ title: "Abonné mis à jour" });
     },
     onError: () => {
-      toast({ title: "Failed to update subscriber", variant: "destructive" });
+      toast({ title: "Échec de la mise à jour", variant: "destructive" });
     },
   });
 
@@ -92,61 +99,155 @@ export function AdminDashboard() {
     p.title.toLowerCase().includes(search.toLowerCase())
   );
 
+  const activeProducts = products.filter(p => p.isActive).length;
+  const inactiveProducts = products.filter(p => !p.isActive).length;
+  const activeSubscribers = subscribers.filter(s => s.isActive).length;
+
   return (
-    <div className="min-h-screen bg-secondary/10 pb-8">
-      {/* Admin Header */}
-      <div className="bg-background border-b sticky top-0 z-10">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <LayoutGrid className="w-6 h-6 text-primary" />
-            <h1 className="font-bold text-lg">Admin Panel</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Welcome, Admin</span>
-            <Link href="/admin-login">
-              <Button variant="outline" size="sm">Logout</Button>
-            </Link>
+    <div className="min-h-screen bg-gradient-to-br from-secondary/20 via-background to-secondary/10">
+      {/* Modern Admin Header */}
+      <header className="bg-background/80 backdrop-blur-xl border-b sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/20">
+                <Settings className="w-5 h-5 text-white" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="font-bold text-lg">Panneau Admin</h1>
+                <p className="text-xs text-muted-foreground">SecondStore.ch</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Home className="w-4 h-4" />
+                  <span className="hidden sm:inline">Accueil</span>
+                </Button>
+              </Link>
+              <Link href="/admin-login">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Déconnexion</span>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200/50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Produits</p>
+                  <p className="text-2xl font-bold">{products.length}</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-xs">
+                <span className="text-green-600">{activeProducts} actifs</span>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-red-500">{inactiveProducts} inactifs</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-200/50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Catégories</p>
+                  <p className="text-2xl font-bold">{categories.length}</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                  <Tags className="w-5 h-5 text-purple-600" />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">Organisation des produits</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-200/50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Abonnés</p>
+                  <p className="text-2xl font-bold">{subscribers.length}</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-green-600" />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-green-600">{activeSubscribers} actifs</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-200/50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Newsletter</p>
+                  <p className="text-2xl font-bold">2j</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-orange-600" />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">Intervalle d'envoi</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Tabs */}
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-            <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="categories">Categories</TabsTrigger>
-            <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
+          <TabsList className="w-full grid grid-cols-3 h-12 p-1 bg-secondary/50 rounded-xl">
+            <TabsTrigger value="products" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <ShoppingBag className="w-4 h-4" />
+              <span className="hidden sm:inline">Produits</span>
+            </TabsTrigger>
+            <TabsTrigger value="categories" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <Tags className="w-4 h-4" />
+              <span className="hidden sm:inline">Catégories</span>
+            </TabsTrigger>
+            <TabsTrigger value="newsletter" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <Mail className="w-4 h-4" />
+              <span className="hidden sm:inline">Newsletter</span>
+            </TabsTrigger>
           </TabsList>
 
-          {/* Products Management */}
-          <TabsContent value="products" className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
+          {/* Products Tab */}
+          <TabsContent value="products" className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold">Product Management</h2>
-                <p className="text-muted-foreground">Manage your inventory, prices and details.</p>
+                <h2 className="text-xl sm:text-2xl font-bold">Gestion des Produits</h2>
+                <p className="text-sm text-muted-foreground">Gérez votre inventaire et vos prix</p>
               </div>
               <ProductForm 
                 categories={categories} 
                 trigger={
-                  <Button className="bg-primary text-white">
-                    <Plus className="w-4 h-4 mr-2" /> Add New Product
+                  <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 gap-2">
+                    <Plus className="w-4 h-4" /> Nouveau Produit
                   </Button>
                 }
               />
             </div>
 
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <div className="flex items-center gap-4">
-                  <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      placeholder="Search products..." 
-                      className="pl-9" 
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </div>
+                <div className="relative max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Rechercher un produit..." 
+                    className="pl-10 bg-secondary/30 border-0" 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </div>
               </CardHeader>
               <CardContent>
@@ -154,14 +255,20 @@ export function AdminDashboard() {
                   <div className="flex justify-center py-12">
                     <Spinner />
                   </div>
+                ) : filteredProducts.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Package className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p className="font-medium">Aucun produit trouvé</p>
+                    <p className="text-sm">Ajoutez votre premier produit pour commencer</p>
+                  </div>
                 ) : (
                   <>
                     {/* Mobile: Card Layout */}
                     <div className="md:hidden space-y-3">
                       {filteredProducts.map((product) => (
-                        <div key={product.id} className="border rounded-xl p-3 bg-background">
-                          <div className="flex gap-3">
-                            <div className="w-16 h-16 rounded-lg bg-secondary/50 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        <div key={product.id} className="bg-secondary/20 rounded-2xl p-4 space-y-3">
+                          <div className="flex gap-4">
+                            <div className="w-20 h-20 rounded-xl bg-background flex-shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
                               <img 
                                 src={product.image} 
                                 alt={product.title} 
@@ -169,38 +276,38 @@ export function AdminDashboard() {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-medium text-sm line-clamp-1">{product.title}</h3>
-                              <p className="text-xs text-muted-foreground capitalize">{product.category}</p>
-                              <div className="flex items-center gap-2 mt-1.5">
-                                <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="text-[10px] px-1.5 py-0 capitalize">
-                                  {product.condition}
+                              <h3 className="font-semibold text-sm line-clamp-2">{product.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1 capitalize">{product.category}</p>
+                              <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                <Badge variant="outline" className="text-[10px] px-2 py-0.5">
+                                  {conditionLabels[product.condition] || product.condition}
                                 </Badge>
                                 {product.isActive ? (
-                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-green-600 border-green-200 bg-green-50">Actif</Badge>
+                                  <Badge className="text-[10px] px-2 py-0.5 bg-green-500/20 text-green-700 border-0">Actif</Badge>
                                 ) : (
-                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-red-600 border-red-200 bg-red-50">Inactif</Badge>
+                                  <Badge className="text-[10px] px-2 py-0.5 bg-red-500/20 text-red-700 border-0">Inactif</Badge>
                                 )}
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center justify-end gap-1 mt-3 pt-3 border-t">
-                            <Link href={`/product/${product.id}`}>
-                              <Button variant="outline" size="sm" className="h-8 px-3">
-                                <Eye className="w-3.5 h-3.5 mr-1" /> Voir
+                          <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+                            <Link href={`/product/${product.id}`} className="flex-1">
+                              <Button variant="outline" size="sm" className="w-full h-9 gap-1.5">
+                                <Eye className="w-4 h-4" /> Voir
                               </Button>
                             </Link>
                             <ProductForm product={product} categories={categories} />
                             <Button 
                               variant="outline" 
                               size="sm"
-                              className="h-8 px-3 text-destructive hover:text-destructive hover:bg-destructive/10" 
+                              className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10" 
                               onClick={() => {
-                                if (confirm(`Supprimer "${product.title}"?`)) {
+                                if (confirm(`Supprimer "${product.title}" ?`)) {
                                   deleteProductMutation.mutate(product.id);
                                 }
                               }}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -211,7 +318,7 @@ export function AdminDashboard() {
                     <div className="hidden md:block">
                       <Table>
                         <TableHeader>
-                          <TableRow>
+                          <TableRow className="hover:bg-transparent">
                             <TableHead className="w-[80px]">Image</TableHead>
                             <TableHead>Nom du Produit</TableHead>
                             <TableHead>Catégorie</TableHead>
@@ -224,7 +331,7 @@ export function AdminDashboard() {
                           {filteredProducts.map((product) => (
                             <TableRow key={product.id}>
                               <TableCell>
-                                <div className="w-10 h-10 rounded-md bg-secondary/50 flex items-center justify-center overflow-hidden">
+                                <div className="w-12 h-12 rounded-lg bg-secondary/50 flex items-center justify-center overflow-hidden">
                                   <img 
                                     src={product.image} 
                                     alt={product.title} 
@@ -232,35 +339,35 @@ export function AdminDashboard() {
                                   />
                                 </div>
                               </TableCell>
-                              <TableCell className="font-medium">{product.title}</TableCell>
+                              <TableCell className="font-medium max-w-[200px] truncate">{product.title}</TableCell>
                               <TableCell className="capitalize">{product.category}</TableCell>
                               <TableCell>
-                                <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="capitalize">
-                                  {product.condition}
+                                <Badge variant="outline">
+                                  {conditionLabels[product.condition] || product.condition}
                                 </Badge>
                               </TableCell>
                               <TableCell>
                                 {product.isActive ? (
-                                  <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Actif</Badge>
+                                  <Badge className="bg-green-500/20 text-green-700 border-0">Actif</Badge>
                                 ) : (
-                                  <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50">Inactif</Badge>
+                                  <Badge className="bg-red-500/20 text-red-700 border-0">Inactif</Badge>
                                 )}
                               </TableCell>
                               <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end gap-1">
                                   <Link href={`/product/${product.id}`}>
-                                    <Button variant="ghost" size="icon" title="Voir">
-                                      <Eye className="w-4 h-4 text-muted-foreground" />
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" title="Voir">
+                                      <Eye className="w-4 h-4" />
                                     </Button>
                                   </Link>
                                   <ProductForm product={product} categories={categories} />
                                   <Button 
                                     variant="ghost" 
                                     size="icon" 
-                                    className="text-destructive hover:text-destructive hover:bg-destructive/10" 
+                                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" 
                                     title="Supprimer"
                                     onClick={() => {
-                                      if (confirm(`Supprimer "${product.title}"?`)) {
+                                      if (confirm(`Supprimer "${product.title}" ?`)) {
                                         deleteProductMutation.mutate(product.id);
                                       }
                                     }}
@@ -280,17 +387,17 @@ export function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Categories Management */}
-          <TabsContent value="categories" className="space-y-6">
-            <div className="flex justify-between items-center">
+          {/* Categories Tab */}
+          <TabsContent value="categories" className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold">Categories</h2>
-                <p className="text-muted-foreground">Manage product categories and icons.</p>
+                <h2 className="text-xl sm:text-2xl font-bold">Gestion des Catégories</h2>
+                <p className="text-sm text-muted-foreground">Organisez vos produits par catégorie</p>
               </div>
               <CategoryForm 
                 trigger={
-                  <Button className="bg-primary text-white">
-                    <Plus className="w-4 h-4 mr-2" /> Add Category
+                  <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 gap-2">
+                    <Plus className="w-4 h-4" /> Nouvelle Catégorie
                   </Button>
                 }
               />
@@ -300,34 +407,51 @@ export function AdminDashboard() {
               <div className="flex justify-center py-12">
                 <Spinner />
               </div>
+            ) : categories.length === 0 ? (
+              <Card className="shadow-sm">
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  <Tags className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                  <p className="font-medium">Aucune catégorie</p>
+                  <p className="text-sm">Créez votre première catégorie pour organiser vos produits</p>
+                </CardContent>
+              </Card>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((cat) => {
                   const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                  const productCount = products.filter(p => p.category === cat.id).length;
                   return (
-                    <Card key={cat.id} className="group hover:border-primary/50 transition-all">
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">{cat.name}</CardTitle>
-                        <div className="p-2 bg-secondary rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                          <IconComponent className="w-4 h-4" /> 
+                    <Card key={cat.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="p-4 space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                              <IconComponent className="w-6 h-6 text-primary" /> 
+                            </div>
+                            <Badge variant="secondary" className="text-xs">
+                              {productCount} produit{productCount !== 1 ? 's' : ''}
+                            </Badge>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg">{cat.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Icône: {cat.icon}
+                            </p>
+                          </div>
                         </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
-                        <div className="text-xs text-muted-foreground">Icon: {cat.icon}</div>
-                        <div className="flex justify-end gap-2 mt-4 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                        <div className="px-4 py-3 bg-secondary/30 border-t flex items-center justify-end gap-2">
                           <CategoryForm category={cat} />
                           <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 text-destructive"
+                            variant="outline" 
+                            size="sm"
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                             onClick={() => {
-                              if (confirm(`Supprimer "${cat.name}"?`)) {
+                              if (confirm(`Supprimer la catégorie "${cat.name}" ?`)) {
                                 deleteCategoryMutation.mutate(cat.id);
                               }
                             }}
                           >
-                            <Trash2 className="w-3 h-3" />
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </CardContent>
@@ -338,20 +462,23 @@ export function AdminDashboard() {
             )}
           </TabsContent>
 
-          {/* Newsletter Management */}
-          <TabsContent value="newsletter" className="space-y-6">
-            <div className="flex justify-between items-center">
+          {/* Newsletter Tab */}
+          <TabsContent value="newsletter" className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold">Newsletter Subscribers</h2>
-                <p className="text-muted-foreground">Manage newsletter subscriptions. Emails are sent every 2 days about new products.</p>
+                <h2 className="text-xl sm:text-2xl font-bold">Gestion Newsletter</h2>
+                <p className="text-sm text-muted-foreground">Les emails sont envoyés tous les 2 jours</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4" />
-                <span>{subscribers.filter(s => s.isActive).length} active subscribers</span>
+              <div className="flex items-center gap-3 px-4 py-2 bg-green-500/10 rounded-xl border border-green-200/50">
+                <Mail className="w-5 h-5 text-green-600" />
+                <div>
+                  <p className="text-sm font-semibold text-green-700">{activeSubscribers} abonnés actifs</p>
+                  <p className="text-xs text-green-600/80">sur {subscribers.length} au total</p>
+                </div>
               </div>
             </div>
 
-            <Card>
+            <Card className="shadow-sm">
               <CardContent className="pt-6">
                 {subscribersLoading ? (
                   <div className="flex justify-center py-12">
@@ -360,31 +487,33 @@ export function AdminDashboard() {
                 ) : subscribers.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <Mail className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                    <p>No subscribers yet</p>
-                    <p className="text-sm">Subscribers will appear here when users sign up for the newsletter.</p>
+                    <p className="font-medium">Aucun abonné</p>
+                    <p className="text-sm">Les abonnés apparaîtront ici lorsqu'ils s'inscriront à la newsletter</p>
                   </div>
                 ) : (
                   <>
                     {/* Mobile: Card Layout */}
                     <div className="md:hidden space-y-3">
                       {subscribers.map((subscriber) => (
-                        <div key={subscriber.id} className="border rounded-xl p-3 bg-background" data-testid={`card-subscriber-${subscriber.id}`}>
-                          <div className="flex items-start justify-between">
+                        <div key={subscriber.id} className="bg-secondary/20 rounded-2xl p-4 space-y-3" data-testid={`card-subscriber-${subscriber.id}`}>
+                          <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1">
                               <p className="font-medium text-sm truncate">{subscriber.email}</p>
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR') : "N/A"}
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Inscrit le {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : "N/A"}
                               </p>
                             </div>
-                            <Badge variant={subscriber.isActive ? "default" : "secondary"} className="ml-2 text-xs">
-                              {subscriber.isActive ? "Actif" : "Inactif"}
-                            </Badge>
+                            {subscriber.isActive ? (
+                              <Badge className="bg-green-500/20 text-green-700 border-0">Actif</Badge>
+                            ) : (
+                              <Badge className="bg-red-500/20 text-red-700 border-0">Inactif</Badge>
+                            )}
                           </div>
-                          <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t">
+                          <div className="flex items-center gap-2 pt-2 border-t border-border/50">
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8"
+                              className="flex-1 h-9 gap-1.5"
                               onClick={() => updateSubscriberMutation.mutate({ 
                                 id: subscriber.id, 
                                 isActive: !subscriber.isActive 
@@ -392,23 +521,23 @@ export function AdminDashboard() {
                               data-testid={`button-toggle-subscriber-${subscriber.id}`}
                             >
                               {subscriber.isActive ? (
-                                <><XCircle className="w-3.5 h-3.5 mr-1" /> Désactiver</>
+                                <><XCircle className="w-4 h-4" /> Désactiver</>
                               ) : (
-                                <><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Activer</>
+                                <><CheckCircle2 className="w-4 h-4" /> Activer</>
                               )}
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 text-destructive hover:text-destructive"
+                              className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                               onClick={() => {
-                                if (confirm(`Supprimer "${subscriber.email}"?`)) {
+                                if (confirm(`Supprimer l'abonné "${subscriber.email}" ?`)) {
                                   deleteSubscriberMutation.mutate(subscriber.id);
                                 }
                               }}
                               data-testid={`button-delete-subscriber-${subscriber.id}`}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -419,9 +548,9 @@ export function AdminDashboard() {
                     <div className="hidden md:block">
                       <Table>
                         <TableHeader>
-                          <TableRow>
+                          <TableRow className="hover:bg-transparent">
                             <TableHead>Email</TableHead>
-                            <TableHead>Inscrit le</TableHead>
+                            <TableHead>Date d'inscription</TableHead>
                             <TableHead>Statut</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
@@ -431,19 +560,21 @@ export function AdminDashboard() {
                             <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
                               <TableCell className="font-medium">{subscriber.email}</TableCell>
                               <TableCell>
-                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR') : "N/A"}
+                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : "N/A"}
                               </TableCell>
                               <TableCell>
-                                <Badge variant={subscriber.isActive ? "default" : "secondary"}>
-                                  {subscriber.isActive ? "Actif" : "Inactif"}
-                                </Badge>
+                                {subscriber.isActive ? (
+                                  <Badge className="bg-green-500/20 text-green-700 border-0">Actif</Badge>
+                                ) : (
+                                  <Badge className="bg-red-500/20 text-red-700 border-0">Inactif</Badge>
+                                )}
                               </TableCell>
                               <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end gap-1">
                                   <Button
                                     variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
+                                    size="sm"
+                                    className="h-8 gap-1.5"
                                     onClick={() => updateSubscriberMutation.mutate({ 
                                       id: subscriber.id, 
                                       isActive: !subscriber.isActive 
@@ -452,17 +583,17 @@ export function AdminDashboard() {
                                     data-testid={`button-toggle-subscriber-${subscriber.id}`}
                                   >
                                     {subscriber.isActive ? (
-                                      <XCircle className="w-4 h-4 text-muted-foreground" />
+                                      <><XCircle className="w-4 h-4" /> Désactiver</>
                                     ) : (
-                                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                      <><CheckCircle2 className="w-4 h-4 text-green-500" /> Activer</>
                                     )}
                                   </Button>
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 text-destructive"
+                                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                                     onClick={() => {
-                                      if (confirm(`Supprimer "${subscriber.email}"?`)) {
+                                      if (confirm(`Supprimer "${subscriber.email}" ?`)) {
                                         deleteSubscriberMutation.mutate(subscriber.id);
                                       }
                                     }}
