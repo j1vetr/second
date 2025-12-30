@@ -135,7 +135,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
           <Link href={`/product/${product.id}`}>
             <Button className="w-full bg-white/95 backdrop-blur-sm text-gray-900 hover:bg-white shadow-lg font-semibold">
-              View Details <ArrowRight className="w-4 h-4 ml-2" />
+              Voir Détails <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
         </div>

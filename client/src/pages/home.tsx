@@ -84,7 +84,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
           <Zap className="w-4 h-4 text-primary" />
         </div>
-        <h3 className="font-bold text-lg">Today's Deals</h3>
+        <h3 className="font-bold text-lg">Offres du Jour</h3>
       </div>
       
       <div className="relative flex-1 min-h-[280px] overflow-hidden rounded-xl">
@@ -252,7 +252,7 @@ export function Home() {
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
                   >
-                    Premium Products
+                    Produits Premium
                   </motion.h1>
                 </div>
                 
@@ -263,7 +263,7 @@ export function Home() {
                     transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <span className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
-                      Your Price
+                      Votre Prix
                     </span>
                   </motion.div>
                 </div>
@@ -274,7 +274,7 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.4 }}
                   className="text-lg text-muted-foreground max-w-xl mx-auto mb-6 leading-relaxed"
                 >
-                  Browse, like it, make an offer. No fixed prices, just great deals on quality products.
+                  Parcourez, aimez, faites une offre. Pas de prix fixes, juste de bonnes affaires sur des produits de qualité.
                 </motion.p>
 
                 {/* Quick Discovery Tags */}
@@ -317,13 +317,13 @@ export function Home() {
                       whileTap={{ scale: 0.98 }}
                       className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
                     >
-                      Discover Products
+                      Découvrir les Produits
                       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
                   </Link>
                   <Link href="/how-it-works" className="w-full sm:w-auto">
                     <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
-                      How it Works?
+                      Comment ça marche?
                     </Button>
                   </Link>
                 </motion.div>
@@ -403,12 +403,12 @@ export function Home() {
               <Eye className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Most Viewed Products</h2>
-              <p className="text-muted-foreground text-sm">Popular picks from our customers</p>
+              <h2 className="text-2xl font-bold">Produits les Plus Vus</h2>
+              <p className="text-muted-foreground text-sm">Les choix populaires de nos clients</p>
             </div>
           </div>
           <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0 hidden sm:flex")}>
-            View All <ArrowRight className="ml-2 w-4 h-4" />
+            Voir Tout <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
         {productsLoading ? (
@@ -424,11 +424,11 @@ export function Home() {
       <section className="container mx-auto px-4 bg-secondary/20 py-10 lg:py-12 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Featured Deals</h2>
-            <p className="text-muted-foreground">Special pieces selected for you.</p>
+            <h2 className="text-3xl font-bold mb-2">Offres en Vedette</h2>
+            <p className="text-muted-foreground">Pièces spéciales sélectionnées pour vous.</p>
           </div>
           <Link href="/products" className={cn(buttonVariants({ variant: "outline" }), "hidden sm:flex")}>
-            View All
+            Voir Tout
           </Link>
         </div>
         {featuredLoading ? (

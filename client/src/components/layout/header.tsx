@@ -148,9 +148,9 @@ export function Header() {
           <SheetContent side="left">
             <nav className="flex flex-col gap-4 mt-8">
               <Link href="/" className="text-lg font-medium">
-                Home
+                Accueil
               </Link>
-              <div className="text-sm font-semibold text-muted-foreground mt-4">Categories</div>
+              <div className="text-sm font-semibold text-muted-foreground mt-4">Catégories</div>
               {categories.map(cat => (
                 <Link key={cat.id} href={`/category/${cat.id}`} className="text-sm hover:text-primary transition-colors flex items-center gap-2">
                     <DynamicIcon name={cat.icon} className="h-4 w-4" />
@@ -170,13 +170,13 @@ export function Header() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
           <Link href="/" className={cn(navigationMenuTriggerStyle(), location === '/' && "text-primary")}>
-            Home
+            Accueil
           </Link>
 
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Catégories</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {categories.map((cat) => (
@@ -194,7 +194,7 @@ export function Header() {
           </NavigationMenu>
 
           <Link href="/products" className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
-            All Products
+            Tous les Produits
           </Link>
         </div>
 
@@ -258,14 +258,14 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => changeLanguage('fr')} className="cursor-pointer">
+                <span className="mr-2">🇫🇷</span> Français
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => changeLanguage('en')} className="cursor-pointer">
                 <span className="mr-2">🇬🇧</span> English
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => changeLanguage('de')} className="cursor-pointer">
                 <span className="mr-2">🇩🇪</span> Deutsch
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage('fr')} className="cursor-pointer">
-                <span className="mr-2">🇫🇷</span> Français
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

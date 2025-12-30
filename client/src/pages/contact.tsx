@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function Contact() {
   const whatsappNumber = "+41788664492";
-  const whatsappMessage = encodeURIComponent("Hello! I have a question about SecondStore.ch");
+  const whatsappMessage = encodeURIComponent("Bonjour! J'ai une question concernant SecondStore.ch");
 
   return (
     <div className="min-h-screen py-12">
@@ -14,9 +14,9 @@ export function Contact() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contactez-nous</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Have questions? We're here to help! Reach out to us via WhatsApp for the fastest response.
+            Vous avez des questions? Nous sommes là pour vous aider! Contactez-nous via WhatsApp pour une réponse rapide.
           </p>
         </motion.div>
 
@@ -28,7 +28,7 @@ export function Contact() {
             className="space-y-6"
           >
             <div className="bg-card rounded-2xl border p-6 md:p-8">
-              <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+              <h2 className="text-2xl font-bold mb-6">Nous Contacter</h2>
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -36,10 +36,10 @@ export function Contact() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Address</h3>
+                    <h3 className="font-semibold mb-1">Adresse</h3>
                     <p className="text-muted-foreground">
                       Fritz-Oppliger-Strasse 18<br />
-                      2504 Biel, Switzerland
+                      2504 Biel, Suisse
                     </p>
                   </div>
                 </div>
@@ -49,7 +49,7 @@ export function Contact() {
                     <Phone className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Phone / WhatsApp</h3>
+                    <h3 className="font-semibold mb-1">Téléphone / WhatsApp</h3>
                     <a 
                       href={`tel:+41788664492`}
                       className="text-muted-foreground hover:text-primary transition-colors"
@@ -79,11 +79,11 @@ export function Contact() {
                     <Clock className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Working Hours</h3>
+                    <h3 className="font-semibold mb-1">Heures d'Ouverture</h3>
                     <p className="text-muted-foreground">
-                      Monday - Friday: 09:00 - 18:00<br />
-                      Saturday: 10:00 - 16:00<br />
-                      Sunday: Closed
+                      Lundi - Vendredi: 09:00 - 18:00<br />
+                      Samedi: 10:00 - 16:00<br />
+                      Dimanche: Fermé
                     </p>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export function Contact() {
 
               <div className="mt-8 pt-6 border-t">
                 <p className="text-sm text-muted-foreground mb-4">
-                  For the fastest response, contact us via WhatsApp:
+                  Pour une réponse rapide, contactez-nous via WhatsApp:
                 </p>
                 <a
                   href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
@@ -100,7 +100,7 @@ export function Contact() {
                 >
                   <Button className="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white gap-2">
                     <MessageCircle className="w-5 h-5" />
-                    Chat on WhatsApp
+                    Discuter sur WhatsApp
                   </Button>
                 </a>
               </div>
@@ -127,10 +127,10 @@ export function Contact() {
             </div>
 
             <div className="bg-gradient-to-r from-primary/10 to-orange-500/10 rounded-2xl border border-primary/20 p-6">
-              <h3 className="font-bold text-lg mb-2">Visit Our Store</h3>
+              <h3 className="font-bold text-lg mb-2">Visitez Notre Magasin</h3>
               <p className="text-sm text-muted-foreground">
-                Come visit us to see our products in person! We're located in the heart of Biel, 
-                easily accessible by public transport and with parking available nearby.
+                Venez nous rendre visite pour voir nos produits en personne! Nous sommes situés au cœur de Biel, 
+                facilement accessible en transports publics avec un parking à proximité.
               </p>
             </div>
           </motion.div>

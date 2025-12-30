@@ -40,7 +40,7 @@ export function ProductList() {
 
   const categoryName = categoryId 
     ? categories.find(c => c.id === categoryId)?.name || categoryId 
-    : "All Products";
+    : "Tous les Produits";
   
   usePageTitle(categoryName);
 
@@ -65,7 +65,7 @@ export function ProductList() {
     <div className="space-y-6">
       <Accordion type="single" collapsible defaultValue="condition" className="w-full">
         <AccordionItem value="condition" className="border-none">
-          <AccordionTrigger className="text-base font-semibold py-2 hover:no-underline">Condition</AccordionTrigger>
+          <AccordionTrigger className="text-base font-semibold py-2 hover:no-underline">État</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 pt-2">
               <div className="flex items-center space-x-3">
@@ -78,7 +78,7 @@ export function ProductList() {
                   }}
                   className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="new" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Brand New</Label>
+                <Label htmlFor="new" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Neuf</Label>
               </div>
               <div className="flex items-center space-x-3">
                 <Checkbox 
@@ -90,7 +90,7 @@ export function ProductList() {
                   }}
                   className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="used" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Used</Label>
+                <Label htmlFor="used" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">Occasion</Label>
               </div>
             </div>
           </AccordionContent>
@@ -111,7 +111,7 @@ export function ProductList() {
            className="w-full mt-4" 
            onClick={() => setFilterCondition([])}
          >
-           Clear Filters
+           Effacer les Filtres
          </Button>
       )}
     </div>
@@ -124,7 +124,7 @@ export function ProductList() {
         <div className="container mx-auto px-4 py-8 md:py-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{categoryName}</h1>
           <p className="text-muted-foreground text-lg">
-            Discover {products.length} premium products listed for you.
+            Découvrez {products.length} produits premium listés pour vous.
           </p>
         </div>
       </div>
@@ -136,7 +136,7 @@ export function ProductList() {
             {/* Categories Section */}
             <div className="bg-card rounded-xl border p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg">Categories</h3>
+                <h3 className="font-semibold text-lg">Catégories</h3>
                 <LayoutGrid className="w-4 h-4 text-muted-foreground" />
               </div>
               <Separator className="mb-4" />
@@ -149,7 +149,7 @@ export function ProductList() {
                       : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                   )}>
                     <LayoutGrid className="w-4 h-4" />
-                    All Products
+                    Tous les Produits
                   </div>
                 </Link>
                 {categories.map(cat => {
@@ -175,7 +175,7 @@ export function ProductList() {
             {/* Filters Section */}
             <div className="bg-card rounded-xl border p-6 shadow-sm">
                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg">Filters</h3>
+                  <h3 className="font-semibold text-lg">Filtres</h3>
                   <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
                </div>
                <Separator className="mb-4" />
@@ -191,17 +191,17 @@ export function ProductList() {
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="outline" size="sm" className="lg:hidden">
-                      <SlidersHorizontal className="w-4 h-4 mr-2" /> Filters
+                      <SlidersHorizontal className="w-4 h-4 mr-2" /> Filtres
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="left">
                     <SheetHeader>
-                      <SheetTitle>Browse & Filter</SheetTitle>
+                      <SheetTitle>Parcourir et Filtrer</SheetTitle>
                     </SheetHeader>
                     <div className="mt-6 space-y-6">
                       {/* Mobile Categories */}
                       <div>
-                        <h4 className="font-semibold text-sm mb-3">Categories</h4>
+                        <h4 className="font-semibold text-sm mb-3">Catégories</h4>
                         <div className="space-y-1">
                           <Link href="/products">
                             <div className={cn(
@@ -211,7 +211,7 @@ export function ProductList() {
                                 : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                             )}>
                               <LayoutGrid className="w-4 h-4" />
-                              All Products
+                              Tous les Produits
                             </div>
                           </Link>
                           {categories.map(cat => {
@@ -240,19 +240,19 @@ export function ProductList() {
                   </SheetContent>
                 </Sheet>
                 <span className="text-sm text-muted-foreground hidden sm:inline-block">
-                  Showing <strong>{products.length}</strong> results
+                  Affichage de <strong>{products.length}</strong> résultats
                 </span>
               </div>
 
               <div className="flex items-center gap-3">
-                 <span className="text-sm text-muted-foreground hidden sm:inline-block">Sort by:</span>
+                 <span className="text-sm text-muted-foreground hidden sm:inline-block">Trier par:</span>
                  <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger className="w-[140px] md:w-[180px] h-9">
-                    <SelectValue placeholder="Sort By" />
+                    <SelectValue placeholder="Trier par" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Newest Listed</SelectItem>
-                    <SelectItem value="featured">Featured</SelectItem>
+                    <SelectItem value="newest">Plus Récent</SelectItem>
+                    <SelectItem value="featured">En Vedette</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -273,9 +273,9 @@ export function ProductList() {
                  <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
                    <SlidersHorizontal className="w-8 h-8 text-muted-foreground/50" />
                  </div>
-                 <h3 className="text-xl font-semibold mb-2">No products found</h3>
-                 <p className="text-muted-foreground mb-6">Try adjusting your filters or search criteria.</p>
-                 <Button onClick={() => setFilterCondition([])}>Clear All Filters</Button>
+                 <h3 className="text-xl font-semibold mb-2">Aucun produit trouvé</h3>
+                 <p className="text-muted-foreground mb-6">Essayez d'ajuster vos filtres ou critères de recherche.</p>
+                 <Button onClick={() => setFilterCondition([])}>Effacer Tous les Filtres</Button>
                </div>
             )}
           </div>

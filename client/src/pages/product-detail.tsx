@@ -122,9 +122,9 @@ export function ProductDetail() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
         >
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+          <Link href="/" className="hover:text-primary transition-colors">Accueil</Link>
           <ChevronRight className="w-4 h-4" />
-          <Link href="/products" className="hover:text-primary transition-colors">Products</Link>
+          <Link href="/products" className="hover:text-primary transition-colors">Produits</Link>
           <ChevronRight className="w-4 h-4" />
           <Link href={`/category/${product.category}`} className="hover:text-primary transition-colors capitalize">{product.category}</Link>
           <ChevronRight className="w-4 h-4" />
@@ -217,7 +217,7 @@ export function ProductDetail() {
                 className="absolute bottom-4 right-4 bg-black/60 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 {isZoomed ? <ZoomOut className="w-4 h-4" /> : <ZoomIn className="w-4 h-4" />}
-                {isZoomed ? 'Click to zoom out' : 'Click to zoom'}
+                {isZoomed ? 'Cliquez pour dézoomer' : 'Cliquez pour zoomer'}
               </motion.div>
 
               {/* Image Nav Arrows */}
@@ -270,7 +270,7 @@ export function ProductDetail() {
               >
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Info className="w-5 h-5 text-primary" />
-                  Product Description
+                  Description du Produit
                 </h3>
                 <div 
                   className="prose prose-sm max-w-none text-muted-foreground leading-relaxed dark:prose-invert"
@@ -313,7 +313,7 @@ export function ProductDetail() {
               </span>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                 <CheckCircle2 className="w-4 h-4" />
-                In Stock
+                En Stock
               </span>
             </motion.div>
 
@@ -322,7 +322,7 @@ export function ProductDetail() {
               <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary/5 to-orange-500/5 rounded-2xl border border-primary/20 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Price</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Prix</p>
                     {product.discountPrice ? (
                       <div className="flex items-baseline gap-3">
                         <span className="text-3xl font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
@@ -335,7 +335,7 @@ export function ProductDetail() {
                   {product.discountPrice && (
                     <div className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-full text-sm font-bold">
                       <Tag className="w-4 h-4" />
-                      -{getDiscountPercent(product.price, product.discountPrice)}% OFF
+                      -{getDiscountPercent(product.price, product.discountPrice)}% RÉDUCTION
                     </div>
                   )}
                 </div>
@@ -398,12 +398,12 @@ export function ProductDetail() {
             {/* CTA Button - WhatsApp Order */}
             <motion.div variants={itemVariants} className="pt-2">
               <a 
-                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I want to order: ${product.title}${product.price ? ` - Price: CHF ${product.discountPrice || product.price}` : ''}`)}`}
+                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}${product.price ? ` - Prix: CHF ${product.discountPrice || product.price}` : ''}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Button className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-base font-semibold shadow-lg shadow-[#25D366]/20 transition-all hover:shadow-xl hover:shadow-[#25D366]/30" data-testid="button-whatsapp-order">
-                  <WhatsAppIcon className="w-5 h-5 mr-2" /> Order via WhatsApp
+                  <WhatsAppIcon className="w-5 h-5 mr-2" /> Commander via WhatsApp
                 </Button>
               </a>
             </motion.div>
@@ -413,9 +413,9 @@ export function ProductDetail() {
               variants={itemVariants}
               className="grid grid-cols-3 gap-2 pt-4"
             >
-              <TrustItem icon={<ShieldCheck className="w-5 h-5" />} text="Verified" />
-              <TrustItem icon={<Truck className="w-5 h-5" />} text="Fast Delivery" />
-              <TrustItem icon={<Clock className="w-5 h-5" />} text="24h Response" />
+              <TrustItem icon={<ShieldCheck className="w-5 h-5" />} text="Vérifié" />
+              <TrustItem icon={<Truck className="w-5 h-5" />} text="Livraison Rapide" />
+              <TrustItem icon={<Clock className="w-5 h-5" />} text="Réponse 24h" />
             </motion.div>
 
             {/* Premium Badge */}
@@ -427,8 +427,8 @@ export function ProductDetail() {
                 <Award className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="font-semibold text-sm">SecondStore Quality Guarantee</p>
-                <p className="text-xs text-muted-foreground">Every item is inspected and verified</p>
+                <p className="font-semibold text-sm">Garantie Qualité SecondStore</p>
+                <p className="text-xs text-muted-foreground">Chaque article est inspecté et vérifié</p>
               </div>
             </motion.div>
           </motion.div>
@@ -444,12 +444,12 @@ export function ProductDetail() {
           >
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl lg:text-3xl font-bold">You May Also Like</h2>
-                <p className="text-muted-foreground mt-1">Similar products in {product.category}</p>
+                <h2 className="text-2xl lg:text-3xl font-bold">Vous Aimerez Aussi</h2>
+                <p className="text-muted-foreground mt-1">Produits similaires dans {product.category}</p>
               </div>
               <Link href={`/category/${product.category}`}>
                 <Button variant="outline" className="rounded-full">
-                  View All <ChevronRight className="w-4 h-4 ml-1" />
+                  Voir Tout <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
             </div>

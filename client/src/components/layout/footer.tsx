@@ -16,10 +16,10 @@ export function Footer() {
     setIsSubscribing(true);
     try {
       await subscribeToNewsletter(email.trim());
-      toast({ title: "Successfully subscribed!", description: "You'll receive updates about new products." });
+      toast({ title: "Inscription réussie!", description: "Vous recevrez des mises à jour sur les nouveaux produits." });
       setEmail("");
     } catch (error: any) {
-      toast({ title: error.message || "Failed to subscribe", variant: "destructive" });
+      toast({ title: error.message || "Échec de l'inscription", variant: "destructive" });
     } finally {
       setIsSubscribing(false);
     }
@@ -31,15 +31,15 @@ export function Footer() {
         <div className="bg-gradient-to-r from-primary/10 to-orange-500/10 rounded-2xl p-6 md:p-8 mb-12 border border-primary/20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
-              <h3 className="text-xl font-bold mb-2">Stay Updated!</h3>
-              <p className="text-muted-foreground text-sm">Subscribe to get notified about new products and special offers.</p>
+              <h3 className="text-xl font-bold mb-2">Restez Informé!</h3>
+              <p className="text-muted-foreground text-sm">Abonnez-vous pour être notifié des nouveaux produits et offres spéciales.</p>
             </div>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder="Entrez votre email"
                 className="flex-1 min-w-0 md:w-64 px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
                 required
                 data-testid="input-newsletter-email"
@@ -51,7 +51,7 @@ export function Footer() {
                 data-testid="button-newsletter-subscribe"
               >
                 {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                Subscribe
+                S'abonner
               </button>
             </form>
           </div>
@@ -62,7 +62,7 @@ export function Footer() {
             <img src="/assets/logo-light.png" alt="SecondStore" className="h-20 object-contain dark:hidden" />
             <img src="/assets/logo-dark.png" alt="SecondStore" className="h-20 object-contain hidden dark:block" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Meeting point for premium second-hand and new products. Reach your dream products with secure shopping and fast communication.
+              Point de rencontre pour des produits d'occasion et neufs de qualité. Atteignez vos produits de rêve avec des achats sécurisés et une communication rapide.
             </p>
             <div className="flex gap-4">
               <ButtonIcon icon={<Instagram className="w-4 h-4" />} />
@@ -72,22 +72,22 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4 text-foreground">Quick Links</h3>
+            <h3 className="font-semibold mb-4 text-foreground">Liens Rapides</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="/products" className="hover:text-primary transition-colors">All Products</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-primary transition-colors">How it Works</Link></li>
+              <li><Link href="/" className="hover:text-primary transition-colors">Accueil</Link></li>
+              <li><Link href="/products" className="hover:text-primary transition-colors">Tous les Produits</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-primary transition-colors">Comment ça marche</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4 text-foreground">Categories</h3>
+            <h3 className="font-semibold mb-4 text-foreground">Catégories</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/category/furniture" className="hover:text-primary transition-colors">Furniture</Link></li>
-              <li><Link href="/category/electronics" className="hover:text-primary transition-colors">Electronics</Link></li>
-              <li><Link href="/category/fashion" className="hover:text-primary transition-colors">Fashion</Link></li>
-              <li><Link href="/category/hobbies" className="hover:text-primary transition-colors">Hobbies</Link></li>
+              <li><Link href="/category/furniture" className="hover:text-primary transition-colors">Meubles</Link></li>
+              <li><Link href="/category/electronics" className="hover:text-primary transition-colors">Électronique</Link></li>
+              <li><Link href="/category/fashion" className="hover:text-primary transition-colors">Mode</Link></li>
+              <li><Link href="/category/hobbies" className="hover:text-primary transition-colors">Loisirs</Link></li>
             </ul>
           </div>
 
@@ -111,18 +111,18 @@ export function Footer() {
         </div>
 
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© 2025 SecondStore.ch. All rights reserved.</p>
+          <p>© 2025 SecondStore.ch. Tous droits réservés.</p>
           <p>
-            Developed by{" "}
+            Développé par{" "}
             <a href="https://toov.com.tr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
               TOOV
             </a>{" "}
             &lt;3
           </p>
           <div className="flex gap-6">
-            <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-            <Link href="/terms-of-use" className="hover:text-foreground transition-colors">Terms of Use</Link>
-            <Link href="/cookie-policy" className="hover:text-foreground transition-colors">Cookie Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Politique de Confidentialité</Link>
+            <Link href="/terms-of-use" className="hover:text-foreground transition-colors">Conditions d'Utilisation</Link>
+            <Link href="/cookie-policy" className="hover:text-foreground transition-colors">Politique des Cookies</Link>
           </div>
         </div>
       </div>
