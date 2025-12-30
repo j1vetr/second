@@ -241,25 +241,32 @@ export function ProductDetail() {
             </div>
 
             {/* Thumbnail Strip with Scroll */}
-            <div className="relative group/thumbnails">
-              {/* Left Arrow */}
-              {productImages.length > 5 && (
+            <div className="relative group/thumbnails w-full overflow-hidden">
+              {/* Left Arrow - Always visible on mobile when needed */}
+              {productImages.length > 4 && (
                 <button
                   onClick={() => {
                     const container = document.getElementById('thumbnail-container');
                     if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
                   }}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg opacity-0 group-hover/thumbnails:opacity-100 transition-all hover:scale-110"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg transition-all hover:scale-110"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
               )}
               
-              {/* Scrollable Container */}
+              {/* Scrollable Container - Fixed width with proper padding for arrows */}
               <div 
                 id="thumbnail-container"
-                className="flex gap-3 overflow-x-auto scrollbar-hide px-2 py-1 scroll-smooth"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                className={cn(
+                  "flex gap-3 overflow-x-auto py-2 scroll-smooth",
+                  productImages.length > 4 ? "px-12" : "px-2 justify-center"
+                )}
+                style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch'
+                }}
               >
                 {productImages.map((img, i) => (
                   <motion.button
@@ -268,27 +275,27 @@ export function ProductDetail() {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedImage(i)}
                     className={cn(
-                      "w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md shrink-0 bg-secondary/50 flex items-center justify-center",
+                      "w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md flex-shrink-0 bg-secondary/50 flex items-center justify-center",
                       selectedImage === i 
                         ? "border-primary ring-4 ring-primary/20 scale-105" 
                         : "border-transparent opacity-60 hover:opacity-100"
                     )}
                   >
-                    <img src={img} alt="" className="max-w-full max-h-full w-auto h-auto object-contain m-auto" loading="lazy" />
+                    <img src={img} alt="" className="max-w-full max-h-full w-auto h-auto object-contain" loading="lazy" />
                   </motion.button>
                 ))}
               </div>
               
-              {/* Right Arrow */}
-              {productImages.length > 5 && (
+              {/* Right Arrow - Always visible on mobile when needed */}
+              {productImages.length > 4 && (
                 <button
                   onClick={() => {
                     const container = document.getElementById('thumbnail-container');
                     if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
                   }}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg opacity-0 group-hover/thumbnails:opacity-100 transition-all hover:scale-110"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg transition-all hover:scale-110"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               )}
             </div>
