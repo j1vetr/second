@@ -155,68 +155,122 @@ export function AdminDashboard() {
                     <Spinner />
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[80px]">Image</TableHead>
-                        <TableHead>Product Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Condition</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                  <>
+                    {/* Mobile: Card Layout */}
+                    <div className="md:hidden space-y-3">
                       {filteredProducts.map((product) => (
-                        <TableRow key={product.id}>
-                          <TableCell>
+                        <div key={product.id} className="border rounded-xl p-3 bg-background">
+                          <div className="flex gap-3">
                             <img 
                               src={product.image} 
                               alt={product.title} 
-                              className="w-10 h-10 rounded-md object-cover bg-secondary"
+                              className="w-16 h-16 rounded-lg object-cover bg-secondary flex-shrink-0"
                             />
-                          </TableCell>
-                          <TableCell className="font-medium">{product.title}</TableCell>
-                          <TableCell className="capitalize">{product.category}</TableCell>
-                          <TableCell>
-                            <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="capitalize">
-                              {product.condition}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {product.isActive ? (
-                              <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Active</Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50">Inactive</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Link href={`/product/${product.id}`}>
-                                <Button variant="ghost" size="icon" title="View">
-                                  <Eye className="w-4 h-4 text-muted-foreground" />
-                                </Button>
-                              </Link>
-                              <ProductForm product={product} categories={categories} />
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10" 
-                                title="Delete"
-                                onClick={() => {
-                                  if (confirm(`Are you sure you want to delete "${product.title}"?`)) {
-                                    deleteProductMutation.mutate(product.id);
-                                  }
-                                }}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-sm line-clamp-1">{product.title}</h3>
+                              <p className="text-xs text-muted-foreground capitalize">{product.category}</p>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="text-[10px] px-1.5 py-0 capitalize">
+                                  {product.condition}
+                                </Badge>
+                                {product.isActive ? (
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-green-600 border-green-200 bg-green-50">Actif</Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-red-600 border-red-200 bg-red-50">Inactif</Badge>
+                                )}
+                              </div>
                             </div>
-                          </TableCell>
-                        </TableRow>
+                          </div>
+                          <div className="flex items-center justify-end gap-1 mt-3 pt-3 border-t">
+                            <Link href={`/product/${product.id}`}>
+                              <Button variant="outline" size="sm" className="h-8 px-3">
+                                <Eye className="w-3.5 h-3.5 mr-1" /> Voir
+                              </Button>
+                            </Link>
+                            <ProductForm product={product} categories={categories} />
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="h-8 px-3 text-destructive hover:text-destructive hover:bg-destructive/10" 
+                              onClick={() => {
+                                if (confirm(`Supprimer "${product.title}"?`)) {
+                                  deleteProductMutation.mutate(product.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </div>
+
+                    {/* Desktop: Table Layout */}
+                    <div className="hidden md:block">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[80px]">Image</TableHead>
+                            <TableHead>Nom du Produit</TableHead>
+                            <TableHead>Catégorie</TableHead>
+                            <TableHead>État</TableHead>
+                            <TableHead>Statut</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredProducts.map((product) => (
+                            <TableRow key={product.id}>
+                              <TableCell>
+                                <img 
+                                  src={product.image} 
+                                  alt={product.title} 
+                                  className="w-10 h-10 rounded-md object-cover bg-secondary"
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">{product.title}</TableCell>
+                              <TableCell className="capitalize">{product.category}</TableCell>
+                              <TableCell>
+                                <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="capitalize">
+                                  {product.condition}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {product.isActive ? (
+                                  <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Actif</Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50">Inactif</Badge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Link href={`/product/${product.id}`}>
+                                    <Button variant="ghost" size="icon" title="Voir">
+                                      <Eye className="w-4 h-4 text-muted-foreground" />
+                                    </Button>
+                                  </Link>
+                                  <ProductForm product={product} categories={categories} />
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10" 
+                                    title="Supprimer"
+                                    onClick={() => {
+                                      if (confirm(`Supprimer "${product.title}"?`)) {
+                                        deleteProductMutation.mutate(product.id);
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -257,14 +311,14 @@ export function AdminDashboard() {
                       <CardContent>
                         <div className="text-xs text-muted-foreground">ID: {cat.id}</div>
                         <div className="text-xs text-muted-foreground">Icon: {cat.icon}</div>
-                        <div className="flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex justify-end gap-2 mt-4 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                           <CategoryForm category={cat} />
                           <Button 
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-destructive"
                             onClick={() => {
-                              if (confirm(`Are you sure you want to delete "${cat.name}"?`)) {
+                              if (confirm(`Supprimer "${cat.name}"?`)) {
                                 deleteCategoryMutation.mutate(cat.id);
                               }
                             }}
@@ -306,65 +360,120 @@ export function AdminDashboard() {
                     <p className="text-sm">Subscribers will appear here when users sign up for the newsletter.</p>
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Subscribed</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                  <>
+                    {/* Mobile: Card Layout */}
+                    <div className="md:hidden space-y-3">
                       {subscribers.map((subscriber) => (
-                        <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
-                          <TableCell className="font-medium">{subscriber.email}</TableCell>
-                          <TableCell>
-                            {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString() : "N/A"}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={subscriber.isActive ? "default" : "secondary"}>
-                              {subscriber.isActive ? "Active" : "Inactive"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => updateSubscriberMutation.mutate({ 
-                                  id: subscriber.id, 
-                                  isActive: !subscriber.isActive 
-                                })}
-                                title={subscriber.isActive ? "Deactivate" : "Activate"}
-                                data-testid={`button-toggle-subscriber-${subscriber.id}`}
-                              >
-                                {subscriber.isActive ? (
-                                  <XCircle className="w-4 h-4 text-muted-foreground" />
-                                ) : (
-                                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                )}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-destructive"
-                                onClick={() => {
-                                  if (confirm(`Delete subscriber "${subscriber.email}"?`)) {
-                                    deleteSubscriberMutation.mutate(subscriber.id);
-                                  }
-                                }}
-                                data-testid={`button-delete-subscriber-${subscriber.id}`}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                        <div key={subscriber.id} className="border rounded-xl p-3 bg-background" data-testid={`card-subscriber-${subscriber.id}`}>
+                          <div className="flex items-start justify-between">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-sm truncate">{subscriber.email}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR') : "N/A"}
+                              </p>
                             </div>
-                          </TableCell>
-                        </TableRow>
+                            <Badge variant={subscriber.isActive ? "default" : "secondary"} className="ml-2 text-xs">
+                              {subscriber.isActive ? "Actif" : "Inactif"}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8"
+                              onClick={() => updateSubscriberMutation.mutate({ 
+                                id: subscriber.id, 
+                                isActive: !subscriber.isActive 
+                              })}
+                              data-testid={`button-toggle-subscriber-${subscriber.id}`}
+                            >
+                              {subscriber.isActive ? (
+                                <><XCircle className="w-3.5 h-3.5 mr-1" /> Désactiver</>
+                              ) : (
+                                <><CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Activer</>
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-destructive hover:text-destructive"
+                              onClick={() => {
+                                if (confirm(`Supprimer "${subscriber.email}"?`)) {
+                                  deleteSubscriberMutation.mutate(subscriber.id);
+                                }
+                              }}
+                              data-testid={`button-delete-subscriber-${subscriber.id}`}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </div>
+
+                    {/* Desktop: Table Layout */}
+                    <div className="hidden md:block">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Inscrit le</TableHead>
+                            <TableHead>Statut</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {subscribers.map((subscriber) => (
+                            <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
+                              <TableCell className="font-medium">{subscriber.email}</TableCell>
+                              <TableCell>
+                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR') : "N/A"}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={subscriber.isActive ? "default" : "secondary"}>
+                                  {subscriber.isActive ? "Actif" : "Inactif"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => updateSubscriberMutation.mutate({ 
+                                      id: subscriber.id, 
+                                      isActive: !subscriber.isActive 
+                                    })}
+                                    title={subscriber.isActive ? "Désactiver" : "Activer"}
+                                    data-testid={`button-toggle-subscriber-${subscriber.id}`}
+                                  >
+                                    {subscriber.isActive ? (
+                                      <XCircle className="w-4 h-4 text-muted-foreground" />
+                                    ) : (
+                                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-destructive"
+                                    onClick={() => {
+                                      if (confirm(`Supprimer "${subscriber.email}"?`)) {
+                                        deleteSubscriberMutation.mutate(subscriber.id);
+                                      }
+                                    }}
+                                    data-testid={`button-delete-subscriber-${subscriber.id}`}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
                 )}
               </CardContent>
             </Card>
