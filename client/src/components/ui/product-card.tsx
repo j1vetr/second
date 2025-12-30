@@ -174,8 +174,9 @@ export function ProductCard({ product }: ProductCardProps) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="sm" className="rounded-full px-4 shadow-lg shadow-[#25D366]/25 bg-[#25D366] hover:bg-[#128C7E]">
-                <WhatsAppIcon className="w-4 h-4 mr-1" /> Commander
+              <Button size="sm" className="rounded-full px-2 sm:px-4 shadow-lg shadow-[#25D366]/25 bg-[#25D366] hover:bg-[#128C7E]">
+                <WhatsAppIcon className="w-4 h-4 sm:mr-1" />
+                <span className="hidden sm:inline">Commander</span>
               </Button>
             </a>
           </div>
