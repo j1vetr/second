@@ -11,7 +11,7 @@ export function HowItWorks() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <section className="bg-secondary/30 py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -27,7 +27,7 @@ export function HowItWorks() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-16 space-y-24">
+      <div className="container mx-auto px-6 py-16 space-y-24">
         
         {/* Second Hand Process */}
         <section>

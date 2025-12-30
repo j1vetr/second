@@ -121,7 +121,7 @@ export function ProductList() {
     <div className="min-h-screen bg-secondary/10">
       {/* Page Header */}
       <div className="bg-background border-b">
-        <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="container mx-auto px-6 py-8 md:py-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{categoryName}</h1>
           <p className="text-muted-foreground text-lg">
             Découvrez {products.length} produits premium listés pour vous.
@@ -129,7 +129,7 @@ export function ProductList() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-72 shrink-0 space-y-4">

@@ -77,7 +77,7 @@ export function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-secondary/20 via-background to-secondary/10">
       {/* Modern Admin Header */}
       <header className="bg-background/80 backdrop-blur-xl border-b sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6">
           <div className="h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/20">
@@ -106,7 +106,7 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6 space-y-6">
+      <div className="container mx-auto px-6 py-6 space-y-6">
         {/* Stats Cards - Only Products and Categories */}
         <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-2xl">
           <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200/50">

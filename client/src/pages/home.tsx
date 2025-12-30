@@ -190,7 +190,7 @@ export function Home() {
           <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
         </div>
         
-        <div className="container mx-auto px-4 py-8 pb-12 lg:py-12 relative z-10">
+        <div className="container mx-auto px-6 py-8 pb-12 lg:py-12 relative z-10">
         
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Category Sidebar - Hidden on mobile, shown at bottom */}
@@ -396,7 +396,7 @@ export function Home() {
       </section>
 
       {/* Most Viewed Products */}
-      <section className="container mx-auto px-4 py-4 lg:py-6">
+      <section className="container mx-auto px-6 py-4 lg:py-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -421,7 +421,7 @@ export function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="container mx-auto px-4 bg-secondary/20 py-10 lg:py-12 rounded-3xl">
+      <section className="container mx-auto px-6 bg-secondary/20 py-10 lg:py-12 rounded-3xl">
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold mb-2">Offres en Vedette</h2>
@@ -445,7 +445,7 @@ export function Home() {
       </section>
 
       {/* How it works / Trust */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Pourquoi Choisir SecondStore?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -472,7 +472,7 @@ export function Home() {
       </section>
       
       {/* New Arrivals */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-6">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold">Nouveautés</h2>
@@ -500,7 +500,7 @@ export function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-6">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold mb-2">Ce Que Disent Nos Clients</h2>
           <p className="text-muted-foreground">Avis réels de clients satisfaits</p>
@@ -525,7 +525,7 @@ export function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Produits" />
           <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Clients Satisfaits" />

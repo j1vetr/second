@@ -8,7 +8,7 @@ export function Contact() {
 
   return (
     <div className="min-h-screen py-12">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
