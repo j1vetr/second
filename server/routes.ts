@@ -69,12 +69,28 @@ const upload = multer({
 
 async function optimizeImage(inputPath: string, outputPath: string): Promise<void> {
   await sharp(inputPath)
-    .webp({ quality: 80 })
+    .rotate() // Auto-rotate based on EXIF orientation data (fixes iPhone photos)
     .resize(1920, 1920, { 
       fit: 'inside', 
       withoutEnlargement: true 
     })
+    .webp({ quality: 80 })
     .toFile(outputPath);
+}
+
+// Rotate an existing image by 90 degrees
+async function rotateImage(imagePath: string, direction: 'left' | 'right'): Promise<void> {
+  const degrees = direction === 'left' ? -90 : 90;
+  const tempPath = imagePath + '.tmp';
+  
+  await sharp(imagePath)
+    .rotate(degrees)
+    .webp({ quality: 80 })
+    .toFile(tempPath);
+  
+  // Replace original with rotated version
+  fs.unlinkSync(imagePath);
+  fs.renameSync(tempPath, imagePath);
 }
 
 export async function registerRoutes(
@@ -125,6 +141,38 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error uploading file:", error);
       res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
+  // Image Rotation Route
+  app.post("/api/rotate-image", async (req, res) => {
+    try {
+      const { imageUrl, direction } = req.body;
+      
+      if (!imageUrl || !direction) {
+        return res.status(400).json({ error: "Image URL and direction required" });
+      }
+      
+      if (direction !== 'left' && direction !== 'right') {
+        return res.status(400).json({ error: "Direction must be 'left' or 'right'" });
+      }
+      
+      // Extract filename from URL (e.g., /uploads/image.webp -> image.webp)
+      const filename = imageUrl.replace(/^\/uploads\//, '');
+      const imagePath = path.join(uploadsDir, filename);
+      
+      if (!fs.existsSync(imagePath)) {
+        return res.status(404).json({ error: "Image not found" });
+      }
+      
+      await rotateImage(imagePath, direction);
+      
+      // Add cache buster to URL
+      const newUrl = `${imageUrl}?v=${Date.now()}`;
+      res.json({ success: true, url: newUrl });
+    } catch (error) {
+      console.error("Error rotating image:", error);
+      res.status(500).json({ error: "Failed to rotate image" });
     }
   });
 
