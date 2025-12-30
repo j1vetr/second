@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Pencil, Plus, X, Upload, GripVertical } from "lucide-react";
+import { Pencil, Plus, X, Upload, GripVertical, RotateCw, RotateCcw } from "lucide-react";
 import type { Product, Category, InsertProduct } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct } from "@/lib/api";
@@ -44,6 +44,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
   
   const [newItem, setNewItem] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isRotating, setIsRotating] = useState<number | null>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>(
     product?.images?.length ? product.images : (product?.image ? [product.image] : [])
   );
@@ -154,6 +155,46 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       newImages.splice(toIndex, 0, removed);
       return newImages;
     });
+  };
+
+  const rotateImage = async (index: number, direction: 'left' | 'right') => {
+    const imageUrl = uploadedImages[index];
+    // Only allow rotating uploaded images (not external URLs)
+    if (!imageUrl.startsWith('/uploads/')) {
+      toast({ title: "Cannot rotate external images", variant: "destructive" });
+      return;
+    }
+    
+    // Remove cache buster if present for the API call
+    const cleanUrl = imageUrl.split('?')[0];
+    
+    setIsRotating(index);
+    try {
+      const response = await fetch('/api/rotate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: cleanUrl, direction })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Rotation failed');
+      }
+      
+      const result = await response.json();
+      // Update the image URL with cache buster to force reload
+      setUploadedImages(prev => prev.map((img, i) => 
+        i === index ? result.url : img
+      ));
+      toast({ title: `Image rotated ${direction === 'left' ? 'left' : 'right'}` });
+    } catch (error) {
+      toast({ 
+        title: error instanceof Error ? error.message : 'Failed to rotate image', 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsRotating(null);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -342,25 +383,56 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                         Main
                       </span>
                     )}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      {index > 0 && (
+                    {isRotating === index && (
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
+                      <div className="flex items-center gap-1">
                         <Button
                           type="button"
                           variant="secondary"
                           size="sm"
-                          onClick={() => moveImage(index, 0)}
-                          title="Set as main image"
+                          onClick={() => rotateImage(index, 'left')}
+                          title="Rotate left"
+                          disabled={isRotating !== null}
+                          className="h-7 w-7 p-0"
                         >
-                          <GripVertical className="w-4 h-4" />
+                          <RotateCcw className="w-3 h-3" />
                         </Button>
-                      )}
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => rotateImage(index, 'right')}
+                          title="Rotate right"
+                          disabled={isRotating !== null}
+                          className="h-7 w-7 p-0"
+                        >
+                          <RotateCw className="w-3 h-3" />
+                        </Button>
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => moveImage(index, 0)}
+                            title="Set as main image"
+                            className="h-7 w-7 p-0"
+                          >
+                            <GripVertical className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
                       <Button
                         type="button"
                         variant="destructive"
                         size="sm"
                         onClick={() => removeImage(index)}
+                        className="h-6 text-xs px-2"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-3 h-3 mr-1" /> Remove
                       </Button>
                     </div>
                   </div>

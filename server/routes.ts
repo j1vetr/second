@@ -157,9 +157,20 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Direction must be 'left' or 'right'" });
       }
       
+      // Security: Validate that imageUrl starts with /uploads/ and contains no path traversal
+      if (!imageUrl.startsWith('/uploads/') || imageUrl.includes('..')) {
+        return res.status(400).json({ error: "Invalid image URL" });
+      }
+      
       // Extract filename from URL (e.g., /uploads/image.webp -> image.webp)
-      const filename = imageUrl.replace(/^\/uploads\//, '');
-      const imagePath = path.join(uploadsDir, filename);
+      const filename = path.basename(imageUrl.replace(/^\/uploads\//, ''));
+      const imagePath = path.resolve(uploadsDir, filename);
+      
+      // Security: Verify the resolved path is still within uploadsDir
+      const resolvedUploadsDir = path.resolve(uploadsDir);
+      if (!imagePath.startsWith(resolvedUploadsDir)) {
+        return res.status(400).json({ error: "Invalid image path" });
+      }
       
       if (!fs.existsSync(imagePath)) {
         return res.status(404).json({ error: "Image not found" });
@@ -167,8 +178,9 @@ export async function registerRoutes(
       
       await rotateImage(imagePath, direction);
       
-      // Add cache buster to URL
-      const newUrl = `${imageUrl}?v=${Date.now()}`;
+      // Add cache buster to URL - use clean path
+      const cleanUrl = `/uploads/${filename}`;
+      const newUrl = `${cleanUrl}?v=${Date.now()}`;
       res.json({ success: true, url: newUrl });
     } catch (error) {
       console.error("Error rotating image:", error);
