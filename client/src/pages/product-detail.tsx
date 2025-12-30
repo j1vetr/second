@@ -142,7 +142,7 @@ export function ProductDetail() {
             <div 
               ref={imageRef}
               className={cn(
-                "relative aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-secondary/50 to-secondary/20 cursor-zoom-in group shadow-2xl",
+                "relative aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-secondary/50 to-secondary/20 cursor-zoom-in group shadow-2xl flex items-center justify-center",
                 isZoomed && "cursor-zoom-out"
               )}
               onClick={() => setIsZoomed(!isZoomed)}
@@ -152,7 +152,7 @@ export function ProductDetail() {
               <motion.img 
                 src={productImages[selectedImage]} 
                 alt={product.title}
-                className="w-full h-full object-cover transition-transform duration-500"
+                className="max-w-full max-h-full w-auto h-auto object-contain m-auto transition-transform duration-500"
                 style={isZoomed ? {
                   transform: 'scale(2.5)',
                   transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
@@ -268,13 +268,13 @@ export function ProductDetail() {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedImage(i)}
                     className={cn(
-                      "w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md shrink-0",
+                      "w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md shrink-0 bg-secondary/50 flex items-center justify-center",
                       selectedImage === i 
                         ? "border-primary ring-4 ring-primary/20 scale-105" 
                         : "border-transparent opacity-60 hover:opacity-100"
                     )}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={img} alt="" className="max-w-full max-h-full w-auto h-auto object-contain m-auto" loading="lazy" />
                   </motion.button>
                 ))}
               </div>

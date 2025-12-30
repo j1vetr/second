@@ -373,11 +373,11 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                     key={index} 
                     className={`relative rounded-xl overflow-hidden border-2 ${index === 0 ? 'border-primary' : 'border-border'} bg-secondary/30`}
                   >
-                    <div className="relative aspect-square">
+                    <div className="relative aspect-square bg-secondary/50 flex items-center justify-center">
                       <img 
                         src={img} 
                         alt={`Product ${index + 1}`} 
-                        className="w-full h-full object-cover"
+                        className="max-w-full max-h-full w-auto h-auto object-contain"
                       />
                       {index === 0 && (
                         <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
