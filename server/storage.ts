@@ -13,10 +13,11 @@ import {
   products,
   categories,
   offers,
-  newsletterSubscribers
+  newsletterSubscribers,
+  slugify
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte } from "drizzle-orm";
+import { eq, desc, and, gte, like, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -35,12 +36,14 @@ export interface IStorage {
   getProducts(): Promise<Product[]>;
   getActiveProducts(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
+  getProductBySlug(slug: string): Promise<Product | undefined>;
   getProductsByCategory(categoryId: string): Promise<Product[]>;
   getActiveProductsByCategory(categoryId: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: string): Promise<boolean>;
+  generateUniqueSlug(title: string, excludeId?: string): Promise<string>;
 
   // Offer methods
   getOffers(): Promise<Offer[]>;
@@ -129,6 +132,36 @@ export class DatabaseStorage implements IStorage {
     return product || undefined;
   }
 
+  async getProductBySlug(slug: string): Promise<Product | undefined> {
+    const [product] = await db.select().from(products).where(eq(products.slug, slug));
+    return product || undefined;
+  }
+
+  async generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
+    const baseSlug = slugify(title);
+    if (!baseSlug) return `product-${Date.now()}`;
+    
+    const existingProducts = await db
+      .select({ slug: products.slug, id: products.id })
+      .from(products)
+      .where(like(products.slug, `${baseSlug}%`));
+    
+    const existingSlugs = existingProducts
+      .filter(p => !excludeId || p.id !== excludeId)
+      .map(p => p.slug)
+      .filter(Boolean) as string[];
+    
+    if (!existingSlugs.includes(baseSlug)) {
+      return baseSlug;
+    }
+    
+    let counter = 2;
+    while (existingSlugs.includes(`${baseSlug}-${counter}`)) {
+      counter++;
+    }
+    return `${baseSlug}-${counter}`;
+  }
+
   async getProductsByCategory(categoryId: string): Promise<Product[]> {
     return await db
       .select()
@@ -154,17 +187,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProduct(product: InsertProduct): Promise<Product> {
+    const slug = await this.generateUniqueSlug(product.title);
     const [newProduct] = await db
       .insert(products)
-      .values(product)
+      .values({ ...product, slug })
       .returning();
     return newProduct;
   }
 
   async updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const updateData: any = { ...product };
+    if (product.title) {
+      updateData.slug = await this.generateUniqueSlug(product.title, id);
+    }
     const [updated] = await db
       .update(products)
-      .set(product)
+      .set(updateData)
       .where(eq(products.id, id))
       .returning();
     return updated || undefined;
