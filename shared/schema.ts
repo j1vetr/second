@@ -29,6 +29,7 @@ export type Category = typeof categories.$inferSelect;
 
 export const products = pgTable("products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  slug: varchar("slug", { length: 255 }),
   title: text("title").notNull(),
   category: varchar("category").notNull().references(() => categories.id),
   condition: varchar("condition", { enum: ["new", "used_like_new", "used_good", "used_fair"] }).notNull(),
@@ -48,8 +49,39 @@ export const products = pgTable("products", {
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
+  slug: true,
   createdAt: true,
 });
+
+export function slugify(text: string): string {
+  const accentsMap: Record<string, string> = {
+    'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+    'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+    'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+    'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+    'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+    'ý': 'y', 'ÿ': 'y',
+    'ñ': 'n', 'ç': 'c',
+    'œ': 'oe', 'æ': 'ae',
+    'À': 'a', 'Á': 'a', 'Â': 'a', 'Ã': 'a', 'Ä': 'a', 'Å': 'a',
+    'È': 'e', 'É': 'e', 'Ê': 'e', 'Ë': 'e',
+    'Ì': 'i', 'Í': 'i', 'Î': 'i', 'Ï': 'i',
+    'Ò': 'o', 'Ó': 'o', 'Ô': 'o', 'Õ': 'o', 'Ö': 'o',
+    'Ù': 'u', 'Ú': 'u', 'Û': 'u', 'Ü': 'u',
+    'Ý': 'y', 'Ñ': 'n', 'Ç': 'c',
+  };
+  
+  return text
+    .toLowerCase()
+    .split('')
+    .map(char => accentsMap[char] || char)
+    .join('')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80);
+}
 
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
