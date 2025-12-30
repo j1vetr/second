@@ -114,8 +114,8 @@ export function ProductDetail() {
   ].filter(s => s.value);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
-      <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 overflow-x-hidden">
+      <div className="container mx-auto px-4 py-6 max-w-full overflow-hidden">
         {/* Breadcrumb */}
         <motion.nav 
           initial={{ opacity: 0, y: -10 }}
@@ -136,7 +136,7 @@ export function ProductDetail() {
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-3 space-y-4"
+            className="lg:col-span-3 space-y-4 min-w-0 overflow-hidden"
           >
             {/* Main Image */}
             <div 
@@ -241,7 +241,7 @@ export function ProductDetail() {
             </div>
 
             {/* Thumbnail Strip with Scroll */}
-            <div className="relative group/thumbnails w-full overflow-hidden">
+            <div className="relative group/thumbnails w-full max-w-full overflow-hidden box-border">
               {/* Left Arrow - Always visible on mobile when needed */}
               {productImages.length > 4 && (
                 <button
@@ -259,8 +259,8 @@ export function ProductDetail() {
               <div 
                 id="thumbnail-container"
                 className={cn(
-                  "flex gap-3 overflow-x-auto py-2 scroll-smooth",
-                  productImages.length > 4 ? "px-12" : "px-2 justify-center"
+                  "flex gap-2 overflow-x-auto py-2 scroll-smooth max-w-full",
+                  productImages.length > 4 ? "px-10" : "px-2 justify-center"
                 )}
                 style={{ 
                   scrollbarWidth: 'none', 
