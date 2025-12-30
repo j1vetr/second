@@ -95,10 +95,25 @@ export function ProductCard({ product }: ProductCardProps) {
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
           {product.condition === 'new' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-primary to-primary/80 text-white">
               New
+            </span>
+          )}
+          {product.condition === 'used_like_new' && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white">
+              Like New
+            </span>
+          )}
+          {product.condition === 'used_good' && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-blue-500 to-sky-500 text-white">
+              Good
+            </span>
+          )}
+          {product.condition === 'used_fair' && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-white">
+              Fair
             </span>
           )}
           

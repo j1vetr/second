@@ -16,6 +16,16 @@ function getDiscountPercent(price: string | null, discountPrice: string | null):
   if (!price || !discountPrice) return 0;
   return Math.round((1 - parseFloat(discountPrice) / parseFloat(price)) * 100);
 }
+
+function getConditionLabel(condition: string): string {
+  switch (condition) {
+    case 'new': return 'Brand New';
+    case 'used_like_new': return 'Like New';
+    case 'used_good': return 'Good Condition';
+    case 'used_fair': return 'Fairly Good Condition';
+    default: return 'Pre-owned';
+  }
+}
 import { ProductCard } from "@/components/ui/product-card";
 import { motion } from "framer-motion";
 import NotFound from "@/pages/not-found";
@@ -99,7 +109,7 @@ export function ProductDetail() {
   const specs = [
     { icon: Ruler, label: "Dimensions", value: product.dimensions },
     { icon: Scale, label: "Weight", value: product.weight },
-    { icon: Box, label: "Condition", value: product.condition === 'new' ? 'Brand New' : 'Pre-owned' },
+    { icon: Box, label: "Condition", value: getConditionLabel(product.condition) },
     { icon: ShieldCheck, label: "Warranty", value: product.condition === 'new' ? '2 Years' : 'None' },
   ].filter(s => s.value);
 
@@ -151,11 +161,32 @@ export function ProductDetail() {
               />
               
               {/* Floating Badges */}
-              <div className="absolute top-4 left-4 flex gap-2">
+              <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
                 {product.condition === 'new' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-primary to-orange-500 text-white px-4 py-2 text-sm shadow-lg border-0">
                       <Sparkles className="w-4 h-4 mr-1.5" /> New
+                    </Badge>
+                  </motion.div>
+                )}
+                {product.condition === 'used_like_new' && (
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 text-sm shadow-lg border-0">
+                      Like New
+                    </Badge>
+                  </motion.div>
+                )}
+                {product.condition === 'used_good' && (
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
+                    <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-4 py-2 text-sm shadow-lg border-0">
+                      Good Condition
+                    </Badge>
+                  </motion.div>
+                )}
+                {product.condition === 'used_fair' && (
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
+                    <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-4 py-2 text-sm shadow-lg border-0">
+                      Fairly Good
                     </Badge>
                   </motion.div>
                 )}
@@ -272,12 +303,13 @@ export function ProductDetail() {
             <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
               <span className={cn(
                 "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium",
-                product.condition === 'new' 
-                  ? "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20" 
-                  : "bg-secondary text-secondary-foreground"
+                product.condition === 'new' && "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20",
+                product.condition === 'used_like_new' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+                product.condition === 'used_good' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+                product.condition === 'used_fair' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
               )}>
                 <Box className="w-4 h-4" />
-                {product.condition === 'new' ? 'Brand New' : 'Pre-owned'}
+                {getConditionLabel(product.condition)}
               </span>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                 <CheckCircle2 className="w-4 h-4" />

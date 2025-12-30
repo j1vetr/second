@@ -245,14 +245,16 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             <Label htmlFor="condition">Condition *</Label>
             <Select 
               value={formData.condition} 
-              onValueChange={(value: "new" | "used") => setFormData(prev => ({ ...prev, condition: value }))}
+              onValueChange={(value: "new" | "used_like_new" | "used_good" | "used_fair") => setFormData(prev => ({ ...prev, condition: value }))}
             >
               <SelectTrigger className="w-full md:w-1/2">
                 <SelectValue placeholder="Select condition" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="new">New</SelectItem>
-                <SelectItem value="used">Used</SelectItem>
+                <SelectItem value="used_like_new">Used - Like New</SelectItem>
+                <SelectItem value="used_good">Used - Good Condition</SelectItem>
+                <SelectItem value="used_fair">Used - Fairly Good Condition</SelectItem>
               </SelectContent>
             </Select>
           </div>
