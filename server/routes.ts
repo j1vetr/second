@@ -80,12 +80,15 @@ async function optimizeImage(inputPath: string, outputPath: string): Promise<voi
 
 // Rotate an existing image by 90 degrees
 async function rotateImage(imagePath: string, direction: 'left' | 'right'): Promise<void> {
-  const degrees = direction === 'left' ? -90 : 90;
+  const degrees = direction === 'left' ? 270 : 90; // Use positive degrees for Sharp
   const tempPath = imagePath + '.tmp';
   
-  await sharp(imagePath)
-    .rotate(degrees)
-    .webp({ quality: 80 })
+  // Read the image without auto-rotation to avoid EXIF interference
+  const imageBuffer = fs.readFileSync(imagePath);
+  
+  await sharp(imageBuffer, { failOnError: false })
+    .rotate(degrees) // Manual rotation - ignores EXIF since we're passing buffer
+    .webp({ quality: 85 })
     .toFile(tempPath);
   
   // Replace original with rotated version
