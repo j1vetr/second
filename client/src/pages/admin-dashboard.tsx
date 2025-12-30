@@ -161,11 +161,13 @@ export function AdminDashboard() {
                       {filteredProducts.map((product) => (
                         <div key={product.id} className="border rounded-xl p-3 bg-background">
                           <div className="flex gap-3">
-                            <img 
-                              src={product.image} 
-                              alt={product.title} 
-                              className="w-16 h-16 rounded-lg object-cover bg-secondary flex-shrink-0"
-                            />
+                            <div className="w-16 h-16 rounded-lg bg-secondary/50 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                              <img 
+                                src={product.image} 
+                                alt={product.title} 
+                                className="max-w-full max-h-full object-contain"
+                              />
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h3 className="font-medium text-sm line-clamp-1">{product.title}</h3>
                               <p className="text-xs text-muted-foreground capitalize">{product.category}</p>
@@ -222,11 +224,13 @@ export function AdminDashboard() {
                           {filteredProducts.map((product) => (
                             <TableRow key={product.id}>
                               <TableCell>
-                                <img 
-                                  src={product.image} 
-                                  alt={product.title} 
-                                  className="w-10 h-10 rounded-md object-cover bg-secondary"
-                                />
+                                <div className="w-10 h-10 rounded-md bg-secondary/50 flex items-center justify-center overflow-hidden">
+                                  <img 
+                                    src={product.image} 
+                                    alt={product.title} 
+                                    className="max-w-full max-h-full object-contain"
+                                  />
+                                </div>
                               </TableCell>
                               <TableCell className="font-medium">{product.title}</TableCell>
                               <TableCell className="capitalize">{product.category}</TableCell>
