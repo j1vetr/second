@@ -240,24 +240,57 @@ export function ProductDetail() {
               </div>
             </div>
 
-            {/* Thumbnail Strip */}
-            <div className="flex gap-3 justify-center">
-              {productImages.map((img, i) => (
-                <motion.button
-                  key={i}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedImage(i)}
-                  className={cn(
-                    "w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md",
-                    selectedImage === i 
-                      ? "border-primary ring-4 ring-primary/20 scale-105" 
-                      : "border-transparent opacity-60 hover:opacity-100"
-                  )}
+            {/* Thumbnail Strip with Scroll */}
+            <div className="relative group/thumbnails">
+              {/* Left Arrow */}
+              {productImages.length > 5 && (
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('thumbnail-container');
+                    if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg opacity-0 group-hover/thumbnails:opacity-100 transition-all hover:scale-110"
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </motion.button>
-              ))}
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+              )}
+              
+              {/* Scrollable Container */}
+              <div 
+                id="thumbnail-container"
+                className="flex gap-3 overflow-x-auto scrollbar-hide px-2 py-1 scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {productImages.map((img, i) => (
+                  <motion.button
+                    key={i}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setSelectedImage(i)}
+                    className={cn(
+                      "w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md shrink-0",
+                      selectedImage === i 
+                        ? "border-primary ring-4 ring-primary/20 scale-105" 
+                        : "border-transparent opacity-60 hover:opacity-100"
+                    )}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  </motion.button>
+                ))}
+              </div>
+              
+              {/* Right Arrow */}
+              {productImages.length > 5 && (
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('thumbnail-container');
+                    if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 flex items-center justify-center shadow-lg opacity-0 group-hover/thumbnails:opacity-100 transition-all hover:scale-110"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             {/* Description Section Below Image */}
