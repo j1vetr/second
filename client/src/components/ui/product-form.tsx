@@ -54,12 +54,12 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({ title: "Product created successfully" });
+      toast({ title: "Produit créé avec succès" });
       setOpen(false);
       resetForm();
     },
     onError: () => {
-      toast({ title: "Failed to create product", variant: "destructive" });
+      toast({ title: "Échec de la création du produit", variant: "destructive" });
     },
   });
 
@@ -68,11 +68,11 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({ title: "Product updated successfully" });
+      toast({ title: "Produit mis à jour avec succès" });
       setOpen(false);
     },
     onError: () => {
-      toast({ title: "Failed to update product", variant: "destructive" });
+      toast({ title: "Échec de la mise à jour du produit", variant: "destructive" });
     },
   });
 
@@ -107,7 +107,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       for (const file of Array.from(files)) {
         // Validate file size (10MB max)
         if (file.size > 10 * 1024 * 1024) {
-          toast({ title: `${file.name} is too large. Maximum size is 10MB.`, variant: "destructive" });
+          toast({ title: `${file.name} est trop volumineux. Taille maximum: 10MB.`, variant: "destructive" });
           continue;
         }
 
@@ -122,17 +122,17 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.error || "Upload failed");
+          throw new Error(error.error || "Échec du téléchargement");
         }
 
         const result = await response.json();
         setUploadedImages(prev => [...prev, result.url]);
       }
       
-      toast({ title: `${files.length} image(s) uploaded successfully` });
+      toast({ title: `${files.length} image(s) téléchargée(s) avec succès` });
     } catch (error) {
       toast({ 
-        title: error instanceof Error ? error.message : "Failed to upload image", 
+        title: error instanceof Error ? error.message : "Échec du téléchargement de l'image", 
         variant: "destructive" 
       });
     } finally {
@@ -161,7 +161,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     const imageUrl = uploadedImages[index];
     // Only allow rotating uploaded images (not external URLs)
     if (!imageUrl.startsWith('/uploads/')) {
-      toast({ title: "Cannot rotate external images", variant: "destructive" });
+      toast({ title: "Impossible de faire pivoter les images externes", variant: "destructive" });
       return;
     }
     
@@ -178,7 +178,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Rotation failed');
+        throw new Error(error.error || 'Échec de la rotation');
       }
       
       const result = await response.json();
@@ -186,10 +186,10 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
       setUploadedImages(prev => prev.map((img, i) => 
         i === index ? result.url : img
       ));
-      toast({ title: `Image rotated ${direction === 'left' ? 'left' : 'right'}` });
+      toast({ title: `Image pivotée vers la ${direction === 'left' ? 'gauche' : 'droite'}` });
     } catch (error) {
       toast({ 
-        title: error instanceof Error ? error.message : 'Failed to rotate image', 
+        title: error instanceof Error ? error.message : "Échec de la rotation de l'image", 
         variant: "destructive" 
       });
     } finally {
@@ -201,7 +201,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     e.preventDefault();
     
     if (!formData.title || !formData.category || uploadedImages.length === 0) {
-      toast({ title: "Please fill in required fields and upload at least one image", variant: "destructive" });
+      toast({ title: "Veuillez remplir les champs requis et télécharger au moins une image", variant: "destructive" });
       return;
     }
 
@@ -241,37 +241,37 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="icon" title={product ? "Edit" : "Add"}>
+          <Button variant="ghost" size="icon" title={product ? "Modifier" : "Ajouter"}>
             {product ? <Pencil className="w-4 h-4 text-primary" /> : <Plus className="w-4 h-4" />}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{product ? "Edit Product" : "Add New Product"}</DialogTitle>
+          <DialogTitle>{product ? "Modifier le Produit" : "Ajouter un Nouveau Produit"}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Product Title *</Label>
+              <Label htmlFor="title">Titre du Produit *</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Enter product title"
+                placeholder="Entrez le titre du produit"
                 required
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
+              <Label htmlFor="category">Catégorie *</Label>
               <Select 
                 value={formData.category} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder="Sélectionner une catégorie" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
@@ -283,19 +283,19 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="condition">Condition *</Label>
+            <Label htmlFor="condition">État *</Label>
             <Select 
               value={formData.condition} 
               onValueChange={(value: "new" | "used_like_new" | "used_good" | "used_fair") => setFormData(prev => ({ ...prev, condition: value }))}
             >
               <SelectTrigger className="w-full md:w-1/2">
-                <SelectValue placeholder="Select condition" />
+                <SelectValue placeholder="Sélectionner l'état" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="used_like_new">Used - Like New</SelectItem>
-                <SelectItem value="used_good">Used - Good Condition</SelectItem>
-                <SelectItem value="used_fair">Used - Fairly Good Condition</SelectItem>
+                <SelectItem value="new">Neuf</SelectItem>
+                <SelectItem value="used_like_new">Occasion - Comme Neuf</SelectItem>
+                <SelectItem value="used_good">Occasion - Bon État</SelectItem>
+                <SelectItem value="used_fair">Occasion - État Correct</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -303,7 +303,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
           <div className="space-y-4 p-4 bg-secondary/30 rounded-lg border">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="price">Price (CHF) *</Label>
+                <Label htmlFor="price">Prix (CHF) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -311,14 +311,14 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                   min="0"
                   value={formData.price || ""}
                   onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value || null }))}
-                  placeholder="e.g., 299.00"
+                  placeholder="ex: 299.00"
                   required
                 />
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="discountPrice">Discount Price (CHF)</Label>
+                  <Label htmlFor="discountPrice">Prix Réduit (CHF)</Label>
                   <div className="flex items-center gap-2">
                     <Switch
                       id="hasDiscount"
@@ -330,7 +330,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                         }
                       }}
                     />
-                    <Label htmlFor="hasDiscount" className="text-xs text-muted-foreground">On Sale</Label>
+                    <Label htmlFor="hasDiscount" className="text-xs text-muted-foreground">En Promo</Label>
                   </div>
                 </div>
                 <Input
@@ -340,13 +340,13 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                   min="0"
                   value={formData.discountPrice || ""}
                   onChange={(e) => setFormData(prev => ({ ...prev, discountPrice: e.target.value || null }))}
-                  placeholder="e.g., 199.00"
+                  placeholder="ex: 199.00"
                   disabled={!hasDiscount}
                   className={!hasDiscount ? "opacity-50" : ""}
                 />
                 {hasDiscount && formData.price && formData.discountPrice && (
                   <p className="text-xs text-green-600">
-                    {Math.round((1 - parseFloat(formData.discountPrice as string) / parseFloat(formData.price as string)) * 100)}% discount
+                    {Math.round((1 - parseFloat(formData.discountPrice as string) / parseFloat(formData.price as string)) * 100)}% de réduction
                   </p>
                 )}
               </div>
@@ -354,7 +354,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
           </div>
 
           <div className="space-y-2">
-            <Label>Product Images * <span className="text-muted-foreground text-xs">(First image will be the main image)</span></Label>
+            <Label>Images du Produit * <span className="text-muted-foreground text-xs">(La première image sera l'image principale)</span></Label>
             <input
               ref={fileInputRef}
               type="file"
@@ -452,7 +452,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
               {isUploading ? (
                 <div className="flex flex-col items-center gap-2 py-4">
                   <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-muted-foreground">Uploading...</span>
+                  <span className="text-sm text-muted-foreground">Téléchargement...</span>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2 py-4">
@@ -460,9 +460,9 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                     <Upload className="w-6 h-6 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Click to upload images</p>
+                    <p className="text-sm font-medium">Cliquez pour télécharger des images</p>
                     <p className="text-xs text-muted-foreground">
-                      JPEG, PNG, WebP, HEIC, GIF (max 10MB each) - Multiple selection allowed
+                      JPEG, PNG, WebP, HEIC, GIF (max 10MB) - Sélection multiple autorisée
                     </p>
                   </div>
                 </div>
@@ -477,17 +477,17 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 id="dimensions"
                 value={formData.dimensions || ""}
                 onChange={(e) => setFormData(prev => ({ ...prev, dimensions: e.target.value }))}
-                placeholder="e.g., 100 x 50 x 30 cm"
+                placeholder="ex: 100 x 50 x 30 cm"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight</Label>
+              <Label htmlFor="weight">Poids</Label>
               <Input
                 id="weight"
                 value={formData.weight || ""}
                 onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
-                placeholder="e.g., 5 kg"
+                placeholder="ex: 5 kg"
               />
             </div>
           </div>
@@ -500,9 +500,9 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
               />
               <Label htmlFor="isActive" className="flex items-center gap-2">
-                Active
+                Actif
                 <span className={`text-xs px-2 py-0.5 rounded ${formData.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                  {formData.isActive ? 'Visible' : 'Hidden'}
+                  {formData.isActive ? 'Visible' : 'Masqué'}
                 </span>
               </Label>
             </div>
@@ -513,7 +513,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 checked={formData.featured || false}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
               />
-              <Label htmlFor="featured">Featured Product</Label>
+              <Label htmlFor="featured">Produit en Vedette</Label>
             </div>
             
             <div className="flex items-center gap-2">
@@ -522,26 +522,26 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 checked={formData.isNew || false}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isNew: checked }))}
               />
-              <Label htmlFor="isNew">New Arrival</Label>
+              <Label htmlFor="isNew">Nouvelle Arrivée</Label>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Description (HTML supported)</Label>
+            <Label>Description</Label>
             <RichTextEditor
               content={formData.description || ""}
               onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
-              placeholder="Enter product description..."
+              placeholder="Entrez la description du produit..."
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Included Items</Label>
+            <Label>Articles Inclus</Label>
             <div className="flex gap-2">
               <Input
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
-                placeholder="Add included item"
+                placeholder="Ajouter un article inclus"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -550,7 +550,7 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                 }}
               />
               <Button type="button" variant="outline" onClick={addIncludedItem}>
-                Add
+                Ajouter
               </Button>
             </div>
             {formData.includedItems && formData.includedItems.length > 0 && (
@@ -569,10 +569,10 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
 
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              Annuler
             </Button>
             <Button type="submit" disabled={isLoading || isUploading}>
-              {isLoading ? "Saving..." : (product ? "Update Product" : "Create Product")}
+              {isLoading ? "Enregistrement..." : (product ? "Mettre à Jour" : "Créer le Produit")}
             </Button>
           </div>
         </form>

@@ -12,26 +12,26 @@ import { Pencil, Plus } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 
 const availableIcons = [
-  { value: "Sofa", label: "Sofa" },
-  { value: "Home", label: "Home" },
+  { value: "Sofa", label: "Canapé" },
+  { value: "Home", label: "Maison" },
   { value: "Smartphone", label: "Smartphone" },
-  { value: "WashingMachine", label: "Washing Machine" },
-  { value: "Briefcase", label: "Briefcase" },
-  { value: "Flower2", label: "Flower" },
-  { value: "Lamp", label: "Lamp" },
+  { value: "WashingMachine", label: "Électroménager" },
+  { value: "Briefcase", label: "Affaires" },
+  { value: "Flower2", label: "Fleurs" },
+  { value: "Lamp", label: "Lampe" },
   { value: "Palette", label: "Palette" },
-  { value: "Baby", label: "Baby" },
-  { value: "Gamepad2", label: "Gamepad" },
-  { value: "Car", label: "Car" },
-  { value: "Shirt", label: "Shirt" },
-  { value: "Watch", label: "Watch" },
-  { value: "Music", label: "Music" },
-  { value: "Book", label: "Book" },
-  { value: "Camera", label: "Camera" },
-  { value: "Bike", label: "Bike" },
-  { value: "Dumbbell", label: "Dumbbell" },
-  { value: "Utensils", label: "Utensils" },
-  { value: "Heart", label: "Heart" },
+  { value: "Baby", label: "Bébé" },
+  { value: "Gamepad2", label: "Jeux" },
+  { value: "Car", label: "Voiture" },
+  { value: "Shirt", label: "Vêtements" },
+  { value: "Watch", label: "Montre" },
+  { value: "Music", label: "Musique" },
+  { value: "Book", label: "Livre" },
+  { value: "Camera", label: "Appareil Photo" },
+  { value: "Bike", label: "Vélo" },
+  { value: "Dumbbell", label: "Sport" },
+  { value: "Utensils", label: "Cuisine" },
+  { value: "Heart", label: "Coeur" },
 ];
 
 interface CategoryFormProps {
@@ -53,12 +53,12 @@ export function CategoryForm({ category, trigger }: CategoryFormProps) {
     mutationFn: createCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast({ title: "Category created successfully" });
+      toast({ title: "Catégorie créée avec succès" });
       setOpen(false);
       resetForm();
     },
     onError: () => {
-      toast({ title: "Failed to create category", variant: "destructive" });
+      toast({ title: "Échec de la création de la catégorie", variant: "destructive" });
     },
   });
 
@@ -66,11 +66,11 @@ export function CategoryForm({ category, trigger }: CategoryFormProps) {
     mutationFn: ({ id, data }: { id: string; data: Partial<Category> }) => updateCategory(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast({ title: "Category updated successfully" });
+      toast({ title: "Catégorie mise à jour avec succès" });
       setOpen(false);
     },
     onError: () => {
-      toast({ title: "Failed to update category", variant: "destructive" });
+      toast({ title: "Échec de la mise à jour de la catégorie", variant: "destructive" });
     },
   });
 
@@ -101,43 +101,43 @@ export function CategoryForm({ category, trigger }: CategoryFormProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            {isEditing ? <Pencil className="w-3 h-3" /> : <Plus className="w-4 h-4" />}
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+            {isEditing ? <Pencil className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Category" : "Add New Category"}</DialogTitle>
+          <DialogTitle>{isEditing ? "Modifier la Catégorie" : "Nouvelle Catégorie"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           {!isEditing && (
             <div className="space-y-2">
-              <Label htmlFor="id">Category ID</Label>
+              <Label htmlFor="id">Identifiant de la Catégorie</Label>
               <Input 
                 id="id" 
                 value={id} 
                 onChange={(e) => setId(e.target.value.toLowerCase().replace(/\s+/g, '-'))} 
-                placeholder="e.g., sports-equipment"
+                placeholder="ex: equipement-sport"
                 required
               />
-              <p className="text-xs text-muted-foreground">Unique identifier (lowercase, no spaces)</p>
+              <p className="text-xs text-muted-foreground">Identifiant unique (minuscules, sans espaces)</p>
             </div>
           )}
           
           <div className="space-y-2">
-            <Label htmlFor="name">Category Name</Label>
+            <Label htmlFor="name">Nom de la Catégorie</Label>
             <Input 
               id="name" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
-              placeholder="e.g., Sports Equipment"
+              placeholder="ex: Équipement de Sport"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="icon">Icon</Label>
+            <Label htmlFor="icon">Icône</Label>
             <Select value={icon} onValueChange={setIcon}>
               <SelectTrigger>
                 <SelectValue>
@@ -163,25 +163,25 @@ export function CategoryForm({ category, trigger }: CategoryFormProps) {
             </Select>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <IconComponent className="w-5 h-5" />
+          <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-xl">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary">
+              <IconComponent className="w-6 h-6" />
             </div>
             <div>
-              <p className="font-medium">{name || "Category Name"}</p>
-              <p className="text-xs text-muted-foreground">Preview</p>
+              <p className="font-semibold">{name || "Nom de la Catégorie"}</p>
+              <p className="text-xs text-muted-foreground">Aperçu</p>
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              Annuler
             </Button>
             <Button 
               type="submit" 
               disabled={createMutation.isPending || updateMutation.isPending}
             >
-              {(createMutation.isPending || updateMutation.isPending) ? "Saving..." : (isEditing ? "Update" : "Create")}
+              {(createMutation.isPending || updateMutation.isPending) ? "Enregistrement..." : (isEditing ? "Mettre à Jour" : "Créer")}
             </Button>
           </div>
         </form>
