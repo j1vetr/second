@@ -98,22 +98,22 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
           {product.condition === 'new' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-primary to-primary/80 text-white">
-              New
+              Neuf
             </span>
           )}
           {product.condition === 'used_like_new' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white">
-              Like New
+              Comme Neuf
             </span>
           )}
           {product.condition === 'used_good' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-blue-500 to-sky-500 text-white">
-              Good
+              Bon État
             </span>
           )}
           {product.condition === 'used_fair' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-white">
-              Fair
+              État Correct
             </span>
           )}
           
@@ -156,7 +156,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="pt-3 border-t border-border/50">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-[10px] text-muted-foreground uppercase">Price</span>
+              <span className="text-[10px] text-muted-foreground uppercase">Prix</span>
               {product.price ? (
                 <div className="flex items-center gap-2">
                   {product.discountPrice ? (
@@ -166,16 +166,16 @@ export function ProductCard({ product }: ProductCardProps) {
                   )}
                 </div>
               ) : (
-                <span className="text-sm font-bold text-primary">Contact Us</span>
+                <span className="text-sm font-bold text-primary">Contactez-nous</span>
               )}
             </div>
             <a 
-              href={`https://wa.me/41788664492?text=${encodeURIComponent(`Hi, I want to order: ${product.title}`)}`}
+              href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}`)}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               <Button size="sm" className="rounded-full px-4 shadow-lg shadow-[#25D366]/25 bg-[#25D366] hover:bg-[#128C7E]">
-                <WhatsAppIcon className="w-4 h-4 mr-1" /> Order
+                <WhatsAppIcon className="w-4 h-4 mr-1" /> Commander
               </Button>
             </a>
           </div>

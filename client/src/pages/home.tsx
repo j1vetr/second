@@ -71,7 +71,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
   if (dealProducts.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground text-sm">
-        No deals available
+        Aucune offre disponible
       </div>
     );
   }
@@ -115,7 +115,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
                       ? "bg-primary text-white" 
                       : "bg-white/90 text-gray-800 backdrop-blur-sm"
                   )}>
-                    {currentProduct.condition === 'new' ? 'NEW' : 'USED'}
+                    {currentProduct.condition === 'new' ? 'NEUF' : 'OCCASION'}
                   </span>
                 </div>
 
@@ -124,7 +124,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
                   <p className="font-bold text-base line-clamp-2 leading-tight">{currentProduct.title}</p>
                   <div className="mt-3 flex items-center justify-between">
                     <span className="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
-                      Make an Offer
+                      Faire une Offre
                     </span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -154,7 +154,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
 }
 
 export function Home() {
-  usePageTitle("Premium Products at Your Price");
+  usePageTitle("Produits Premium à Votre Prix");
   
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ["categories"],
@@ -178,7 +178,7 @@ export function Home() {
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]);
 
-  const quickTags = ["Trending", "New Arrivals", "Best Sellers", "Top Rated", "Budget Friendly"];
+  const quickTags = ["Tendance", "Nouveautés", "Meilleures Ventes", "Mieux Notés", "Petit Budget"];
 
   return (
     <div className="space-y-16 pb-16">
@@ -203,7 +203,7 @@ export function Home() {
               <div className="bg-card border rounded-xl overflow-hidden shadow-lg lg:bg-card/80 lg:backdrop-blur-sm">
                 <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Categories
+                  Catégories
                 </div>
                 {categoriesLoading ? (
                   <div className="p-4 space-y-2">
@@ -358,7 +358,7 @@ export function Home() {
               <div className="bg-card border rounded-xl overflow-hidden shadow-lg">
                 <div className="bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-4 py-3 font-semibold flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Categories
+                  Catégories
                 </div>
                 {categoriesLoading ? (
                   <div className="p-4 space-y-2">
@@ -447,26 +447,26 @@ export function Home() {
       {/* How it works / Trust */}
       <section className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Why Choose SecondStore?</h2>
+          <h2 className="text-3xl font-bold mb-4">Pourquoi Choisir SecondStore?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            We provide a trusted marketplace for quality second-hand and new products with transparent pricing.
+            Nous offrons une marketplace de confiance pour des produits de qualité, neufs et d'occasion, avec des prix transparents.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           <Feature 
             icon={<ShieldCheck className="w-10 h-10 text-primary" />}
-            title="Secure Shopping"
-            desc="All products are checked and approved by our expert team."
+            title="Achat Sécurisé"
+            desc="Tous les produits sont vérifiés et approuvés par notre équipe d'experts."
           />
           <Feature 
             icon={<MessageCircle className="w-10 h-10 text-primary" />}
-            title="Easy Communication"
-            desc="Make an offer for the product you like with one click, talk to the seller instantly."
+            title="Communication Facile"
+            desc="Faites une offre pour le produit que vous aimez en un clic, parlez au vendeur instantanément."
           />
           <Feature 
             icon={<Truck className="w-10 h-10 text-primary" />}
-            title="Fast Delivery"
-            desc="Your products are safely at your door with contracted cargo companies."
+            title="Livraison Rapide"
+            desc="Vos produits arrivent en toute sécurité chez vous avec nos partenaires de livraison."
           />
         </div>
       </section>
@@ -475,11 +475,11 @@ export function Home() {
       <section className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold">New Arrivals</h2>
-            <p className="text-muted-foreground">Fresh products just added to our collection.</p>
+            <h2 className="text-2xl font-bold">Nouveautés</h2>
+            <p className="text-muted-foreground">Produits fraîchement ajoutés à notre collection.</p>
           </div>
           <Link href="/products" className={cn(buttonVariants({ variant: "link" }), "text-primary p-0")}>
-            See All <ArrowRight className="ml-2 w-4 h-4" />
+            Voir Tout <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
         {productsLoading ? (
@@ -494,7 +494,7 @@ export function Home() {
           </div>
         ) : (
           <div className="text-center py-12 text-muted-foreground">
-            No new products at the moment. Check back soon!
+            Pas de nouveaux produits pour le moment. Revenez bientôt!
           </div>
         )}
       </section>
@@ -502,23 +502,23 @@ export function Home() {
       {/* Testimonials */}
       <section className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold mb-2">What Our Customers Say</h2>
-          <p className="text-muted-foreground">Real reviews from satisfied customers</p>
+          <h2 className="text-2xl font-bold mb-2">Ce Que Disent Nos Clients</h2>
+          <p className="text-muted-foreground">Avis réels de clients satisfaits</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           <TestimonialCard 
-            name="Ahmet Y."
-            text="I found exactly what I was looking for at a great price. The process was smooth and the product arrived quickly."
+            name="Marie D."
+            text="J'ai trouvé exactement ce que je cherchais à un excellent prix. Le processus était fluide et le produit est arrivé rapidement."
             rating={5}
           />
           <TestimonialCard 
-            name="Elif K."
-            text="Love the offer system! I got a beautiful vintage desk for my home office. Highly recommend SecondStore."
+            name="Pierre L."
+            text="J'adore le système d'offres! J'ai obtenu un magnifique bureau vintage pour mon bureau à domicile. Je recommande vivement SecondStore."
             rating={5}
           />
           <TestimonialCard 
-            name="Mehmet S."
-            text="Great customer service and quality products. Will definitely be shopping here again."
+            name="Sophie M."
+            text="Excellent service client et produits de qualité. Je reviendrai certainement faire mes achats ici."
             rating={4}
           />
         </div>
@@ -527,10 +527,10 @@ export function Home() {
       {/* Stats Section */}
       <section className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Products" />
-          <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Happy Customers" />
-          <StatCard icon={<Star className="w-6 h-6" />} value="4.9" label="Customer Rating" />
-          <StatCard icon={<TrendingUp className="w-6 h-6" />} value="98%" label="Satisfaction Rate" />
+          <StatCard icon={<Package className="w-6 h-6" />} value="500+" label="Produits" />
+          <StatCard icon={<Users className="w-6 h-6" />} value="2,000+" label="Clients Satisfaits" />
+          <StatCard icon={<Star className="w-6 h-6" />} value="4.9" label="Note Client" />
+          <StatCard icon={<TrendingUp className="w-6 h-6" />} value="98%" label="Taux de Satisfaction" />
         </div>
       </section>
     </div>
