@@ -114,8 +114,8 @@ export function ProductDetail() {
   ].filter(s => s.value);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 overflow-x-hidden">
-      <div className="container mx-auto px-4 py-6 max-w-full overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 overflow-x-hidden w-full">
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 overflow-hidden box-border">
         {/* Breadcrumb */}
         <motion.nav 
           initial={{ opacity: 0, y: -10 }}
@@ -131,7 +131,7 @@ export function ProductDetail() {
           <span className="text-foreground font-medium truncate max-w-[200px]">{product.title}</span>
         </motion.nav>
 
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-5 gap-4 lg:gap-8">
           {/* Image Gallery - 3 cols */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
@@ -160,40 +160,40 @@ export function ProductDetail() {
                 data-testid="img-product-main"
               />
               
-              {/* Floating Badges */}
-              <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+              {/* Floating Badges - Compact */}
+              <div className="absolute top-2 left-2 flex gap-1 flex-wrap max-w-[60%]">
                 {product.condition === 'new' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-                    <Badge className="bg-gradient-to-r from-primary to-orange-500 text-white px-4 py-2 text-sm shadow-lg border-0">
-                      <Sparkles className="w-4 h-4 mr-1.5" /> New
+                    <Badge className="bg-gradient-to-r from-primary to-orange-500 text-white px-2 py-0.5 text-xs shadow border-0">
+                      <Sparkles className="w-3 h-3 mr-1" /> Neuf
                     </Badge>
                   </motion.div>
                 )}
                 {product.condition === 'used_like_new' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-                    <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 text-sm shadow-lg border-0">
-                      Like New
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-0.5 text-xs shadow border-0">
+                      Comme Neuf
                     </Badge>
                   </motion.div>
                 )}
                 {product.condition === 'used_good' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-                    <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-4 py-2 text-sm shadow-lg border-0">
-                      Good Condition
+                    <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-2 py-0.5 text-xs shadow border-0">
+                      Bon État
                     </Badge>
                   </motion.div>
                 )}
                 {product.condition === 'used_fair' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-                    <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-4 py-2 text-sm shadow-lg border-0">
-                      Fairly Good
+                    <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 text-xs shadow border-0">
+                      État Correct
                     </Badge>
                   </motion.div>
                 )}
                 {product.featured && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                    <Badge className="bg-gradient-to-r from-amber-400 to-yellow-500 text-white px-4 py-2 text-sm shadow-lg border-0">
-                      <Star className="w-4 h-4 mr-1.5 fill-current" /> Featured
+                    <Badge className="bg-gradient-to-r from-amber-400 to-yellow-500 text-white px-2 py-0.5 text-xs shadow border-0">
+                      <Star className="w-3 h-3 mr-1 fill-current" /> Vedette
                     </Badge>
                   </motion.div>
                 )}
