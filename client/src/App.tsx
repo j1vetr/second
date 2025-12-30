@@ -16,6 +16,7 @@ import { Home } from "@/pages/home";
 import { ProductList } from "@/pages/product-list";
 import { ProductDetail } from "@/pages/product-detail";
 import { AdminDashboard } from "@/pages/admin-dashboard";
+import { AdminProductEdit } from "@/pages/admin-product-edit";
 import { AdminLogin } from "@/pages/admin-login";
 import { HowItWorks } from "@/pages/how-it-works";
 import { PrivacyPolicy } from "@/pages/privacy-policy";
@@ -30,6 +31,7 @@ function Router() {
       {/* Admin routes without standard Layout */}
       <Route path="/admin-login" component={AdminLogin} />
       <Route path="/admins" component={AdminDashboard} />
+      <Route path="/admin/product/:id" component={AdminProductEdit} />
       
       {/* Public routes wrapped in Layout */}
       <Route>

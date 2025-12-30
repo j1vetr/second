@@ -11,14 +11,13 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, CheckCircle2, XCircle, Mail, Users, Tags, ShoppingBag, TrendingUp, LogOut, Home, Settings } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, CheckCircle2, XCircle, Tags, ShoppingBag, LogOut, Home, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAdminProducts, getCategories, deleteProduct, deleteCategory, getNewsletterSubscribers, deleteNewsletterSubscriber, updateNewsletterSubscriber } from "@/lib/api";
+import { getAdminProducts, getCategories, deleteProduct, deleteCategory } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
-import { ProductForm } from "@/components/ui/product-form";
 import { CategoryForm } from "@/components/ui/category-form";
 import * as LucideIcons from "lucide-react";
 
@@ -44,11 +43,6 @@ export function AdminDashboard() {
     queryFn: getCategories,
   });
 
-  const { data: subscribers = [], isLoading: subscribersLoading } = useQuery({
-    queryKey: ["newsletter-subscribers"],
-    queryFn: getNewsletterSubscribers,
-  });
-
   const deleteProductMutation = useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
@@ -72,36 +66,12 @@ export function AdminDashboard() {
     },
   });
 
-  const deleteSubscriberMutation = useMutation({
-    mutationFn: deleteNewsletterSubscriber,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
-      toast({ title: "Abonné supprimé avec succès" });
-    },
-    onError: () => {
-      toast({ title: "Échec de la suppression de l'abonné", variant: "destructive" });
-    },
-  });
-
-  const updateSubscriberMutation = useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
-      updateNewsletterSubscriber(id, isActive),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["newsletter-subscribers"] });
-      toast({ title: "Abonné mis à jour" });
-    },
-    onError: () => {
-      toast({ title: "Échec de la mise à jour", variant: "destructive" });
-    },
-  });
-
   const filteredProducts = products.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const activeProducts = products.filter(p => p.isActive).length;
   const inactiveProducts = products.filter(p => !p.isActive).length;
-  const activeSubscribers = subscribers.filter(s => s.isActive).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/20 via-background to-secondary/10">
@@ -137,8 +107,8 @@ export function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        {/* Stats Cards - Only Products and Categories */}
+        <div className="grid grid-cols-2 gap-3 md:gap-4 max-w-2xl">
           <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-200/50">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -172,41 +142,11 @@ export function AdminDashboard() {
               <p className="mt-2 text-xs text-muted-foreground">Organisation des produits</p>
             </CardContent>
           </Card>
-
-          <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-200/50">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Abonnés</p>
-                  <p className="text-2xl font-bold">{subscribers.length}</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-green-600" />
-                </div>
-              </div>
-              <p className="mt-2 text-xs text-green-600">{activeSubscribers} actifs</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-200/50">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Newsletter</p>
-                  <p className="text-2xl font-bold">2j</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-orange-600" />
-                </div>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">Intervalle d'envoi</p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Main Tabs */}
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="w-full grid grid-cols-3 h-12 p-1 bg-secondary/50 rounded-xl">
+          <TabsList className="w-full max-w-md grid grid-cols-2 h-12 p-1 bg-secondary/50 rounded-xl">
             <TabsTrigger value="products" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
               <ShoppingBag className="w-4 h-4" />
               <span className="hidden sm:inline">Produits</span>
@@ -214,10 +154,6 @@ export function AdminDashboard() {
             <TabsTrigger value="categories" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
               <Tags className="w-4 h-4" />
               <span className="hidden sm:inline">Catégories</span>
-            </TabsTrigger>
-            <TabsTrigger value="newsletter" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
-              <Mail className="w-4 h-4" />
-              <span className="hidden sm:inline">Newsletter</span>
             </TabsTrigger>
           </TabsList>
 
@@ -228,14 +164,11 @@ export function AdminDashboard() {
                 <h2 className="text-xl sm:text-2xl font-bold">Gestion des Produits</h2>
                 <p className="text-sm text-muted-foreground">Gérez votre inventaire et vos prix</p>
               </div>
-              <ProductForm 
-                categories={categories} 
-                trigger={
-                  <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 gap-2">
-                    <Plus className="w-4 h-4" /> Nouveau Produit
-                  </Button>
-                }
-              />
+              <Link href="/admin/product/new">
+                <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 gap-2">
+                  <Plus className="w-4 h-4" /> Nouveau Produit
+                </Button>
+              </Link>
             </div>
 
             <Card className="shadow-sm">
@@ -296,7 +229,11 @@ export function AdminDashboard() {
                                 <Eye className="w-4 h-4" /> Voir
                               </Button>
                             </Link>
-                            <ProductForm product={product} categories={categories} />
+                            <Link href={`/admin/product/${product.id}`}>
+                              <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+                                <Pencil className="w-4 h-4 text-primary" />
+                              </Button>
+                            </Link>
                             <Button 
                               variant="outline" 
                               size="sm"
@@ -360,7 +297,11 @@ export function AdminDashboard() {
                                       <Eye className="w-4 h-4" />
                                     </Button>
                                   </Link>
-                                  <ProductForm product={product} categories={categories} />
+                                  <Link href={`/admin/product/${product.id}`}>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" title="Modifier">
+                                      <Pencil className="w-4 h-4 text-primary" />
+                                    </Button>
+                                  </Link>
                                   <Button 
                                     variant="ghost" 
                                     size="icon" 
@@ -462,157 +403,6 @@ export function AdminDashboard() {
             )}
           </TabsContent>
 
-          {/* Newsletter Tab */}
-          <TabsContent value="newsletter" className="space-y-4">
-            <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold">Gestion Newsletter</h2>
-                <p className="text-sm text-muted-foreground">Les emails sont envoyés tous les 2 jours</p>
-              </div>
-              <div className="flex items-center gap-3 px-4 py-2 bg-green-500/10 rounded-xl border border-green-200/50">
-                <Mail className="w-5 h-5 text-green-600" />
-                <div>
-                  <p className="text-sm font-semibold text-green-700">{activeSubscribers} abonnés actifs</p>
-                  <p className="text-xs text-green-600/80">sur {subscribers.length} au total</p>
-                </div>
-              </div>
-            </div>
-
-            <Card className="shadow-sm">
-              <CardContent className="pt-6">
-                {subscribersLoading ? (
-                  <div className="flex justify-center py-12">
-                    <Spinner />
-                  </div>
-                ) : subscribers.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Mail className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                    <p className="font-medium">Aucun abonné</p>
-                    <p className="text-sm">Les abonnés apparaîtront ici lorsqu'ils s'inscriront à la newsletter</p>
-                  </div>
-                ) : (
-                  <>
-                    {/* Mobile: Card Layout */}
-                    <div className="md:hidden space-y-3">
-                      {subscribers.map((subscriber) => (
-                        <div key={subscriber.id} className="bg-secondary/20 rounded-2xl p-4 space-y-3" data-testid={`card-subscriber-${subscriber.id}`}>
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-medium text-sm truncate">{subscriber.email}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                Inscrit le {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : "N/A"}
-                              </p>
-                            </div>
-                            {subscriber.isActive ? (
-                              <Badge className="bg-green-500/20 text-green-700 border-0">Actif</Badge>
-                            ) : (
-                              <Badge className="bg-red-500/20 text-red-700 border-0">Inactif</Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="flex-1 h-9 gap-1.5"
-                              onClick={() => updateSubscriberMutation.mutate({ 
-                                id: subscriber.id, 
-                                isActive: !subscriber.isActive 
-                              })}
-                              data-testid={`button-toggle-subscriber-${subscriber.id}`}
-                            >
-                              {subscriber.isActive ? (
-                                <><XCircle className="w-4 h-4" /> Désactiver</>
-                              ) : (
-                                <><CheckCircle2 className="w-4 h-4" /> Activer</>
-                              )}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => {
-                                if (confirm(`Supprimer l'abonné "${subscriber.email}" ?`)) {
-                                  deleteSubscriberMutation.mutate(subscriber.id);
-                                }
-                              }}
-                              data-testid={`button-delete-subscriber-${subscriber.id}`}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Desktop: Table Layout */}
-                    <div className="hidden md:block">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="hover:bg-transparent">
-                            <TableHead>Email</TableHead>
-                            <TableHead>Date d'inscription</TableHead>
-                            <TableHead>Statut</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {subscribers.map((subscriber) => (
-                            <TableRow key={subscriber.id} data-testid={`row-subscriber-${subscriber.id}`}>
-                              <TableCell className="font-medium">{subscriber.email}</TableCell>
-                              <TableCell>
-                                {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : "N/A"}
-                              </TableCell>
-                              <TableCell>
-                                {subscriber.isActive ? (
-                                  <Badge className="bg-green-500/20 text-green-700 border-0">Actif</Badge>
-                                ) : (
-                                  <Badge className="bg-red-500/20 text-red-700 border-0">Inactif</Badge>
-                                )}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 gap-1.5"
-                                    onClick={() => updateSubscriberMutation.mutate({ 
-                                      id: subscriber.id, 
-                                      isActive: !subscriber.isActive 
-                                    })}
-                                    title={subscriber.isActive ? "Désactiver" : "Activer"}
-                                    data-testid={`button-toggle-subscriber-${subscriber.id}`}
-                                  >
-                                    {subscriber.isActive ? (
-                                      <><XCircle className="w-4 h-4" /> Désactiver</>
-                                    ) : (
-                                      <><CheckCircle2 className="w-4 h-4 text-green-500" /> Activer</>
-                                    )}
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    onClick={() => {
-                                      if (confirm(`Supprimer "${subscriber.email}" ?`)) {
-                                        deleteSubscriberMutation.mutate(subscriber.id);
-                                      }
-                                    }}
-                                    data-testid={`button-delete-subscriber-${subscriber.id}`}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </div>
     </div>
