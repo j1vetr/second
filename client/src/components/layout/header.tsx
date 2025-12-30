@@ -228,7 +228,7 @@ export function Header() {
                   <ul className="max-h-[300px] overflow-y-auto py-2">
                     {searchResults.map(product => (
                       <li key={product.id}>
-                        <Link href={`/product/${product.id}`}
+                        <Link href={`/product/${product.slug || product.id}`}
                             className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors"
                             onClick={() => { setShowResults(false); setSearchTerm(""); setIsFocused(false); }}
                         >

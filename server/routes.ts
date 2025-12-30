@@ -287,6 +287,26 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/admin/migrate-slugs", async (req, res) => {
+    try {
+      const products = await storage.getProducts();
+      let updated = 0;
+      
+      for (const product of products) {
+        if (!product.slug) {
+          const slug = await storage.generateUniqueSlug(product.title, product.id);
+          await storage.updateProduct(product.id, { title: product.title } as any);
+          updated++;
+        }
+      }
+      
+      res.json({ message: `Migration terminée. ${updated} produits mis à jour.`, updated });
+    } catch (error) {
+      console.error("Error migrating slugs:", error);
+      res.status(500).json({ error: "Failed to migrate slugs" });
+    }
+  });
+
   app.get("/api/products/:idOrSlug", async (req, res) => {
     try {
       const param = req.params.idOrSlug;

@@ -97,7 +97,7 @@ function TodaysDealsSlider({ products }: { products: Product[] }) {
             transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
-            <Link href={`/product/${currentProduct.id}`}>
+            <Link href={`/product/${currentProduct.slug || currentProduct.id}`}>
               <div className="relative h-full bg-white rounded-xl overflow-hidden group cursor-pointer">
                 <img 
                   src={currentProduct.image} 

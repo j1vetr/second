@@ -63,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
     if (target.closest('a') || target.closest('button')) {
       return;
     }
-    setLocation(`/product/${product.id}`);
+    setLocation(`/product/${product.slug || product.id}`);
   };
 
   return (
@@ -125,7 +125,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-          <Link href={`/product/${product.id}`}>
+          <Link href={`/product/${product.slug || product.id}`}>
             <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg hover:bg-white hover:scale-110 transition-all">
               <Eye className="w-5 h-5 text-gray-700" />
             </button>
@@ -133,7 +133,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-          <Link href={`/product/${product.id}`}>
+          <Link href={`/product/${product.slug || product.id}`}>
             <Button className="w-full bg-white/95 backdrop-blur-sm text-gray-900 hover:bg-white shadow-lg font-semibold">
               Voir Détails <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

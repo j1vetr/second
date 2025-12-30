@@ -224,7 +224,7 @@ export function AdminDashboard() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                            <Link href={`/product/${product.id}`} className="flex-1">
+                            <Link href={`/product/${product.slug || product.id}`} className="flex-1">
                               <Button variant="outline" size="sm" className="w-full h-9 gap-1.5">
                                 <Eye className="w-4 h-4" /> Voir
                               </Button>
@@ -292,7 +292,7 @@ export function AdminDashboard() {
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex justify-end gap-1">
-                                  <Link href={`/product/${product.id}`}>
+                                  <Link href={`/product/${product.slug || product.id}`}>
                                     <Button variant="ghost" size="icon" className="h-8 w-8" title="Voir">
                                       <Eye className="w-4 h-4" />
                                     </Button>
