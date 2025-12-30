@@ -367,61 +367,65 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
             
             {/* Uploaded Images Grid */}
             {uploadedImages.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-3">
                 {uploadedImages.map((img, index) => (
                   <div 
                     key={index} 
-                    className={`relative group rounded-lg overflow-hidden border-2 ${index === 0 ? 'border-primary' : 'border-transparent'}`}
+                    className={`relative rounded-xl overflow-hidden border-2 ${index === 0 ? 'border-primary' : 'border-border'} bg-secondary/30`}
                   >
-                    <img 
-                      src={img} 
-                      alt={`Product ${index + 1}`} 
-                      className="w-full h-24 object-cover"
-                    />
-                    {index === 0 && (
-                      <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
-                        Main
-                      </span>
-                    )}
-                    {isRotating === index && (
-                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
+                    <div className="relative aspect-square">
+                      <img 
+                        src={img} 
+                        alt={`Product ${index + 1}`} 
+                        className="w-full h-full object-cover"
+                      />
+                      {index === 0 && (
+                        <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
+                          Principal
+                        </span>
+                      )}
+                      {isRotating === index && (
+                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                          <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Always visible controls below image */}
+                    <div className="p-2 bg-background/80 backdrop-blur-sm border-t flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1">
                         <Button
                           type="button"
-                          variant="secondary"
+                          variant="outline"
                           size="sm"
                           onClick={() => rotateImage(index, 'left')}
-                          title="Rotate left"
+                          title="Tourner à gauche"
                           disabled={isRotating !== null}
-                          className="h-7 w-7 p-0"
+                          className="h-9 w-9 p-0"
                         >
-                          <RotateCcw className="w-3 h-3" />
+                          <RotateCcw className="w-4 h-4" />
                         </Button>
                         <Button
                           type="button"
-                          variant="secondary"
+                          variant="outline"
                           size="sm"
                           onClick={() => rotateImage(index, 'right')}
-                          title="Rotate right"
+                          title="Tourner à droite"
                           disabled={isRotating !== null}
-                          className="h-7 w-7 p-0"
+                          className="h-9 w-9 p-0"
                         >
-                          <RotateCw className="w-3 h-3" />
+                          <RotateCw className="w-4 h-4" />
                         </Button>
                         {index > 0 && (
                           <Button
                             type="button"
-                            variant="secondary"
+                            variant="outline"
                             size="sm"
                             onClick={() => moveImage(index, 0)}
-                            title="Set as main image"
-                            className="h-7 w-7 p-0"
+                            title="Définir comme image principale"
+                            className="h-9 w-9 p-0"
                           >
-                            <GripVertical className="w-3 h-3" />
+                            <GripVertical className="w-4 h-4" />
                           </Button>
                         )}
                       </div>
@@ -430,9 +434,9 @@ export function ProductForm({ product, categories, trigger }: ProductFormProps) 
                         variant="destructive"
                         size="sm"
                         onClick={() => removeImage(index)}
-                        className="h-6 text-xs px-2"
+                        className="h-9 w-9 p-0"
                       >
-                        <X className="w-3 h-3 mr-1" /> Remove
+                        <X className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
