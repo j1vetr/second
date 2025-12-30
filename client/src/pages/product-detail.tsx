@@ -114,8 +114,8 @@ export function ProductDetail() {
   ].filter(s => s.value);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 overflow-x-hidden w-full">
-      <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 overflow-hidden box-border">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 w-full">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 box-border">
         {/* Breadcrumb */}
         <motion.nav 
           initial={{ opacity: 0, y: -10 }}
