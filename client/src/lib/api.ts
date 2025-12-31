@@ -54,6 +54,15 @@ export async function getProduct(id: string): Promise<Product> {
   return response.json();
 }
 
+export async function getSoldProducts(category?: string): Promise<Product[]> {
+  const queryParams = new URLSearchParams({ sold: "true" });
+  if (category) queryParams.append("category", category);
+  
+  const response = await fetch(`${API_BASE}/products?${queryParams.toString()}`);
+  if (!response.ok) throw new Error("Failed to fetch sold products");
+  return response.json();
+}
+
 export async function getAdminProducts(): Promise<Product[]> {
   const response = await fetch(`${API_BASE}/admin/products`);
   if (!response.ok) throw new Error("Failed to fetch products");

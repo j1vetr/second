@@ -24,32 +24,52 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts, getCategories } from "@/lib/api";
+import { getProducts, getCategories, getSoldProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { BadgeCheck } from "lucide-react";
 
 export function ProductList() {
   const { categoryId } = useParams();
   const [filterCondition, setFilterCondition] = useState<string[]>([]);
   const [sort, setSort] = useState("newest");
+  const [soldSubcategory, setSoldSubcategory] = useState<string | null>(null);
+  
+  const isSoldPage = categoryId === "sold";
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
 
-  const categoryName = categoryId 
-    ? categories.find(c => c.id === categoryId)?.name || categoryId 
-    : "Tous les Produits";
+  const categoryName = isSoldPage 
+    ? "Satılan Ürünler"
+    : categoryId 
+      ? categories.find(c => c.id === categoryId)?.name || categoryId 
+      : "Tous les Produits";
   
   usePageTitle(categoryName);
 
   const { data: allProducts = [], isLoading: productsLoading } = useQuery({
-    queryKey: ["products", categoryId],
-    queryFn: () => categoryId ? getProducts({ category: categoryId }) : getProducts(),
+    queryKey: ["products", categoryId, isSoldPage],
+    queryFn: () => {
+      if (isSoldPage) {
+        return getSoldProducts();
+      }
+      return categoryId ? getProducts({ category: categoryId }) : getProducts();
+    },
   });
+  
+  const soldSubcategories = isSoldPage 
+    ? Array.from(new Set(allProducts.map(p => p.category))).filter(Boolean)
+    : [];
 
   let products = allProducts;
+  
+  // Filter by sold subcategory
+  if (isSoldPage && soldSubcategory) {
+    products = products.filter(p => p.category === soldSubcategory);
+  }
 
   // Filter by condition
   if (filterCondition.length > 0) {
@@ -120,11 +140,17 @@ export function ProductList() {
   return (
     <div className="min-h-screen bg-secondary/10">
       {/* Page Header */}
-      <div className="bg-background border-b">
+      <div className={cn("bg-background border-b", isSoldPage && "bg-gray-100 dark:bg-gray-900")}>
         <div className="container mx-auto px-6 py-8 md:py-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">{categoryName}</h1>
+          <div className="flex items-center gap-3">
+            {isSoldPage && <BadgeCheck className="w-8 h-8 text-gray-600 dark:text-gray-400" />}
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">{categoryName}</h1>
+          </div>
           <p className="text-muted-foreground text-lg">
-            Découvrez {products.length} produits premium listés pour vous.
+            {isSoldPage 
+              ? `${products.length} ürün satıldı. Bu ürünler artık mevcut değildir.`
+              : `Découvrez ${products.length} produits premium listés pour vous.`
+            }
           </p>
         </div>
       </div>
@@ -136,39 +162,86 @@ export function ProductList() {
             {/* Categories Section */}
             <div className="bg-card rounded-xl border p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg">Catégories</h3>
+                <h3 className="font-semibold text-lg">{isSoldPage ? "Satılan Kategoriler" : "Catégories"}</h3>
                 <LayoutGrid className="w-4 h-4 text-muted-foreground" />
               </div>
               <Separator className="mb-4" />
               <div className="space-y-1">
-                <Link href="/products">
-                  <div className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
-                    !categoryId 
-                      ? "bg-primary/10 text-primary font-medium" 
-                      : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                  )}>
-                    <LayoutGrid className="w-4 h-4" />
-                    Tous les Produits
-                  </div>
-                </Link>
-                {categories.map(cat => {
-                  const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
-                  const isActive = categoryId === cat.id;
-                  return (
-                    <Link key={cat.id} href={`/category/${cat.id}`}>
+                {isSoldPage ? (
+                  <>
+                    <div 
+                      onClick={() => setSoldSubcategory(null)}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                        !soldSubcategory
+                          ? "bg-gray-700 text-white font-medium" 
+                          : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <BadgeCheck className="w-4 h-4" />
+                      Tüm Satılanlar
+                    </div>
+                    {soldSubcategories.map(subcat => {
+                      const cat = categories.find(c => c.id === subcat);
+                      const IconComponent = cat ? (LucideIcons as any)[cat.icon] || LucideIcons.Package : LucideIcons.Package;
+                      return (
+                        <div 
+                          key={subcat}
+                          onClick={() => setSoldSubcategory(subcat)}
+                          className={cn(
+                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                            soldSubcategory === subcat
+                              ? "bg-gray-700 text-white font-medium" 
+                              : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          <IconComponent className="w-4 h-4" />
+                          {cat?.name || subcat}
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <>
+                    <Link href="/products">
                       <div className={cn(
                         "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
-                        isActive 
+                        !categoryId 
                           ? "bg-primary/10 text-primary font-medium" 
                           : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                       )}>
-                        <IconComponent className="w-4 h-4" />
-                        {cat.name}
+                        <LayoutGrid className="w-4 h-4" />
+                        Tous les Produits
                       </div>
                     </Link>
-                  );
-                })}
+                    {categories.map(cat => {
+                      const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                      const isActive = categoryId === cat.id;
+                      return (
+                        <Link key={cat.id} href={`/category/${cat.id}`}>
+                          <div className={cn(
+                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                            isActive 
+                              ? "bg-primary/10 text-primary font-medium" 
+                              : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                          )}>
+                            <IconComponent className="w-4 h-4" />
+                            {cat.name}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                    <Link href="/category/sold">
+                      <div className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer mt-2 border-t pt-2",
+                        "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                      )}>
+                        <BadgeCheck className="w-4 h-4" />
+                        Satılan Ürünler
+                      </div>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -201,36 +274,83 @@ export function ProductList() {
                     <div className="mt-6 space-y-6">
                       {/* Mobile Categories */}
                       <div>
-                        <h4 className="font-semibold text-sm mb-3">Catégories</h4>
+                        <h4 className="font-semibold text-sm mb-3">{isSoldPage ? "Satılan Kategoriler" : "Catégories"}</h4>
                         <div className="space-y-1">
-                          <Link href="/products">
-                            <div className={cn(
-                              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
-                              !categoryId 
-                                ? "bg-primary/10 text-primary font-medium" 
-                                : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                            )}>
-                              <LayoutGrid className="w-4 h-4" />
-                              Tous les Produits
-                            </div>
-                          </Link>
-                          {categories.map(cat => {
-                            const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
-                            const isActive = categoryId === cat.id;
-                            return (
-                              <Link key={cat.id} href={`/category/${cat.id}`}>
+                          {isSoldPage ? (
+                            <>
+                              <div 
+                                onClick={() => setSoldSubcategory(null)}
+                                className={cn(
+                                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                                  !soldSubcategory
+                                    ? "bg-gray-700 text-white font-medium" 
+                                    : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                )}
+                              >
+                                <BadgeCheck className="w-4 h-4" />
+                                Tüm Satılanlar
+                              </div>
+                              {soldSubcategories.map(subcat => {
+                                const cat = categories.find(c => c.id === subcat);
+                                const IconComponent = cat ? (LucideIcons as any)[cat.icon] || LucideIcons.Package : LucideIcons.Package;
+                                return (
+                                  <div 
+                                    key={subcat}
+                                    onClick={() => setSoldSubcategory(subcat)}
+                                    className={cn(
+                                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                                      soldSubcategory === subcat
+                                        ? "bg-gray-700 text-white font-medium" 
+                                        : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                    )}
+                                  >
+                                    <IconComponent className="w-4 h-4" />
+                                    {cat?.name || subcat}
+                                  </div>
+                                );
+                              })}
+                            </>
+                          ) : (
+                            <>
+                              <Link href="/products">
                                 <div className={cn(
                                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
-                                  isActive 
+                                  !categoryId 
                                     ? "bg-primary/10 text-primary font-medium" 
                                     : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                                 )}>
-                                  <IconComponent className="w-4 h-4" />
-                                  {cat.name}
+                                  <LayoutGrid className="w-4 h-4" />
+                                  Tous les Produits
                                 </div>
                               </Link>
-                            );
-                          })}
+                              {categories.map(cat => {
+                                const IconComponent = (LucideIcons as any)[cat.icon] || LucideIcons.Package;
+                                const isActive = categoryId === cat.id;
+                                return (
+                                  <Link key={cat.id} href={`/category/${cat.id}`}>
+                                    <div className={cn(
+                                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                                      isActive 
+                                        ? "bg-primary/10 text-primary font-medium" 
+                                        : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                                    )}>
+                                      <IconComponent className="w-4 h-4" />
+                                      {cat.name}
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                              <Link href="/category/sold">
+                                <div className={cn(
+                                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer mt-2 border-t pt-2",
+                                  "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
+                                )}>
+                                  <BadgeCheck className="w-4 h-4" />
+                                  Satılan Ürünler
+                                </div>
+                              </Link>
+                            </>
+                          )}
                         </div>
                       </div>
                       <Separator />
