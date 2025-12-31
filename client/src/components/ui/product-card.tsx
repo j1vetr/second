@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Eye, Tag } from "lucide-react";
+import { ArrowRight, Eye, Tag, BadgeCheck } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Product } from "@shared/schema";
@@ -90,34 +90,52 @@ export function ProductCard({ product }: ProductCardProps) {
           alt={product.title}
           loading="lazy"
           decoding="async"
-          className="max-w-full max-h-full w-auto h-auto object-contain"
+          className={cn(
+            "max-w-full max-h-full w-auto h-auto object-contain transition-all duration-300",
+            product.isSold && "grayscale"
+          )}
         />
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
+        {/* Sold Overlay Badge */}
+        {product.isSold && (
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+            <div className="bg-gray-900/90 text-white px-6 py-3 rounded-xl text-lg font-bold uppercase tracking-wider flex items-center gap-2 shadow-2xl transform -rotate-12">
+              <BadgeCheck className="w-6 h-6" />
+              SATILDI
+            </div>
+          </div>
+        )}
+        
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-          {product.condition === 'new' && (
+          {product.isSold && (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gray-800 text-white flex items-center gap-1">
+              <BadgeCheck className="w-3 h-3" /> Satıldı
+            </span>
+          )}
+          {!product.isSold && product.condition === 'new' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-primary to-primary/80 text-white">
               Neuf
             </span>
           )}
-          {product.condition === 'used_like_new' && (
+          {!product.isSold && product.condition === 'used_like_new' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white">
               Comme Neuf
             </span>
           )}
-          {product.condition === 'used_good' && (
+          {!product.isSold && product.condition === 'used_good' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-blue-500 to-sky-500 text-white">
               Bon État
             </span>
           )}
-          {product.condition === 'used_fair' && (
+          {!product.isSold && product.condition === 'used_fair' && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-white">
               État Correct
             </span>
           )}
           
-          {product.discountPrice && (
+          {!product.isSold && product.discountPrice && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg flex items-center gap-1">
               <Tag className="w-3 h-3" /> -{getDiscountPercent(product.price, product.discountPrice)}%
             </span>
@@ -156,29 +174,45 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="pt-3 border-t border-border/50">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-[10px] text-muted-foreground uppercase">Prix</span>
-              {product.price ? (
-                <div className="flex items-center gap-2">
-                  {product.discountPrice ? (
-                    <span className="text-sm font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
-                  ) : (
-                    <span className="text-sm font-bold text-primary">{formatPrice(product.price)}</span>
-                  )}
-                </div>
+              {product.isSold ? (
+                <>
+                  <span className="text-[10px] text-muted-foreground uppercase">Statut</span>
+                  <span className="text-sm font-bold text-gray-500">Vendu</span>
+                </>
               ) : (
-                <span className="text-sm font-bold text-primary">Contactez-nous</span>
+                <>
+                  <span className="text-[10px] text-muted-foreground uppercase">Prix</span>
+                  {product.price ? (
+                    <div className="flex items-center gap-2">
+                      {product.discountPrice ? (
+                        <span className="text-sm font-bold text-red-500">{formatPrice(product.discountPrice)}</span>
+                      ) : (
+                        <span className="text-sm font-bold text-primary">{formatPrice(product.price)}</span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-sm font-bold text-primary">Contactez-nous</span>
+                  )}
+                </>
               )}
             </div>
-            <a 
-              href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button size="sm" className="rounded-full px-2 sm:px-4 shadow-lg shadow-[#25D366]/25 bg-[#25D366] hover:bg-[#128C7E]">
-                <WhatsAppIcon className="w-4 h-4 sm:mr-1" />
-                <span className="hidden sm:inline">Commander</span>
+            {product.isSold ? (
+              <Button size="sm" className="rounded-full px-2 sm:px-4 shadow-lg bg-gray-400 hover:bg-gray-500 cursor-not-allowed" disabled>
+                <BadgeCheck className="w-4 h-4 sm:mr-1" />
+                <span className="hidden sm:inline">Vendu</span>
               </Button>
-            </a>
+            ) : (
+              <a 
+                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="sm" className="rounded-full px-2 sm:px-4 shadow-lg shadow-[#25D366]/25 bg-[#25D366] hover:bg-[#128C7E]">
+                  <WhatsAppIcon className="w-4 h-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Commander</span>
+                </Button>
+              </a>
+            )}
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Share2, CheckCircle2, ShieldCheck, Box, Truck, 
   Ruler, Scale, Package, Sparkles, Star, ChevronRight, 
-  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info, Tag
+  ZoomIn, ZoomOut, ChevronLeft, Award, Clock, Info, Tag, BadgeCheck
 } from "lucide-react";
 
 function formatPrice(price: string | null | undefined): string {
@@ -153,7 +153,10 @@ export function ProductDetail() {
               <motion.img 
                 src={productImages[selectedImage]} 
                 alt={product.title}
-                className="absolute inset-0 w-full h-full object-contain transition-transform duration-500"
+                className={cn(
+                  "absolute inset-0 w-full h-full object-contain transition-transform duration-500",
+                  product.isSold && "grayscale"
+                )}
                 style={isZoomed ? {
                   transform: 'scale(2.5)',
                   transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
@@ -161,37 +164,54 @@ export function ProductDetail() {
                 data-testid="img-product-main"
               />
               
+              {/* Sold Overlay */}
+              {product.isSold && (
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none">
+                  <div className="bg-gray-900/90 text-white px-8 py-4 rounded-2xl text-2xl font-bold uppercase tracking-wider flex items-center gap-3 shadow-2xl transform -rotate-12">
+                    <BadgeCheck className="w-8 h-8" />
+                    SATILDI
+                  </div>
+                </div>
+              )}
+              
               {/* Floating Badges - Compact */}
               <div className="absolute top-2 left-2 flex gap-1 flex-wrap max-w-[60%]">
-                {product.condition === 'new' && (
+                {product.isSold && (
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
+                    <Badge className="bg-gray-800 text-white px-2 py-0.5 text-xs shadow border-0">
+                      <BadgeCheck className="w-3 h-3 mr-1" /> Satıldı
+                    </Badge>
+                  </motion.div>
+                )}
+                {!product.isSold && product.condition === 'new' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-primary to-orange-500 text-white px-2 py-0.5 text-xs shadow border-0">
                       <Sparkles className="w-3 h-3 mr-1" /> Neuf
                     </Badge>
                   </motion.div>
                 )}
-                {product.condition === 'used_like_new' && (
+                {!product.isSold && product.condition === 'used_like_new' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-0.5 text-xs shadow border-0">
                       Comme Neuf
                     </Badge>
                   </motion.div>
                 )}
-                {product.condition === 'used_good' && (
+                {!product.isSold && product.condition === 'used_good' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-2 py-0.5 text-xs shadow border-0">
                       Bon État
                     </Badge>
                   </motion.div>
                 )}
-                {product.condition === 'used_fair' && (
+                {!product.isSold && product.condition === 'used_fair' && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-0.5 text-xs shadow border-0">
                       État Correct
                     </Badge>
                   </motion.div>
                 )}
-                {product.featured && (
+                {!product.isSold && product.featured && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
                     <Badge className="bg-gradient-to-r from-amber-400 to-yellow-500 text-white px-2 py-0.5 text-xs shadow border-0">
                       <Star className="w-3 h-3 mr-1 fill-current" /> Vedette
@@ -397,10 +417,17 @@ export function ProductDetail() {
                 <Box className="w-4 h-4" />
                 {getConditionLabel(product.condition)}
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                <CheckCircle2 className="w-4 h-4" />
-                En Stock
-              </span>
+              {product.isSold ? (
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                  <BadgeCheck className="w-4 h-4" />
+                  Vendu
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  <CheckCircle2 className="w-4 h-4" />
+                  En Stock
+                </span>
+              )}
             </motion.div>
 
             {/* Price Display */}
@@ -481,17 +508,23 @@ export function ProductDetail() {
               </motion.div>
             )}
 
-            {/* CTA Button - WhatsApp Order */}
+            {/* CTA Button - WhatsApp Order or Sold */}
             <motion.div variants={itemVariants} className="pt-2">
-              <a 
-                href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}${product.price ? ` - Prix: CHF ${product.discountPrice || product.price}` : ''}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-base font-semibold shadow-lg shadow-[#25D366]/20 transition-all hover:shadow-xl hover:shadow-[#25D366]/30" data-testid="button-whatsapp-order">
-                  <WhatsAppIcon className="w-5 h-5 mr-2" /> Commander via WhatsApp
+              {product.isSold ? (
+                <Button className="w-full h-14 bg-gray-400 hover:bg-gray-500 text-white rounded-xl text-base font-semibold cursor-not-allowed" disabled data-testid="button-sold">
+                  <BadgeCheck className="w-5 h-5 mr-2" /> Ce produit a été vendu
                 </Button>
-              </a>
+              ) : (
+                <a 
+                  href={`https://wa.me/41788664492?text=${encodeURIComponent(`Bonjour, je veux commander: ${product.title}${product.price ? ` - Prix: CHF ${product.discountPrice || product.price}` : ''}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="w-full h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl text-base font-semibold shadow-lg shadow-[#25D366]/20 transition-all hover:shadow-xl hover:shadow-[#25D366]/30" data-testid="button-whatsapp-order">
+                    <WhatsAppIcon className="w-5 h-5 mr-2" /> Commander via WhatsApp
+                  </Button>
+                </a>
+              )}
             </motion.div>
 
             {/* Trust Bar */}

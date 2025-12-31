@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { 
   ArrowLeft, Upload, X, RotateCcw, RotateCw, Save, Eye, 
   ImageIcon, FileText, Settings2, Tag, Sparkles, Check,
-  ChevronRight, AlertCircle, Star, Package, Info
+  ChevronRight, AlertCircle, Star, Package, Info, BadgeCheck
 } from "lucide-react";
 import { Link } from "wouter";
 import type { Product, Category } from "@shared/schema";
@@ -59,6 +59,7 @@ export function AdminProductEdit() {
     featured: false,
     isNew: false,
     isActive: true,
+    isSold: false,
     price: "" as string | null,
     discountPrice: "" as string | null,
   });
@@ -96,6 +97,7 @@ export function AdminProductEdit() {
         featured: product.featured || false,
         isNew: product.isNew || false,
         isActive: product.isActive ?? true,
+        isSold: product.isSold || false,
         price: product.price || "",
         discountPrice: product.discountPrice || "",
       });
@@ -243,6 +245,7 @@ export function AdminProductEdit() {
       featured: formData.featured,
       isNew: formData.isNew,
       isActive: formData.isActive,
+      isSold: formData.isSold,
       price: formData.price || null,
       discountPrice: hasDiscount ? formData.discountPrice : null,
     };
@@ -880,6 +883,29 @@ export function AdminProductEdit() {
                         <Switch
                           checked={formData.isNew}
                           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isNew: checked }))}
+                        />
+                      </div>
+
+                      {/* Sold Toggle */}
+                      <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-10 h-10 rounded-xl flex items-center justify-center",
+                            formData.isSold ? "bg-gray-800/20" : "bg-gray-500/10"
+                          )}>
+                            <BadgeCheck className={cn(
+                              "w-5 h-5",
+                              formData.isSold ? "text-gray-800 dark:text-gray-300" : "text-gray-400"
+                            )} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">Satıldı</p>
+                            <p className="text-xs text-muted-foreground">Produit vendu - affiché en gris</p>
+                          </div>
+                        </div>
+                        <Switch
+                          checked={formData.isSold}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isSold: checked }))}
                         />
                       </div>
                     </div>
