@@ -502,5 +502,111 @@ export async function registerRoutes(
     }
   });
 
+  // Dynamic OG meta tags for product pages (for social media sharing)
+  // Only serve modified HTML in production - in dev, Vite handles HTML transformation
+  if (process.env.NODE_ENV === "production") {
+    app.get("/product/:slug", async (req, res, next) => {
+      try {
+        const { slug } = req.params;
+        const product = await storage.getProductBySlug(slug);
+        
+        if (!product) {
+          return next();
+        }
+
+        const BASE_URL = process.env.BASE_URL || "https://secondstore.ch";
+        
+        const escapeHtml = (text: string): string => {
+          return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        };
+        
+        const getAbsoluteImageUrl = (imageUrl: string): string => {
+          if (!imageUrl) return `${BASE_URL}/assets/logo-light.png`;
+          if (imageUrl.startsWith("http")) return imageUrl;
+          return `${BASE_URL}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+        };
+
+        const title = escapeHtml(product.title);
+        const description = escapeHtml(
+          product.description 
+            ? product.description.replace(/<[^>]*>/g, "").substring(0, 200) 
+            : `Découvrez ${product.title} sur SecondStore.ch`
+        );
+        const imageUrl = getAbsoluteImageUrl(product.image);
+        const productUrl = `${BASE_URL}/product/${product.slug || product.id}`;
+
+        const templatePath = path.join(__dirname, "public", "index.html");
+
+        if (!fs.existsSync(templatePath)) {
+          return next();
+        }
+
+        let template = fs.readFileSync(templatePath, "utf-8");
+
+        // Replace meta tags with product-specific values
+        template = template.replace(
+          /<title>.*?<\/title>/,
+          `<title>${title} | SecondStore.ch</title>`
+        );
+        
+        template = template.replace(
+          /<meta name="description" content="[^"]*" \/>/,
+          `<meta name="description" content="${description}" />`
+        );
+        
+        template = template.replace(
+          /<meta property="og:title" content="[^"]*" \/>/,
+          `<meta property="og:title" content="${title}" />`
+        );
+        
+        template = template.replace(
+          /<meta property="og:description" content="[^"]*" \/>/,
+          `<meta property="og:description" content="${description}" />`
+        );
+        
+        template = template.replace(
+          /<meta property="og:url" content="[^"]*" \/>/,
+          `<meta property="og:url" content="${productUrl}" />`
+        );
+        
+        template = template.replace(
+          /<meta property="og:image" content="[^"]*" \/>/,
+          `<meta property="og:image" content="${imageUrl}" />`
+        );
+        
+        template = template.replace(
+          /<meta name="twitter:title" content="[^"]*" \/>/,
+          `<meta name="twitter:title" content="${title}" />`
+        );
+        
+        template = template.replace(
+          /<meta name="twitter:description" content="[^"]*" \/>/,
+          `<meta name="twitter:description" content="${description}" />`
+        );
+        
+        template = template.replace(
+          /<meta name="twitter:image" content="[^"]*" \/>/,
+          `<meta name="twitter:image" content="${imageUrl}" />`
+        );
+        
+        template = template.replace(
+          /<link rel="canonical" href="[^"]*" \/>/,
+          `<link rel="canonical" href="${productUrl}" />`
+        );
+
+        res.set("Content-Type", "text/html");
+        res.send(template);
+      } catch (error) {
+        console.error("Error serving product page with OG meta:", error);
+        next();
+      }
+    });
+  }
+
   return httpServer;
 }
