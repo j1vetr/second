@@ -116,7 +116,7 @@ export function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20 w-full">
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-6 box-border">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 py-6 box-border">
         {/* Breadcrumb */}
         <motion.nav 
           initial={{ opacity: 0, y: -10 }}
