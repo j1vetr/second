@@ -576,11 +576,12 @@ export function AdminProductEdit() {
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             className={cn(
-                              "relative group rounded-xl overflow-hidden border-2 transition-all",
-                              index === 0 ? "border-primary shadow-lg shadow-primary/20" : "border-border/50 hover:border-primary/50"
+                              "relative rounded-xl overflow-hidden border-2 transition-all bg-white dark:bg-white/5",
+                              index === 0 ? "border-primary shadow-lg shadow-primary/20" : "border-border/50"
                             )}
                           >
-                            <div className="aspect-square bg-secondary/30 flex items-center justify-center">
+                            {/* Image Container */}
+                            <div className="aspect-square bg-secondary/30 flex items-center justify-center relative">
                               <img 
                                 src={img} 
                                 alt={`Image ${index + 1}`} 
@@ -600,47 +601,60 @@ export function AdminProductEdit() {
                                   <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                 </div>
                               )}
+                            </div>
 
-                              {/* Hover Actions */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-end p-2">
-                                <div className="flex items-center justify-between gap-1">
-                                  <div className="flex gap-1">
-                                    <button
-                                      type="button"
-                                      onClick={() => rotateImage(index, 'left')}
-                                      disabled={isRotating !== null}
-                                      className="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors"
-                                    >
-                                      <RotateCcw className="w-3.5 h-3.5 text-white" />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => rotateImage(index, 'right')}
-                                      disabled={isRotating !== null}
-                                      className="p-1.5 bg-white/20 hover:bg-white/30 rounded-lg backdrop-blur-sm transition-colors"
-                                    >
-                                      <RotateCw className="w-3.5 h-3.5 text-white" />
-                                    </button>
-                                    {index !== 0 && (
-                                      <button
-                                        type="button"
-                                        onClick={() => setAsPrimary(index)}
-                                        className="p-1.5 bg-primary/80 hover:bg-primary rounded-lg backdrop-blur-sm transition-colors"
-                                        title="Définir comme principal"
-                                      >
-                                        <Star className="w-3.5 h-3.5 text-white" />
-                                      </button>
-                                    )}
-                                  </div>
-                                  <button
+                            {/* Action Buttons - Always Visible */}
+                            <div className="p-2 bg-secondary/30 border-t border-border/50 flex items-center justify-between gap-1">
+                              <div className="flex items-center gap-1">
+                                {/* Rotate Left */}
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => rotateImage(index, 'left')}
+                                  disabled={isRotating !== null}
+                                  className="h-8 w-8 p-0"
+                                  title="Pivoter à gauche"
+                                >
+                                  <RotateCcw className="w-4 h-4" />
+                                </Button>
+                                {/* Rotate Right */}
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => rotateImage(index, 'right')}
+                                  disabled={isRotating !== null}
+                                  className="h-8 w-8 p-0"
+                                  title="Pivoter à droite"
+                                >
+                                  <RotateCw className="w-4 h-4" />
+                                </Button>
+                                {/* Set as Primary */}
+                                {index !== 0 && (
+                                  <Button
                                     type="button"
-                                    onClick={() => removeImage(index)}
-                                    className="p-1.5 bg-red-500/80 hover:bg-red-500 rounded-lg transition-colors"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setAsPrimary(index)}
+                                    className="h-8 w-8 p-0 text-primary hover:text-primary"
+                                    title="Définir comme principal"
                                   >
-                                    <X className="w-3.5 h-3.5 text-white" />
-                                  </button>
-                                </div>
+                                    <Star className="w-4 h-4" />
+                                  </Button>
+                                )}
                               </div>
+                              {/* Delete */}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeImage(index)}
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                title="Supprimer"
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
                             </div>
                           </motion.div>
                         ))}
