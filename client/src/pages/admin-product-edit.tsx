@@ -317,7 +317,7 @@ export function AdminProductEdit() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-28 lg:pb-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar Navigation - Desktop */}
           <aside className="hidden lg:block w-56 shrink-0">
