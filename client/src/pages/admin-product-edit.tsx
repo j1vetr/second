@@ -244,7 +244,7 @@ export function AdminProductEdit() {
       includedItems: formData.includedItems,
       featured: formData.featured,
       isNew: formData.isNew,
-      isActive: formData.isActive,
+      isActive: formData.isSold ? true : formData.isActive,
       isSold: formData.isSold,
       price: formData.price || null,
       discountPrice: hasDiscount ? formData.discountPrice : null,
