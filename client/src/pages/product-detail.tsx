@@ -19,11 +19,12 @@ function getDiscountPercent(price: string | null, discountPrice: string | null):
 
 function getConditionLabel(condition: string): string {
   switch (condition) {
-    case 'new': return 'Brand New';
-    case 'used_like_new': return 'Like New';
-    case 'used_good': return 'Good Condition';
-    case 'used_fair': return 'Fairly Good Condition';
-    default: return 'Pre-owned';
+    case 'new': return 'Neuf';
+    case 'used_like_new': return 'Comme Neuf';
+    case 'used_good': return 'Bon État';
+    case 'used_fair': return 'État Correct';
+    case 'used': return 'Utilisé';
+    default: return 'Occasion';
   }
 }
 import { ProductCard } from "@/components/ui/product-card";
@@ -346,7 +347,8 @@ export function ProductDetail() {
                 product.condition === 'new' && "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20",
                 product.condition === 'used_like_new' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
                 product.condition === 'used_good' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-                product.condition === 'used_fair' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                product.condition === 'used_fair' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                product.condition === 'used' && "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
               )}>
                 <Box className="w-4 h-4" />
                 {getConditionLabel(product.condition)}

@@ -25,6 +25,7 @@ const conditionOptions = [
   { value: "used_like_new", label: "Comme Neuf", color: "bg-blue-500" },
   { value: "used_good", label: "Bon État", color: "bg-amber-500" },
   { value: "used_fair", label: "État Correct", color: "bg-gray-500" },
+  { value: "used", label: "Utilisé", color: "bg-orange-500" },
 ];
 
 const sections = [
@@ -48,7 +49,7 @@ export function AdminProductEdit() {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    condition: "new" as "new" | "used_like_new" | "used_good" | "used_fair",
+    condition: "new" as "new" | "used_like_new" | "used_good" | "used_fair" | "used",
     image: "",
     images: [] as string[],
     description: "",

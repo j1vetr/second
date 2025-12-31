@@ -39,6 +39,7 @@ const conditionLabels: Record<string, string> = {
   'used_like_new': 'Comme Neuf',
   'used_good': 'Bon État',
   'used_fair': 'État Correct',
+  'used': 'Utilisé',
 };
 
 const conditionColors: Record<string, string> = {
@@ -46,6 +47,7 @@ const conditionColors: Record<string, string> = {
   'used_like_new': 'bg-blue-500/10 text-blue-600 border-blue-200',
   'used_good': 'bg-amber-500/10 text-amber-600 border-amber-200',
   'used_fair': 'bg-gray-500/10 text-gray-600 border-gray-200',
+  'used': 'bg-orange-500/10 text-orange-600 border-orange-200',
 };
 
 export function AdminDashboard() {
