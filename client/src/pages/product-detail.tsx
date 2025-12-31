@@ -143,7 +143,7 @@ export function ProductDetail() {
             <div 
               ref={imageRef}
               className={cn(
-                "relative aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-secondary/50 to-secondary/20 cursor-zoom-in group shadow-2xl flex items-center justify-center",
+                "relative aspect-square sm:aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-secondary/50 to-secondary/20 cursor-zoom-in group shadow-2xl",
                 isZoomed && "cursor-zoom-out"
               )}
               onClick={() => setIsZoomed(!isZoomed)}
@@ -153,7 +153,7 @@ export function ProductDetail() {
               <motion.img 
                 src={productImages[selectedImage]} 
                 alt={product.title}
-                className="max-w-full max-h-full w-auto h-auto object-contain m-auto transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-contain transition-transform duration-500"
                 style={isZoomed ? {
                   transform: 'scale(2.5)',
                   transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
