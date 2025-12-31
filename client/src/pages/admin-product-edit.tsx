@@ -899,7 +899,7 @@ export function AdminProductEdit() {
                             )} />
                           </div>
                           <div>
-                            <p className="font-medium text-sm">Satıldı</p>
+                            <p className="font-medium text-sm">Vendu</p>
                             <p className="text-xs text-muted-foreground">Produit vendu - affiché en gris</p>
                           </div>
                         </div>

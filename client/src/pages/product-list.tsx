@@ -43,7 +43,7 @@ export function ProductList() {
   });
 
   const categoryName = isSoldPage 
-    ? "Satılan Ürünler"
+    ? "Produits Vendus"
     : categoryId 
       ? categories.find(c => c.id === categoryId)?.name || categoryId 
       : "Tous les Produits";
@@ -148,7 +148,7 @@ export function ProductList() {
           </div>
           <p className="text-muted-foreground text-lg">
             {isSoldPage 
-              ? `${products.length} ürün satıldı. Bu ürünler artık mevcut değildir.`
+              ? `${products.length} produits vendus. Ces articles ne sont plus disponibles.`
               : `Découvrez ${products.length} produits premium listés pour vous.`
             }
           </p>
@@ -162,7 +162,7 @@ export function ProductList() {
             {/* Categories Section */}
             <div className="bg-card rounded-xl border p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg">{isSoldPage ? "Satılan Kategoriler" : "Catégories"}</h3>
+                <h3 className="font-semibold text-lg">{isSoldPage ? "Catégories Vendues" : "Catégories"}</h3>
                 <LayoutGrid className="w-4 h-4 text-muted-foreground" />
               </div>
               <Separator className="mb-4" />
@@ -179,7 +179,7 @@ export function ProductList() {
                       )}
                     >
                       <BadgeCheck className="w-4 h-4" />
-                      Tüm Satılanlar
+                      Tous les Vendus
                     </div>
                     {soldSubcategories.map(subcat => {
                       const cat = categories.find(c => c.id === subcat);
@@ -237,7 +237,7 @@ export function ProductList() {
                         "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                       )}>
                         <BadgeCheck className="w-4 h-4" />
-                        Satılan Ürünler
+                        Produits Vendus
                       </div>
                     </Link>
                   </>
@@ -274,7 +274,7 @@ export function ProductList() {
                     <div className="mt-6 space-y-6">
                       {/* Mobile Categories */}
                       <div>
-                        <h4 className="font-semibold text-sm mb-3">{isSoldPage ? "Satılan Kategoriler" : "Catégories"}</h4>
+                        <h4 className="font-semibold text-sm mb-3">{isSoldPage ? "Catégories Vendues" : "Catégories"}</h4>
                         <div className="space-y-1">
                           {isSoldPage ? (
                             <>
@@ -288,7 +288,7 @@ export function ProductList() {
                                 )}
                               >
                                 <BadgeCheck className="w-4 h-4" />
-                                Tüm Satılanlar
+                                Tous les Vendus
                               </div>
                               {soldSubcategories.map(subcat => {
                                 const cat = categories.find(c => c.id === subcat);
@@ -346,7 +346,7 @@ export function ProductList() {
                                   "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
                                 )}>
                                   <BadgeCheck className="w-4 h-4" />
-                                  Satılan Ürünler
+                                  Produits Vendus
                                 </div>
                               </Link>
                             </>

@@ -157,6 +157,10 @@ export function Header() {
                     {cat.name}
                 </Link>
               ))}
+              <Link href="/category/sold" className="text-sm hover:text-gray-600 transition-colors flex items-center gap-2 mt-4 pt-4 border-t text-gray-500">
+                <Icons.BadgeCheck className="h-4 w-4" />
+                Produits Vendus
+              </Link>
             </nav>
           </SheetContent>
         </Sheet>
@@ -195,6 +199,11 @@ export function Header() {
 
           <Link href="/products" className={cn(navigationMenuTriggerStyle(), location === '/products' && "text-primary")}>
             Tous les Produits
+          </Link>
+          
+          <Link href="/category/sold" className={cn(navigationMenuTriggerStyle(), "text-gray-500 hover:text-gray-700", location === '/category/sold' && "text-gray-700")}>
+            <Icons.BadgeCheck className="h-4 w-4 mr-1" />
+            Vendus
           </Link>
         </div>
 

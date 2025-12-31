@@ -169,7 +169,7 @@ export function ProductDetail() {
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none">
                   <div className="bg-gray-900/90 text-white px-8 py-4 rounded-2xl text-2xl font-bold uppercase tracking-wider flex items-center gap-3 shadow-2xl transform -rotate-12">
                     <BadgeCheck className="w-8 h-8" />
-                    SATILDI
+                    VENDU
                   </div>
                 </div>
               )}
@@ -179,7 +179,7 @@ export function ProductDetail() {
                 {product.isSold && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
                     <Badge className="bg-gray-800 text-white px-2 py-0.5 text-xs shadow border-0">
-                      <BadgeCheck className="w-3 h-3 mr-1" /> Satıldı
+                      <BadgeCheck className="w-3 h-3 mr-1" /> Vendu
                     </Badge>
                   </motion.div>
                 )}

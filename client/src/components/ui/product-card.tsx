@@ -103,7 +103,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
             <div className="bg-gray-900/90 text-white px-6 py-3 rounded-xl text-lg font-bold uppercase tracking-wider flex items-center gap-2 shadow-2xl transform -rotate-12">
               <BadgeCheck className="w-6 h-6" />
-              SATILDI
+              VENDU
             </div>
           </div>
         )}
@@ -111,7 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
           {product.isSold && (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg bg-gray-800 text-white flex items-center gap-1">
-              <BadgeCheck className="w-3 h-3" /> Satıldı
+              <BadgeCheck className="w-3 h-3" /> Vendu
             </span>
           )}
           {!product.isSold && product.condition === 'new' && (
