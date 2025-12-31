@@ -92,6 +92,31 @@
     <div id="root"></div>
     <div id="google_translate_element"></div>
     <script type="text/javascript">
+      // Fix for Google Translate + React DOM conflict
+      if (typeof Node === 'function' && Node.prototype) {
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function(child) {
+          if (child.parentNode !== this) {
+            if (console) {
+              console.warn('Cannot remove child: node is not a child of this node', child);
+            }
+            return child;
+          }
+          return originalRemoveChild.apply(this, arguments);
+        };
+
+        const originalInsertBefore = Node.prototype.insertBefore;
+        Node.prototype.insertBefore = function(newNode, referenceNode) {
+          if (referenceNode && referenceNode.parentNode !== this) {
+            if (console) {
+              console.warn('Cannot insert before: reference node is not a child of this node', referenceNode);
+            }
+            return newNode;
+          }
+          return originalInsertBefore.apply(this, arguments);
+        };
+      }
+
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
           pageLanguage: 'fr',
