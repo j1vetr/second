@@ -38,6 +38,7 @@ export const products = pgTable("products", {
   featured: boolean("featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   isActive: boolean("is_active").notNull().default(true),
+  isSold: boolean("is_sold").notNull().default(false),
   description: text("description"),
   dimensions: text("dimensions"),
   weight: text("weight"),
