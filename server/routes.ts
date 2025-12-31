@@ -258,10 +258,16 @@ export async function registerRoutes(
   // Products Routes (public - only active products)
   app.get("/api/products", async (req, res) => {
     try {
-      const { category, featured } = req.query;
+      const { category, featured, sold } = req.query;
       
       let products;
-      if (category) {
+      if (sold === "true") {
+        if (category) {
+          products = await storage.getSoldProductsByCategory(category as string);
+        } else {
+          products = await storage.getSoldProducts();
+        }
+      } else if (category) {
         products = await storage.getActiveProductsByCategory(category as string);
       } else if (featured === "true") {
         products = await storage.getFeaturedProducts();

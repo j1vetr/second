@@ -35,6 +35,8 @@ export interface IStorage {
   // Product methods
   getProducts(): Promise<Product[]>;
   getActiveProducts(): Promise<Product[]>;
+  getSoldProducts(): Promise<Product[]>;
+  getSoldProductsByCategory(categoryId: string): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   getProductsByCategory(categoryId: string): Promise<Product[]>;
@@ -123,7 +125,27 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(products)
-      .where(eq(products.isActive, true))
+      .where(and(eq(products.isActive, true), eq(products.isSold, false)))
+      .orderBy(desc(products.createdAt));
+  }
+
+  async getSoldProducts(): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .where(and(eq(products.isActive, true), eq(products.isSold, true)))
+      .orderBy(desc(products.createdAt));
+  }
+
+  async getSoldProductsByCategory(categoryId: string): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .where(and(
+        eq(products.category, categoryId),
+        eq(products.isActive, true),
+        eq(products.isSold, true)
+      ))
       .orderBy(desc(products.createdAt));
   }
 
@@ -174,7 +196,11 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(products)
-      .where(and(eq(products.category, categoryId), eq(products.isActive, true)))
+      .where(and(
+        eq(products.category, categoryId),
+        eq(products.isActive, true),
+        eq(products.isSold, false)
+      ))
       .orderBy(desc(products.createdAt));
   }
 
@@ -182,7 +208,11 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(products)
-      .where(and(eq(products.featured, true), eq(products.isActive, true)))
+      .where(and(
+        eq(products.featured, true),
+        eq(products.isActive, true),
+        eq(products.isSold, false)
+      ))
       .orderBy(desc(products.createdAt));
   }
 
@@ -294,7 +324,11 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(products)
-      .where(and(eq(products.isActive, true), gte(products.createdAt, dateThreshold)))
+      .where(and(
+        eq(products.isActive, true),
+        eq(products.isSold, false),
+        gte(products.createdAt, dateThreshold)
+      ))
       .orderBy(desc(products.createdAt));
   }
 }
