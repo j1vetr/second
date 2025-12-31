@@ -10,6 +10,9 @@ import { getCategories, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { FloatingParticles, GradientOrb } from "@/components/ui/floating-particles";
 import { ProductCardSkeleton, CategoryCardSkeleton } from "@/components/ui/shimmer";
+import { BlurText } from "@/components/ui/blur-text";
+import { CountUp } from "@/components/ui/count-up";
+import { ClickSpark } from "@/components/ui/click-spark";
 import * as Icons from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import type { Product } from "@shared/schema";
@@ -245,27 +248,22 @@ export function Home() {
             {/* Hero Content */}
             <div className="flex-1 flex flex-col justify-center lg:pl-8 order-first lg:order-2">
               <div className="text-center">
-                <div className="overflow-hidden mb-2">
-                  <motion.h1 
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                <div className="mb-2">
+                  <BlurText 
+                    text="Produits Premium"
                     className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
-                  >
-                    Produits Premium
-                  </motion.h1>
+                    delay={0.2}
+                    animateOnScroll={false}
+                  />
                 </div>
                 
-                <div className="overflow-hidden mb-6">
-                  <motion.div
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
-                      Votre Prix
-                    </span>
-                  </motion.div>
+                <div className="mb-6">
+                  <BlurText 
+                    text="Votre Prix"
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent"
+                    delay={0.5}
+                    animateOnScroll={false}
+                  />
                 </div>
 
                 <motion.p 
@@ -311,21 +309,25 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.5 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
-                  <Link href="/products" className="w-full sm:w-auto">
-                    <motion.button
-                      whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
-                    >
-                      Découvrir les Produits
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </motion.button>
-                  </Link>
-                  <Link href="/how-it-works" className="w-full sm:w-auto">
-                    <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
-                      Comment ça marche?
-                    </Button>
-                  </Link>
+                  <ClickSpark sparkColor="hsl(var(--primary))" sparkCount={10}>
+                    <Link href="/products" className="w-full sm:w-auto">
+                      <motion.button
+                        whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
+                        whileTap={{ scale: 0.98 }}
+                        className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
+                      >
+                        Découvrir les Produits
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </motion.button>
+                    </Link>
+                  </ClickSpark>
+                  <ClickSpark sparkColor="hsl(var(--muted-foreground))" sparkCount={6}>
+                    <Link href="/how-it-works" className="w-full sm:w-auto">
+                      <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
+                        Comment ça marche?
+                      </Button>
+                    </Link>
+                  </ClickSpark>
                 </motion.div>
               </div>
             </div>
@@ -553,28 +555,10 @@ function Feature({ icon, title, desc }: { icon: React.ReactNode, title: string, 
 }
 
 function StatCard({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) {
-  const [count, setCount] = useState(0);
-  const numericValue = parseInt(value.replace(/[^0-9]/g, '')) || 0;
-  const suffix = value.replace(/[0-9]/g, '');
-  
-  useEffect(() => {
-    const duration = 2000;
-    const steps = 60;
-    const increment = numericValue / steps;
-    let current = 0;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= numericValue) {
-        setCount(numericValue);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    
-    return () => clearInterval(timer);
-  }, [numericValue]);
+  const numericValue = parseFloat(value.replace(/[^0-9.]/g, '')) || 0;
+  const prefix = value.match(/^[^0-9]*/)?.[0] || '';
+  const suffix = value.match(/[^0-9.]*$/)?.[0] || '';
+  const hasDecimal = value.includes('.');
 
   return (
     <motion.div 
@@ -592,7 +576,13 @@ function StatCard({ icon, value, label }: { icon: React.ReactNode, value: string
         {icon}
       </motion.div>
       <div className="text-2xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent relative z-10">
-        {count.toLocaleString()}{suffix}
+        <CountUp 
+          end={numericValue} 
+          duration={2.5} 
+          prefix={prefix}
+          suffix={suffix}
+          decimals={hasDecimal ? 1 : 0}
+        />
       </div>
       <div className="text-sm text-muted-foreground relative z-10">{label}</div>
     </motion.div>
