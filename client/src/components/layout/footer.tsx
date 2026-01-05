@@ -112,13 +112,6 @@ export function Footer() {
 
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© 2025 SecondStore.ch. Tous droits réservés.</p>
-          <p>
-            Développé par{" "}
-            <a href="https://toov.com.tr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
-              TOOV
-            </a>{" "}
-            &lt;3
-          </p>
           <div className="flex gap-6">
             <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Politique de Confidentialité</Link>
             <Link href="/terms-of-use" className="hover:text-foreground transition-colors">Conditions d'Utilisation</Link>
