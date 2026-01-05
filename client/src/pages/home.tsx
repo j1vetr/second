@@ -268,7 +268,7 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.4 }}
                   className="text-lg text-muted-foreground max-w-xl mx-auto mb-6 leading-relaxed"
                 >
-                  Parcourez, aimez, faites une offre. Pas de prix fixes, juste de bonnes affaires sur des produits de qualité.
+                  Soigneusement sélectionnés, des produits de qualité à des prix transparents et fixes, pour une expérience d'achat privilégiée.
                 </motion.p>
 
                 {/* Quick Discovery Tags */}
