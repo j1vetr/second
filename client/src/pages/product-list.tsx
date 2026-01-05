@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "wouter";
 import { ProductCard } from "@/components/ui/product-card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { SlidersHorizontal, ArrowUpDown, LayoutGrid } from "lucide-react";
+import { SlidersHorizontal, ArrowUpDown, LayoutGrid, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import * as LucideIcons from "lucide-react";
@@ -29,13 +29,20 @@ import { Spinner } from "@/components/ui/spinner";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { BadgeCheck } from "lucide-react";
 
+const PRODUCTS_PER_PAGE = 25;
+
 export function ProductList() {
   const { categoryId } = useParams();
   const [filterCondition, setFilterCondition] = useState<string[]>([]);
   const [sort, setSort] = useState("newest");
   const [soldSubcategory, setSoldSubcategory] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   
   const isSoldPage = categoryId === "sold";
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [categoryId, filterCondition, soldSubcategory, sort]);
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -80,6 +87,13 @@ export function ProductList() {
   if (sort === "featured") {
     products = [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   }
+
+  // Pagination
+  const totalProducts = products.length;
+  const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, endIndex);
 
   const FilterContent = () => (
     <div className="space-y-6">
@@ -360,7 +374,7 @@ export function ProductList() {
                   </SheetContent>
                 </Sheet>
                 <span className="text-sm text-muted-foreground hidden sm:inline-block">
-                  Affichage de <strong>{products.length}</strong> résultats
+                  Affichage de <strong>{startIndex + 1}-{Math.min(endIndex, totalProducts)}</strong> sur <strong>{totalProducts}</strong> résultats
                 </span>
               </div>
 
@@ -382,12 +396,69 @@ export function ProductList() {
               <div className="flex justify-center py-24">
                 <Spinner />
               </div>
-            ) : products.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
-                {products.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+            ) : paginatedProducts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
+                  {paginatedProducts.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      data-testid="button-prev-page"
+                    >
+                      <ChevronLeft className="w-4 h-4 mr-1" />
+                      Précédent
+                    </Button>
+                    
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                        if (
+                          page === 1 ||
+                          page === totalPages ||
+                          (page >= currentPage - 1 && page <= currentPage + 1)
+                        ) {
+                          return (
+                            <Button
+                              key={page}
+                              variant={currentPage === page ? "default" : "outline"}
+                              size="sm"
+                              className="w-9 h-9"
+                              onClick={() => setCurrentPage(page)}
+                              data-testid={`button-page-${page}`}
+                            >
+                              {page}
+                            </Button>
+                          );
+                        } else if (
+                          page === currentPage - 2 ||
+                          page === currentPage + 2
+                        ) {
+                          return <span key={page} className="px-1 text-muted-foreground">...</span>;
+                        }
+                        return null;
+                      })}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      data-testid="button-next-page"
+                    >
+                      Suivant
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
                <div className="flex flex-col items-center justify-center py-24 bg-card rounded-xl border border-dashed">
                  <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-4">
