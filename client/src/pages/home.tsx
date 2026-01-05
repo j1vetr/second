@@ -8,11 +8,8 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
-import { FloatingParticles, GradientOrb } from "@/components/ui/floating-particles";
 import { ProductCardSkeleton, CategoryCardSkeleton } from "@/components/ui/shimmer";
-import { BlurText } from "@/components/ui/blur-text";
 import { CountUp } from "@/components/ui/count-up";
-import { ClickSpark } from "@/components/ui/click-spark";
 import * as Icons from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import type { Product } from "@shared/schema";
@@ -187,11 +184,6 @@ export function Home() {
     <div className="space-y-16 pb-16">
       {/* Hero Section with Category Sidebar */}
       <section ref={heroRef} className="relative bg-gradient-to-br from-secondary/30 via-background to-primary/5">
-        <div className="hidden lg:block">
-          <FloatingParticles count={25} />
-          <GradientOrb className="w-[600px] h-[600px] bg-primary/10 top-0 -right-64" />
-          <GradientOrb className="w-[400px] h-[400px] bg-orange-500/10 bottom-0 -left-32" />
-        </div>
         
         <div className="container mx-auto px-6 py-8 pb-12 lg:py-12 relative z-10">
         
@@ -248,23 +240,27 @@ export function Home() {
             {/* Hero Content */}
             <div className="flex-1 flex flex-col justify-center lg:pl-8 order-first lg:order-2">
               <div className="text-center">
-                <div className="mb-2">
-                  <BlurText 
-                    text="Produits Premium"
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
-                    delay={0.2}
-                    animateOnScroll={false}
-                  />
-                </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="mb-2"
+                >
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                    Produits Premium
+                  </h1>
+                </motion.div>
                 
-                <div className="mb-6">
-                  <BlurText 
-                    text="Votre Prix"
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent"
-                    delay={0.5}
-                    animateOnScroll={false}
-                  />
-                </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="mb-6"
+                >
+                  <span className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-orange-500 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
+                    Votre Prix
+                  </span>
+                </motion.div>
 
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -309,25 +305,21 @@ export function Home() {
                   transition={{ duration: 0.5, delay: 0.5 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
-                  <ClickSpark sparkColor="hsl(var(--primary))" sparkCount={10}>
-                    <Link href="/products" className="w-full sm:w-auto">
-                      <motion.button
-                        whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
-                        whileTap={{ scale: 0.98 }}
-                        className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
-                      >
-                        Découvrir les Produits
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </motion.button>
-                    </Link>
-                  </ClickSpark>
-                  <ClickSpark sparkColor="hsl(var(--muted-foreground))" sparkCount={6}>
-                    <Link href="/how-it-works" className="w-full sm:w-auto">
-                      <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
-                        Comment ça marche?
-                      </Button>
-                    </Link>
-                  </ClickSpark>
+                  <Link href="/products" className="w-full sm:w-auto">
+                    <motion.button
+                      whileHover={{ scale: 1.02, boxShadow: "0 20px 40px rgba(251, 118, 24, 0.3)" }}
+                      whileTap={{ scale: 0.98 }}
+                      className="h-14 px-8 text-base bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white shadow-lg shadow-primary/25 w-full rounded-xl font-semibold inline-flex items-center justify-center group"
+                    >
+                      Découvrir les Produits
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </Link>
+                  <Link href="/how-it-works" className="w-full sm:w-auto">
+                    <Button variant="outline" className="h-14 px-8 text-base w-full rounded-xl font-semibold">
+                      Comment ça marche?
+                    </Button>
+                  </Link>
                 </motion.div>
               </div>
             </div>

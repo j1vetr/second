@@ -18,7 +18,6 @@ import { useMutation } from "@tanstack/react-query"
 import { createOffer } from "@/lib/api"
 import { motion } from "framer-motion"
 import { Confetti } from "@/components/ui/confetti"
-import { RippleButton } from "@/components/ui/ripple-button"
 import { ShoppingCart, CheckCircle2 } from "lucide-react"
 
 export function OfferModal({ product }: { product: Product }) {
@@ -72,10 +71,10 @@ export function OfferModal({ product }: { product: Product }) {
       <Confetti show={showConfetti} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <RippleButton className="w-full h-14 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 inline-flex items-center justify-center gap-2 group">
+          <Button className="w-full h-14 bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-white rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 inline-flex items-center justify-center gap-2 group">
             <ShoppingCart className="w-5 h-5 group-hover:animate-pulse" />
             Buy Now
-          </RippleButton>
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           {showSuccess ? (
