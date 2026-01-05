@@ -29,7 +29,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { BadgeCheck } from "lucide-react";
 
-const PRODUCTS_PER_PAGE = 25;
+const PRODUCTS_PER_PAGE = 24;
 
 export function ProductList() {
   const { categoryId } = useParams();
