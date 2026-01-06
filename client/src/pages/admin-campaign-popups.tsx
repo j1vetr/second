@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { 
   Plus, Pencil, Trash2, Settings, Home, LogOut, 
-  Megaphone, Clock, Eye, X, ArrowLeft
+  Megaphone, Clock, Eye, X, ArrowLeft, Upload, ImageIcon, Loader2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -287,7 +287,7 @@ export function AdminCampaignPopups() {
 
 interface PopupFormProps {
   popup: CampaignPopup | null;
-  products: { id: string; title: string }[];
+  products: { id: string; title: string; image: string }[];
   onSubmit: (data: Partial<InsertCampaignPopup>) => void;
   onCancel: () => void;
   isLoading: boolean;
@@ -365,6 +365,10 @@ function PopupPreview({ formData, onClose }: {
 
 function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupFormProps) {
   const [showPreview, setShowPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
@@ -392,6 +396,59 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
     frequency: popup?.frequency || "once_per_session",
     priority: popup?.priority ?? 0,
   });
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "Fichier trop volumineux. Maximum 10MB.", variant: "destructive" });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("image", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Échec du téléchargement");
+      }
+
+      const result = await response.json();
+      setFormData({ ...formData, imageUrl: result.url });
+      toast({ title: "Image téléchargée avec succès" });
+    } catch (error) {
+      toast({ 
+        title: error instanceof Error ? error.message : "Échec du téléchargement", 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleProductSelect = (productId: string) => {
+    if (productId === "none") {
+      setFormData({ ...formData, productId: "" });
+    } else {
+      const product = products.find(p => p.id === productId);
+      setFormData({ 
+        ...formData, 
+        productId,
+        imageUrl: product?.image || formData.imageUrl
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -428,14 +485,73 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
         </div>
 
         <div className="col-span-2">
-          <Label htmlFor="imageUrl">URL de l'image</Label>
-          <Input
-            id="imageUrl"
-            value={formData.imageUrl}
-            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-            placeholder="/uploads/image.webp"
-            data-testid="input-popup-image"
+          <Label>Image du Popup</Label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,image/*"
+            onChange={handleFileUpload}
+            className="hidden"
+            data-testid="input-popup-image-upload"
           />
+          
+          {formData.imageUrl ? (
+            <div className="mt-2 relative rounded-xl overflow-hidden border bg-secondary/30">
+              <div className="aspect-video flex items-center justify-center">
+                <img 
+                  src={formData.imageUrl} 
+                  alt="Preview" 
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x225?text=Image+Error";
+                  }}
+                />
+              </div>
+              <div className="absolute top-2 right-2 flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="h-8"
+                >
+                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                  className="h-8"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-2 border-2 border-dashed rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-secondary/30 transition-colors"
+            >
+              {isUploading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="w-10 h-10 text-muted-foreground animate-spin" />
+                  <p className="text-sm text-muted-foreground">Téléchargement...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <ImageIcon className="w-10 h-10 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Cliquez pour télécharger une image
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG, WebP, HEIC - Max 10MB
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
@@ -469,8 +585,8 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
 
         {formData.type === "product_promo" && (
           <div className="col-span-2">
-            <Label htmlFor="productId">Produit</Label>
-            <Select value={formData.productId || "none"} onValueChange={(v) => setFormData({ ...formData, productId: v === "none" ? "" : v })}>
+            <Label htmlFor="productId">Produit (l'image du produit sera utilisée automatiquement)</Label>
+            <Select value={formData.productId || "none"} onValueChange={handleProductSelect}>
               <SelectTrigger data-testid="select-popup-product">
                 <SelectValue placeholder="Sélectionner un produit" />
               </SelectTrigger>
@@ -478,7 +594,14 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
                 <SelectItem value="none">Aucun</SelectItem>
                 {products.map((product) => (
                   <SelectItem key={product.id} value={product.id}>
-                    {product.title}
+                    <div className="flex items-center gap-2">
+                      <img 
+                        src={product.image} 
+                        alt={product.title} 
+                        className="w-6 h-6 object-cover rounded"
+                      />
+                      {product.title}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
