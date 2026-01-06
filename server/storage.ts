@@ -9,15 +9,18 @@ import {
   type InsertOffer,
   type NewsletterSubscriber,
   type InsertNewsletterSubscriber,
+  type CampaignPopup,
+  type InsertCampaignPopup,
   users,
   products,
   categories,
   offers,
   newsletterSubscribers,
+  campaignPopups,
   slugify
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, like, sql } from "drizzle-orm";
+import { eq, desc, and, gte, lte, like, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -62,6 +65,14 @@ export interface IStorage {
   updateNewsletterSubscriber(id: string, isActive: boolean): Promise<NewsletterSubscriber | undefined>;
   deleteNewsletterSubscriber(id: string): Promise<boolean>;
   getRecentProducts(days: number): Promise<Product[]>;
+
+  // Campaign Popup methods
+  getCampaignPopups(): Promise<CampaignPopup[]>;
+  getCampaignPopup(id: string): Promise<CampaignPopup | undefined>;
+  getActiveCampaignPopup(): Promise<CampaignPopup | undefined>;
+  createCampaignPopup(popup: InsertCampaignPopup): Promise<CampaignPopup>;
+  updateCampaignPopup(id: string, popup: Partial<InsertCampaignPopup>): Promise<CampaignPopup | undefined>;
+  deleteCampaignPopup(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -330,6 +341,53 @@ export class DatabaseStorage implements IStorage {
         gte(products.createdAt, dateThreshold)
       ))
       .orderBy(desc(products.createdAt));
+  }
+
+  // Campaign Popup methods
+  async getCampaignPopups(): Promise<CampaignPopup[]> {
+    return await db.select().from(campaignPopups).orderBy(desc(campaignPopups.priority), desc(campaignPopups.createdAt));
+  }
+
+  async getCampaignPopup(id: string): Promise<CampaignPopup | undefined> {
+    const [popup] = await db.select().from(campaignPopups).where(eq(campaignPopups.id, id));
+    return popup || undefined;
+  }
+
+  async getActiveCampaignPopup(): Promise<CampaignPopup | undefined> {
+    const now = new Date();
+    const [popup] = await db
+      .select()
+      .from(campaignPopups)
+      .where(and(
+        eq(campaignPopups.isEnabled, true),
+        sql`(${campaignPopups.startAt} IS NULL OR ${campaignPopups.startAt} <= ${now})`,
+        sql`(${campaignPopups.endAt} IS NULL OR ${campaignPopups.endAt} >= ${now})`
+      ))
+      .orderBy(desc(campaignPopups.priority), desc(campaignPopups.createdAt))
+      .limit(1);
+    return popup || undefined;
+  }
+
+  async createCampaignPopup(popup: InsertCampaignPopup): Promise<CampaignPopup> {
+    const [newPopup] = await db
+      .insert(campaignPopups)
+      .values(popup)
+      .returning();
+    return newPopup;
+  }
+
+  async updateCampaignPopup(id: string, popup: Partial<InsertCampaignPopup>): Promise<CampaignPopup | undefined> {
+    const [updated] = await db
+      .update(campaignPopups)
+      .set({ ...popup, updatedAt: new Date() })
+      .where(eq(campaignPopups.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async deleteCampaignPopup(id: string): Promise<boolean> {
+    const result = await db.delete(campaignPopups).where(eq(campaignPopups.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
 
