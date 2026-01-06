@@ -11,6 +11,7 @@ Key features:
 - Admin dashboard for managing products, categories, and offers
 - Product condition badges (New/Used)
 - Featured products showcase
+- Campaign popup system with admin control (announcement, product promo, newsletter, custom link types)
 
 ## User Preferences
 
@@ -52,6 +53,7 @@ API endpoints follow REST conventions:
 - **Categories**: Product categories with icons (id, name, icon)
 - **Products**: Full product details (title, category, condition, image, featured, description, dimensions, weight, includedItems)
 - **Offers**: Customer offer submissions (productId, customerName, customerEmail, customerPhone, offerAmount, message, status)
+- **CampaignPopups**: Promotional popups (title, description, imageUrl, buttonText, buttonLink, productId, type, isEnabled, delaySeconds, frequency, priority, startAt, endAt)
 
 ### Build System
 - Development: Vite dev server with HMR, tsx for server
