@@ -118,36 +118,31 @@ export function Footer() {
         </div>
 
         <div className="border-t pt-8 space-y-6">
-          <div className="flex flex-wrap justify-center items-center gap-4">
+          <div className="flex flex-wrap justify-center items-center gap-5">
             <img 
               src="https://cdn.simpleicons.org/applepay" 
               alt="Apple Pay" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity dark:invert"
+              className="h-10 opacity-60 hover:opacity-100 transition-opacity dark:invert"
             />
             <img 
               src="https://cdn.simpleicons.org/googlepay" 
               alt="Google Pay" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+              className="h-10 opacity-60 hover:opacity-100 transition-opacity"
             />
             <img 
               src="https://cdn.simpleicons.org/mastercard" 
               alt="Mastercard" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+              className="h-10 opacity-60 hover:opacity-100 transition-opacity"
             />
             <img 
               src="https://cdn.simpleicons.org/paypal" 
               alt="PayPal" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+              className="h-10 opacity-60 hover:opacity-100 transition-opacity"
             />
             <img 
               src="https://cdn.simpleicons.org/visa" 
               alt="Visa" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
-            />
-            <img 
-              src="https://www.svgrepo.com/show/519922/twint.svg" 
-              alt="Twint" 
-              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+              className="h-10 opacity-60 hover:opacity-100 transition-opacity"
             />
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
