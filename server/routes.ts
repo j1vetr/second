@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, insertCategorySchema, insertOfferSchema, insertNewsletterSubscriberSchema } from "@shared/schema";
+import { insertProductSchema, insertCategorySchema, insertOfferSchema, insertNewsletterSubscriberSchema, insertCampaignPopupSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import multer from "multer";
@@ -505,6 +505,84 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting subscriber:", error);
       res.status(500).json({ error: "Failed to delete subscriber" });
+    }
+  });
+
+  // Campaign Popup Routes (Admin)
+  app.get("/api/admin/campaign-popups", async (req, res) => {
+    try {
+      const popups = await storage.getCampaignPopups();
+      res.json(popups);
+    } catch (error) {
+      console.error("Error fetching campaign popups:", error);
+      res.status(500).json({ error: "Failed to fetch campaign popups" });
+    }
+  });
+
+  app.get("/api/admin/campaign-popups/:id", async (req, res) => {
+    try {
+      const popup = await storage.getCampaignPopup(req.params.id);
+      if (!popup) {
+        return res.status(404).json({ error: "Campaign popup not found" });
+      }
+      res.json(popup);
+    } catch (error) {
+      console.error("Error fetching campaign popup:", error);
+      res.status(500).json({ error: "Failed to fetch campaign popup" });
+    }
+  });
+
+  app.post("/api/admin/campaign-popups", async (req, res) => {
+    try {
+      const validatedData = insertCampaignPopupSchema.parse(req.body);
+      const popup = await storage.createCampaignPopup(validatedData);
+      res.status(201).json(popup);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: fromZodError(error).message });
+      }
+      console.error("Error creating campaign popup:", error);
+      res.status(500).json({ error: "Failed to create campaign popup" });
+    }
+  });
+
+  app.patch("/api/admin/campaign-popups/:id", async (req, res) => {
+    try {
+      const popup = await storage.updateCampaignPopup(req.params.id, req.body);
+      if (!popup) {
+        return res.status(404).json({ error: "Campaign popup not found" });
+      }
+      res.json(popup);
+    } catch (error) {
+      console.error("Error updating campaign popup:", error);
+      res.status(500).json({ error: "Failed to update campaign popup" });
+    }
+  });
+
+  app.delete("/api/admin/campaign-popups/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteCampaignPopup(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Campaign popup not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting campaign popup:", error);
+      res.status(500).json({ error: "Failed to delete campaign popup" });
+    }
+  });
+
+  // Public Campaign Popup Route (get active popup)
+  app.get("/api/campaign-popup/active", async (req, res) => {
+    try {
+      const popup = await storage.getActiveCampaignPopup();
+      if (!popup) {
+        return res.status(404).json({ error: "No active campaign popup" });
+      }
+      res.json(popup);
+    } catch (error) {
+      console.error("Error fetching active campaign popup:", error);
+      res.status(500).json({ error: "Failed to fetch active campaign popup" });
     }
   });
 
