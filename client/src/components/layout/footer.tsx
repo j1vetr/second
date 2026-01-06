@@ -110,12 +110,46 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© 2025 SecondStore.ch. Tous droits réservés.</p>
-          <div className="flex gap-6">
-            <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Politique de Confidentialité</Link>
-            <Link href="/terms-of-use" className="hover:text-foreground transition-colors">Conditions d'Utilisation</Link>
-            <Link href="/cookie-policy" className="hover:text-foreground transition-colors">Politique des Cookies</Link>
+        <div className="border-t pt-8 space-y-6">
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <img 
+              src="https://cdn.simpleicons.org/applepay" 
+              alt="Apple Pay" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity dark:invert"
+            />
+            <img 
+              src="https://cdn.simpleicons.org/googlepay" 
+              alt="Google Pay" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src="https://cdn.simpleicons.org/mastercard" 
+              alt="Mastercard" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src="https://cdn.simpleicons.org/paypal" 
+              alt="PayPal" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src="https://cdn.simpleicons.org/visa" 
+              alt="Visa" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img 
+              src="https://www.svgrepo.com/show/519922/twint.svg" 
+              alt="Twint" 
+              className="h-7 opacity-60 hover:opacity-100 transition-opacity"
+            />
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+            <p>© 2026 SecondStore.ch. Tous droits réservés.</p>
+            <div className="flex gap-6">
+              <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Politique de Confidentialité</Link>
+              <Link href="/terms-of-use" className="hover:text-foreground transition-colors">Conditions d'Utilisation</Link>
+              <Link href="/cookie-policy" className="hover:text-foreground transition-colors">Politique des Cookies</Link>
+            </div>
           </div>
         </div>
       </div>
