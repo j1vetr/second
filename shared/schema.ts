@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, boolean, timestamp, numeric } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, boolean, timestamp, numeric, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -123,3 +123,32 @@ export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSub
 
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+
+export const campaignPopups = pgTable("campaign_popups", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  buttonText: text("button_text"),
+  buttonLink: text("button_link"),
+  productId: varchar("product_id").references(() => products.id, { onDelete: "set null" }),
+  type: varchar("type", { enum: ["announcement", "product_promo", "newsletter", "custom_link"] }).notNull().default("announcement"),
+  isEnabled: boolean("is_enabled").notNull().default(false),
+  delaySeconds: integer("delay_seconds").notNull().default(3),
+  durationSeconds: integer("duration_seconds"),
+  frequency: varchar("frequency", { enum: ["always", "once_per_session", "once_per_day"] }).notNull().default("once_per_session"),
+  startAt: timestamp("start_at"),
+  endAt: timestamp("end_at"),
+  priority: integer("priority").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertCampaignPopupSchema = createInsertSchema(campaignPopups).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertCampaignPopup = z.infer<typeof insertCampaignPopupSchema>;
+export type CampaignPopup = typeof campaignPopups.$inferSelect;
