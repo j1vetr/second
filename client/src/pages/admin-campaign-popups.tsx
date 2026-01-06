@@ -293,7 +293,78 @@ interface PopupFormProps {
   isLoading: boolean;
 }
 
+function PopupPreview({ formData, onClose }: { 
+  formData: { title: string; description: string; imageUrl: string; buttonText: string; buttonLink: string; type: string };
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[200]">
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[201] w-[90vw] max-w-md">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden">
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+
+          {formData.imageUrl && (
+            <div className="aspect-video bg-secondary/30 overflow-hidden">
+              <img
+                src={formData.imageUrl}
+                alt={formData.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x225?text=Image+URL+Invalid";
+                }}
+              />
+            </div>
+          )}
+
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-2">
+              {formData.title || "Titre du popup"}
+            </h2>
+            
+            {formData.description && (
+              <p className="text-muted-foreground mb-4">
+                {formData.description}
+              </p>
+            )}
+
+            {formData.type === "newsletter" ? (
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Votre email"
+                  className="flex-1"
+                  disabled
+                />
+                <Button disabled>
+                  S'inscrire
+                </Button>
+              </div>
+            ) : formData.buttonText ? (
+              <Button className="w-full gap-2" disabled>
+                {formData.buttonText}
+              </Button>
+            ) : null}
+          </div>
+        </div>
+        <p className="text-center text-white/80 text-sm mt-3">
+          Cliquez n'importe où pour fermer l'aperçu
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupFormProps) {
+  const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
@@ -473,14 +544,32 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Annuler
+      <div className="flex justify-between gap-3 pt-4 border-t">
+        <Button 
+          type="button" 
+          variant="secondary" 
+          onClick={() => setShowPreview(true)}
+          data-testid="button-preview-popup"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Aperçu
         </Button>
-        <Button type="submit" disabled={isLoading} data-testid="button-save-popup">
-          {isLoading ? <Spinner className="w-4 h-4" /> : (popup ? "Mettre à jour" : "Créer")}
-        </Button>
+        <div className="flex gap-3">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Annuler
+          </Button>
+          <Button type="submit" disabled={isLoading} data-testid="button-save-popup">
+            {isLoading ? <Spinner className="w-4 h-4" /> : (popup ? "Mettre à jour" : "Créer")}
+          </Button>
+        </div>
       </div>
+
+      {showPreview && (
+        <PopupPreview 
+          formData={formData} 
+          onClose={() => setShowPreview(false)} 
+        />
+      )}
     </form>
   );
 }
