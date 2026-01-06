@@ -399,12 +399,12 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
         {formData.type === "product_promo" && (
           <div className="col-span-2">
             <Label htmlFor="productId">Produit</Label>
-            <Select value={formData.productId} onValueChange={(v) => setFormData({ ...formData, productId: v })}>
+            <Select value={formData.productId || "none"} onValueChange={(v) => setFormData({ ...formData, productId: v === "none" ? "" : v })}>
               <SelectTrigger data-testid="select-popup-product">
                 <SelectValue placeholder="Sélectionner un produit" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Aucun</SelectItem>
+                <SelectItem value="none">Aucun</SelectItem>
                 {products.map((product) => (
                   <SelectItem key={product.id} value={product.id}>
                     {product.title}
