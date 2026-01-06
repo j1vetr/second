@@ -8,7 +8,7 @@ import {
   Plus, Pencil, Trash2, Search, Package, LayoutGrid, Eye, 
   Tags, ShoppingBag, LogOut, Home, Settings, Grid3X3, List,
   Filter, ChevronDown, Star, Clock, CheckCircle2, XCircle,
-  MoreHorizontal, ExternalLink, Copy, Archive
+  MoreHorizontal, ExternalLink, Copy, Archive, Megaphone
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -125,6 +125,12 @@ export function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-1.5">
+              <Link href="/admin/campaign-popups">
+                <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground hover:text-foreground" data-testid="link-admin-popups">
+                  <Megaphone className="w-4 h-4" />
+                  <span className="hidden sm:inline text-xs">Popups</span>
+                </Button>
+              </Link>
               <Link href="/">
                 <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground hover:text-foreground">
                   <Home className="w-4 h-4" />

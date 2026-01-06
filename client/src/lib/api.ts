@@ -1,4 +1,4 @@
-import type { Product, Category, Offer, InsertProduct, InsertCategory, InsertOffer } from "@shared/schema";
+import type { Product, Category, Offer, InsertProduct, InsertCategory, InsertOffer, CampaignPopup, InsertCampaignPopup } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -170,4 +170,51 @@ export async function deleteNewsletterSubscriber(id: string): Promise<void> {
     method: "DELETE",
   });
   if (!response.ok) throw new Error("Failed to delete subscriber");
+}
+
+// Campaign Popup API
+export async function getCampaignPopups(): Promise<CampaignPopup[]> {
+  const response = await fetch(`${API_BASE}/admin/campaign-popups`);
+  if (!response.ok) throw new Error("Failed to fetch campaign popups");
+  return response.json();
+}
+
+export async function getCampaignPopup(id: string): Promise<CampaignPopup> {
+  const response = await fetch(`${API_BASE}/admin/campaign-popups/${id}`);
+  if (!response.ok) throw new Error("Failed to fetch campaign popup");
+  return response.json();
+}
+
+export async function getActiveCampaignPopup(): Promise<CampaignPopup | null> {
+  const response = await fetch(`${API_BASE}/campaign-popup/active`);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("Failed to fetch active campaign popup");
+  return response.json();
+}
+
+export async function createCampaignPopup(popup: InsertCampaignPopup): Promise<CampaignPopup> {
+  const response = await fetch(`${API_BASE}/admin/campaign-popups`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(popup),
+  });
+  if (!response.ok) throw new Error("Failed to create campaign popup");
+  return response.json();
+}
+
+export async function updateCampaignPopup(id: string, popup: Partial<InsertCampaignPopup>): Promise<CampaignPopup> {
+  const response = await fetch(`${API_BASE}/admin/campaign-popups/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(popup),
+  });
+  if (!response.ok) throw new Error("Failed to update campaign popup");
+  return response.json();
+}
+
+export async function deleteCampaignPopup(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE}/admin/campaign-popups/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) throw new Error("Failed to delete campaign popup");
 }
