@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Twitter, Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
@@ -65,9 +65,16 @@ export function Footer() {
               Point de rencontre pour des produits d'occasion et neufs de qualité. Atteignez vos produits de rêve avec des achats sécurisés et une communication rapide.
             </p>
             <div className="flex gap-4">
-              <ButtonIcon icon={<Instagram className="w-4 h-4" />} />
-              <ButtonIcon icon={<Twitter className="w-4 h-4" />} />
-              <ButtonIcon icon={<Facebook className="w-4 h-4" />} />
+              <SocialLink href="https://www.instagram.com/secondstorech" icon={<Instagram className="w-4 h-4" />} />
+              <SocialLink href="https://www.facebook.com/secondstorech" icon={<Facebook className="w-4 h-4" />} />
+              <SocialLink 
+                href="https://www.tiktok.com/@secondstorech" 
+                icon={
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                  </svg>
+                } 
+              />
             </div>
           </div>
 
@@ -157,9 +164,14 @@ export function Footer() {
   );
 }
 
-function ButtonIcon({ icon }: { icon: React.ReactNode }) {
+function SocialLink({ href, icon }: { href: string; icon: React.ReactNode }) {
   return (
-    <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-background border hover:border-primary hover:text-primary transition-colors">
+    <a 
+      href={href} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="w-8 h-8 flex items-center justify-center rounded-full bg-background border hover:border-primary hover:text-primary transition-colors"
+    >
       {icon}
     </a>
   );
