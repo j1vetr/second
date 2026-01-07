@@ -52,14 +52,21 @@ export function CampaignPopupDisplay() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  const isAdminPage = typeof window !== "undefined" && 
+    (window.location.pathname.startsWith("/admin") || 
+     window.location.pathname.startsWith("/admins"));
+
   const { data: popup } = useQuery({
     queryKey: ["active-campaign-popup"],
     queryFn: getActiveCampaignPopup,
     staleTime: 60000,
     refetchOnWindowFocus: false,
+    enabled: !isAdminPage,
   });
 
   useEffect(() => {
+    if (isAdminPage) return;
+    
     if (popup && shouldShowPopup(popup)) {
       const timer = setTimeout(() => {
         setActivePopup(popup);
@@ -68,7 +75,7 @@ export function CampaignPopupDisplay() {
 
       return () => clearTimeout(timer);
     }
-  }, [popup]);
+  }, [popup, isAdminPage]);
 
   const handleClose = () => {
     if (activePopup) {
