@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, Send, Loader2, Banknote } from "lucide-react";
 import { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
@@ -134,13 +134,7 @@ export function Footer() {
               alt="Twint" 
               className="h-9"
             />
-            <svg className="h-6 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <rect x="1" y="5" width="22" height="14" rx="2" className="stroke-gray-600 dark:stroke-gray-400"/>
-              <circle cx="12" cy="12" r="2.5" className="stroke-gray-600 dark:stroke-gray-400"/>
-              <circle cx="5" cy="12" r="1" className="fill-gray-600 dark:fill-gray-400 stroke-none"/>
-              <circle cx="19" cy="12" r="1" className="fill-gray-600 dark:fill-gray-400 stroke-none"/>
-              <path d="M8 8h8M8 16h8" className="stroke-gray-600 dark:stroke-gray-400" strokeLinecap="round" strokeWidth="0.5"/>
-            </svg>
+            <Banknote className="h-8 w-8 text-gray-600 dark:text-gray-400" />
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
             <p>© 2026 SecondStore.ch. Tous droits réservés.</p>
