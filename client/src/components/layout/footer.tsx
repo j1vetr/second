@@ -122,19 +122,19 @@ export function Footer() {
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" 
               alt="Mastercard" 
-              className="h-5 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-5"
             />
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" 
               alt="Visa" 
-              className="h-5 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-5"
             />
             <img 
               src="/assets/twint-logo.png" 
               alt="Twint" 
-              className="h-7 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-7"
             />
-            <div className="flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1.5">
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="2" y="6" width="20" height="12" rx="2" className="stroke-green-600"/>
                 <circle cx="12" cy="12" r="3" className="stroke-green-600"/>
