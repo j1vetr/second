@@ -134,7 +134,7 @@ export function Footer() {
               alt="Twint" 
               className="h-9"
             />
-            <Banknote className="h-8 w-8 text-gray-600 dark:text-gray-400" />
+            <Banknote className="h-10 w-10 text-gray-500 dark:text-gray-400" strokeWidth={1.5} />
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
             <p>© 2026 SecondStore.ch. Tous droits réservés.</p>
