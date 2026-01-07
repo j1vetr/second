@@ -118,7 +118,7 @@ export function Contact() {
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2717.7459847462984!2d7.2431!3d47.1344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478e19f1c2e7c1a7%3A0x1234567890abcdef!2sFritz-Oppliger-Strasse%2018%2C%202504%20Biel%2C%20Switzerland!5e0!3m2!1sen!2sch!4v1703350000000!5m2!1sen!2sch"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: 'sepia(40%) saturate(200%) hue-rotate(350deg) brightness(0.95)' }}
+                style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
