@@ -34,7 +34,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProduct, getProducts } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import DOMPurify from "dompurify";
 import { usePageTitle } from "@/hooks/use-page-title";
 
@@ -64,7 +64,10 @@ export function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const imageRef = useRef<HTMLDivElement>(null);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", id],
@@ -79,6 +82,45 @@ export function ProductDetail() {
     queryFn: () => product?.category ? getProducts({ category: product.category }) : getProducts(),
     enabled: !!product,
   });
+
+  const productImages = useMemo(() => 
+    product?.images && product.images.length > 0 
+      ? product.images 
+      : product?.image ? [product.image] : [],
+    [product?.images, product?.image]
+  );
+
+  useEffect(() => {
+    if (isAutoPlaying && productImages.length > 1) {
+      autoPlayRef.current = setInterval(() => {
+        setSelectedImage((prev) => (prev + 1) % productImages.length);
+      }, 4000);
+    }
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, [isAutoPlaying, productImages.length]);
+
+  const handleImageSelect = useCallback((index: number) => {
+    setSelectedImage(index);
+    setIsAutoPlaying(false);
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+    }
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsAutoPlaying(true);
+    }, 10000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageRef.current || !isZoomed) return;
@@ -101,11 +143,6 @@ export function ProductDetail() {
   const similarProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
-
-  // Use images array if available, otherwise fall back to single image
-  const productImages = product.images && product.images.length > 0 
-    ? product.images 
-    : [product.image];
 
   const specs = [
     { icon: Ruler, label: "Dimensions", value: product.dimensions },
@@ -234,13 +271,13 @@ export function ProductDetail() {
 
               {/* Image Nav Arrows */}
               <button 
-                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => prev === 0 ? productImages.length - 1 : prev - 1); }}
+                onClick={(e) => { e.stopPropagation(); handleImageSelect(selectedImage === 0 ? productImages.length - 1 : selectedImage - 1); }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button 
-                onClick={(e) => { e.stopPropagation(); setSelectedImage(prev => (prev + 1) % productImages.length); }}
+                onClick={(e) => { e.stopPropagation(); handleImageSelect((selectedImage + 1) % productImages.length); }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
               >
                 <ChevronRight className="w-6 h-6" />
@@ -285,7 +322,7 @@ export function ProductDetail() {
                     key={i}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedImage(i)}
+                    onClick={() => handleImageSelect(i)}
                     className={cn(
                       "w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all shadow-md flex-shrink-0 bg-secondary/50 flex items-center justify-center",
                       selectedImage === i 

@@ -1,10 +1,10 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight, Eye, Tag, BadgeCheck } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { Product } from "@shared/schema";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -33,12 +33,38 @@ export function ProductCard({ product }: ProductCardProps) {
   const [, setLocation] = useLocation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  
+  const allImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
 
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-8deg", "8deg"]);
+
+  useEffect(() => {
+    if (isHovering && allImages.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+      }, 1500);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      setCurrentImageIndex(0);
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isHovering, allImages.length]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -53,9 +79,14 @@ export function ProductCard({ product }: ProductCardProps) {
     y.set(yPct);
   };
 
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
+    setIsHovering(false);
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -78,6 +109,7 @@ export function ProductCard({ product }: ProductCardProps) {
         transformStyle: "preserve-3d",
       }}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleCardClick}
       transition={{ duration: 0.3 }}
@@ -85,16 +117,39 @@ export function ProductCard({ product }: ProductCardProps) {
       data-testid={`card-product-${product.id}`}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary/50 flex items-center justify-center">
-        <img
-          src={product.image}
-          alt={product.title}
-          loading="lazy"
-          decoding="async"
-          className={cn(
-            "max-w-full max-h-full w-auto h-auto object-contain transition-all duration-300",
-            product.isSold && "grayscale"
-          )}
-        />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentImageIndex}
+            src={allImages[currentImageIndex]}
+            alt={product.title}
+            loading="lazy"
+            decoding="async"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className={cn(
+              "max-w-full max-h-full w-auto h-auto object-contain",
+              product.isSold && "grayscale"
+            )}
+          />
+        </AnimatePresence>
+        
+        {allImages.length > 1 && (
+          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {allImages.map((_, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "w-2 h-2 rounded-full transition-all duration-300",
+                  index === currentImageIndex 
+                    ? "bg-primary scale-110" 
+                    : "bg-white/70"
+                )}
+              />
+            ))}
+          </div>
+        )}
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
