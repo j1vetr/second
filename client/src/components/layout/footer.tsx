@@ -118,21 +118,21 @@ export function Footer() {
         </div>
 
         <div className="border-t pt-8 space-y-6">
-          <div className="flex flex-wrap justify-center items-center gap-6">
+          <div className="flex flex-wrap justify-center items-center gap-4">
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" 
               alt="Mastercard" 
-              className="h-10 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-5 opacity-70 hover:opacity-100 transition-opacity"
             />
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" 
               alt="Visa" 
-              className="h-10 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-5 opacity-70 hover:opacity-100 transition-opacity"
             />
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Twint_Logo.svg" 
+              src="https://upload.wikimedia.org/wikipedia/commons/8/89/TWINT_Logo.svg" 
               alt="Twint" 
-              className="h-10 opacity-70 hover:opacity-100 transition-opacity"
+              className="h-5 opacity-70 hover:opacity-100 transition-opacity"
             />
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
