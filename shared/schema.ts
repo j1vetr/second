@@ -39,6 +39,7 @@ export const products = pgTable("products", {
   isNew: boolean("is_new").notNull().default(false),
   isActive: boolean("is_active").notNull().default(true),
   isSold: boolean("is_sold").notNull().default(false),
+  isFreeShipping: boolean("is_free_shipping").notNull().default(false),
   description: text("description"),
   dimensions: text("dimensions"),
   weight: text("weight"),

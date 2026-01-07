@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { 
   ArrowLeft, Upload, X, RotateCcw, RotateCw, Save, Eye, 
   ImageIcon, FileText, Settings2, Tag, Sparkles, Check,
-  ChevronRight, AlertCircle, Star, Package, Info, BadgeCheck
+  ChevronRight, AlertCircle, Star, Package, Info, BadgeCheck, Truck
 } from "lucide-react";
 import { Link } from "wouter";
 import type { Product, Category } from "@shared/schema";
@@ -60,6 +60,7 @@ export function AdminProductEdit() {
     isNew: false,
     isActive: true,
     isSold: false,
+    isFreeShipping: false,
     price: "" as string | null,
     discountPrice: "" as string | null,
   });
@@ -98,6 +99,7 @@ export function AdminProductEdit() {
         isNew: product.isNew || false,
         isActive: product.isActive ?? true,
         isSold: product.isSold || false,
+        isFreeShipping: product.isFreeShipping || false,
         price: product.price || "",
         discountPrice: product.discountPrice || "",
       });
@@ -246,6 +248,7 @@ export function AdminProductEdit() {
       isNew: formData.isNew,
       isActive: formData.isSold ? true : formData.isActive,
       isSold: formData.isSold,
+      isFreeShipping: formData.isFreeShipping,
       price: formData.price || null,
       discountPrice: hasDiscount ? formData.discountPrice : null,
     };
@@ -906,6 +909,29 @@ export function AdminProductEdit() {
                         <Switch
                           checked={formData.isSold}
                           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isSold: checked }))}
+                        />
+                      </div>
+
+                      {/* Free Shipping Toggle */}
+                      <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "w-10 h-10 rounded-xl flex items-center justify-center",
+                            formData.isFreeShipping ? "bg-green-500/20" : "bg-gray-500/10"
+                          )}>
+                            <Truck className={cn(
+                              "w-5 h-5",
+                              formData.isFreeShipping ? "text-green-500" : "text-gray-400"
+                            )} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">Livraison gratuite</p>
+                            <p className="text-xs text-muted-foreground">Badge de livraison gratuite affiché</p>
+                          </div>
+                        </div>
+                        <Switch
+                          checked={formData.isFreeShipping}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isFreeShipping: checked }))}
                         />
                       </div>
                     </div>
