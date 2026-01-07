@@ -430,7 +430,12 @@ export function ProductDetail() {
               )}
               {product.isFreeShipping === true ? (
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                  <Truck className="w-4 h-4" />
+                  <motion.div
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Truck className="w-4 h-4" />
+                  </motion.div>
                   Livraison gratuite
                 </span>
               ) : (
