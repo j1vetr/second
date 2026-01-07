@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Mail } from "lucide-react";
+import { X, ArrowRight, Mail, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
@@ -50,6 +50,7 @@ export function CampaignPopupDisplay() {
   const [activePopup, setActivePopup] = useState<CampaignPopup | null>(null);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const { toast } = useToast();
 
   const isAdminPage = typeof window !== "undefined" && 
@@ -71,11 +72,30 @@ export function CampaignPopupDisplay() {
       const timer = setTimeout(() => {
         setActivePopup(popup);
         setIsVisible(true);
+        if (popup.durationSeconds && popup.durationSeconds > 0) {
+          setCountdown(popup.durationSeconds);
+        }
       }, popup.delaySeconds * 1000);
 
       return () => clearTimeout(timer);
     }
   }, [popup, isAdminPage]);
+
+  useEffect(() => {
+    if (countdown === null || countdown <= 0) return;
+    
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev === null || prev <= 1) {
+          handleClose();
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [countdown]);
 
   const handleClose = () => {
     if (activePopup) {
@@ -83,6 +103,7 @@ export function CampaignPopupDisplay() {
     }
     setIsVisible(false);
     setActivePopup(null);
+    setCountdown(null);
   };
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -127,13 +148,21 @@ export function CampaignPopupDisplay() {
             data-testid="campaign-popup"
           >
             <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden">
-              <button
-                onClick={handleClose}
-                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors"
-                data-testid="button-close-popup"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+                {countdown !== null && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs font-medium">
+                    <Clock className="w-3 h-3" />
+                    <span>{countdown}s</span>
+                  </div>
+                )}
+                <button
+                  onClick={handleClose}
+                  className="w-8 h-8 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors"
+                  data-testid="button-close-popup"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
               {activePopup.imageUrl && (
                 <div className="aspect-video bg-secondary/30 overflow-hidden">

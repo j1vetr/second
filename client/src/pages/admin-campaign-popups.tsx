@@ -218,6 +218,12 @@ export function AdminCampaignPopups() {
                               <Clock className="w-3 h-3" />
                               Délai: {popup.delaySeconds}s
                             </span>
+                            {popup.durationSeconds && (
+                              <span className="flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
+                                Durée: {popup.durationSeconds}s
+                              </span>
+                            )}
                             <span>
                               {frequencyLabels[popup.frequency] || popup.frequency}
                             </span>
@@ -632,7 +638,7 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
         </div>
 
         <div>
-          <Label htmlFor="delaySeconds">Délai (secondes)</Label>
+          <Label htmlFor="delaySeconds">Délai d'apparition (secondes)</Label>
           <Input
             id="delaySeconds"
             type="number"
@@ -641,6 +647,21 @@ function PopupForm({ popup, products, onSubmit, onCancel, isLoading }: PopupForm
             onChange={(e) => setFormData({ ...formData, delaySeconds: parseInt(e.target.value) || 0 })}
             data-testid="input-popup-delay"
           />
+          <p className="text-xs text-muted-foreground mt-1">Temps avant l'apparition du popup</p>
+        </div>
+
+        <div>
+          <Label htmlFor="durationSeconds">Durée d'affichage (secondes)</Label>
+          <Input
+            id="durationSeconds"
+            type="number"
+            min={0}
+            value={formData.durationSeconds || ""}
+            onChange={(e) => setFormData({ ...formData, durationSeconds: e.target.value ? parseInt(e.target.value) : null })}
+            placeholder="Illimité"
+            data-testid="input-popup-duration"
+          />
+          <p className="text-xs text-muted-foreground mt-1">Fermeture automatique (laisser vide = manuel)</p>
         </div>
 
         <div>
