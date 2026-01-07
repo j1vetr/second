@@ -132,16 +132,15 @@ export function Footer() {
             <img 
               src="/assets/twint-logo.png" 
               alt="Twint" 
-              className="h-7"
+              className="h-9"
             />
-            <div className="flex items-center gap-1.5">
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="2" y="6" width="20" height="12" rx="2" className="stroke-green-600"/>
-                <circle cx="12" cy="12" r="3" className="stroke-green-600"/>
-                <path d="M6 9V9.01M18 15V15.01" className="stroke-green-600" strokeLinecap="round"/>
-              </svg>
-              <span className="text-xs font-medium text-green-600">Cash</span>
-            </div>
+            <svg className="h-6 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="1" y="5" width="22" height="14" rx="2" className="stroke-gray-600 dark:stroke-gray-400"/>
+              <circle cx="12" cy="12" r="2.5" className="stroke-gray-600 dark:stroke-gray-400"/>
+              <circle cx="5" cy="12" r="1" className="fill-gray-600 dark:fill-gray-400 stroke-none"/>
+              <circle cx="19" cy="12" r="1" className="fill-gray-600 dark:fill-gray-400 stroke-none"/>
+              <path d="M8 8h8M8 16h8" className="stroke-gray-600 dark:stroke-gray-400" strokeLinecap="round" strokeWidth="0.5"/>
+            </svg>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
             <p>© 2026 SecondStore.ch. Tous droits réservés.</p>
