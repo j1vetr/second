@@ -123,10 +123,13 @@ export function AdminProductEdit() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Product> }) => updateProduct(id, data),
-    onSuccess: () => {
+    onSuccess: (updatedProduct) => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      if (updatedProduct?.slug) {
+        queryClient.invalidateQueries({ queryKey: ["product", updatedProduct.slug] });
+      }
       toast({ title: "Produit mis à jour avec succès" });
       navigate("/admins");
     },
