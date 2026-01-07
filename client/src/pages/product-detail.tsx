@@ -405,32 +405,32 @@ export function ProductDetail() {
             </motion.div>
 
             {/* Status Pills */}
-            <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-2">
               <span className={cn(
-                "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium",
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium",
                 product.condition === 'new' && "bg-gradient-to-r from-primary/10 to-orange-500/10 text-primary border border-primary/20",
                 product.condition === 'used_like_new' && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
                 product.condition === 'used_good' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
                 product.condition === 'used_fair' && "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
                 product.condition === 'used' && "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
               )}>
-                <Box className="w-4 h-4" />
+                <Box className="w-3.5 h-3.5" />
                 {getConditionLabel(product.condition)}
               </span>
               {product.isSold ? (
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                  <BadgeCheck className="w-4 h-4" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                  <BadgeCheck className="w-3.5 h-3.5" />
                   Vendu
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                  <CheckCircle2 className="w-4 h-4" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
                   En Stock
                 </span>
               )}
               {product.isFreeShipping === true ? (
                 <motion.span 
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-2 border-green-500"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-2 border-green-500"
                   animate={{ 
                     borderColor: ["rgb(34, 197, 94)", "rgb(134, 239, 172)", "rgb(34, 197, 94)"],
                     boxShadow: ["0 0 0px rgba(34, 197, 94, 0)", "0 0 8px rgba(34, 197, 94, 0.5)", "0 0 0px rgba(34, 197, 94, 0)"]
@@ -438,16 +438,16 @@ export function ProductDetail() {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <motion.div
-                    animate={{ x: [0, 4, 0] }}
+                    animate={{ x: [0, 3, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    <Truck className="w-4 h-4" />
+                    <Truck className="w-3.5 h-3.5" />
                   </motion.div>
                   Livraison gratuite
                 </motion.span>
               ) : (
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                  <Truck className="w-4 h-4" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                  <Truck className="w-3.5 h-3.5" />
                   Frais de port
                 </span>
               )}
