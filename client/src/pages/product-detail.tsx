@@ -429,7 +429,14 @@ export function ProductDetail() {
                 </span>
               )}
               {product.isFreeShipping === true ? (
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <motion.span 
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-2 border-green-500"
+                  animate={{ 
+                    borderColor: ["rgb(34, 197, 94)", "rgb(134, 239, 172)", "rgb(34, 197, 94)"],
+                    boxShadow: ["0 0 0px rgba(34, 197, 94, 0)", "0 0 8px rgba(34, 197, 94, 0.5)", "0 0 0px rgba(34, 197, 94, 0)"]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
                   <motion.div
                     animate={{ x: [0, 4, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -437,7 +444,7 @@ export function ProductDetail() {
                     <Truck className="w-4 h-4" />
                   </motion.div>
                   Livraison gratuite
-                </span>
+                </motion.span>
               ) : (
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
                   <Truck className="w-4 h-4" />
