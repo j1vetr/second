@@ -130,7 +130,7 @@ export function Footer() {
               className="h-5 opacity-70 hover:opacity-100 transition-opacity"
             />
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/8/89/TWINT_Logo.svg" 
+              src="https://www.twint.ch/content/themes/twint/images/twint-logo.svg" 
               alt="Twint" 
               className="h-5 opacity-70 hover:opacity-100 transition-opacity"
             />
