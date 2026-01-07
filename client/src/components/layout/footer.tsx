@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Mail, MapPin, Phone, Send, Loader2, CircleDollarSign } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, Send, Loader2, HandCoins } from "lucide-react";
 import { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
@@ -134,7 +134,7 @@ export function Footer() {
               alt="Twint" 
               className="h-9"
             />
-            <CircleDollarSign className="h-8 w-8 text-black dark:text-white" strokeWidth={1.5} />
+            <HandCoins className="h-8 w-8 text-black dark:text-white" strokeWidth={1.5} />
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
             <p>© 2026 SecondStore.ch. Tous droits réservés.</p>
